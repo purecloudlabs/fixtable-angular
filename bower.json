@@ -1,19 +1,19 @@
 {
-  "name": "huxtable-angular",
+  "name": "fixtable-angular",
   "version": "0.0.1",
-  "homepage": "https://github.com/MyPureCloud/huxtable-angular",
+  "homepage": "https://github.com/MyPureCloud/fixtable-angular",
   "authors": [
     "Interactive Intelligence"
   ],
-  "description": "Angular wrapper for the Huxtable table library",
-  "main": "./dist/huxtable-angular.js",
+  "description": "Angular wrapper for the Fixtable table library",
+  "main": "./dist/fixtable-angular.js",
   "moduleType": [
     "globals"
   ],
   "keywords": [
     "data",
     "table",
-    "huxtable"
+    "fixtable"
   ],
   "license": "MIT",
   "ignore": [
@@ -24,6 +24,6 @@
     "tests"
   ],
   "dependencies": {
-    "huxtable": "*"
+    "fixtable": "*"
   }
 }
