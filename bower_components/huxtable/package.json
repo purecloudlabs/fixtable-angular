@@ -1,5 +1,5 @@
 {
-  "name": "Huxtable",
+  "name": "fixtable",
   "version": "1.0.0",
   "description": "A grid library to present tabular data",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/MyPureCloud/Huxtable.git"
+    "url": "https://github.com/MyPureCloud/fixtable.git"
   },
   "keywords": [
     "Table",
@@ -17,9 +17,9 @@
   "author": "Interactive Intelligence",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MyPureCloud/Huxtable/issues"
+    "url": "https://github.com/MyPureCloud/fixtable/issues"
   },
-  "homepage": "https://github.com/MyPureCloud/Huxtable",
+  "homepage": "https://github.com/MyPureCloud/fixtable",
   "dependencies": {
     "grunt": "^0.4.5",
     "grunt-autoprefixer": "^2.2.0",

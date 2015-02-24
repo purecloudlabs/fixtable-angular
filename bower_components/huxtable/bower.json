@@ -1,12 +1,12 @@
 {
-  "name": "huxtable",
+  "name": "fixtable",
   "version": "0.0.1",
-  "homepage": "https://github.com/MyPureCloud/huxtable",
+  "homepage": "https://github.com/MyPureCloud/fixtable",
   "authors": [
     "Interactive Intelligence"
   ],
   "description": "A grid library to present tabular data",
-  "main": [".cdd/huxtable.css", "dist/huxtable.min.js"],
+  "main": [".cdd/fixtable.css", "dist/fixtable.min.js"],
   "moduleType": [
     "globals"
   ],

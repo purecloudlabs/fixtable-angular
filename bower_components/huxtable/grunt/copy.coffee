@@ -1,4 +1,4 @@
 module.exports = ( grunt, options ) ->
   css:
-    dest: 'dist/huxtable.css'
-    src: 'css/huxtable.css'
+    dest: 'dist/fixtable.css'
+    src: 'css/fixtable.css'

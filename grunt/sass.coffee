@@ -3,4 +3,4 @@ module.exports = ( grunt, options ) ->
     options:
       style: 'expanded'
     files:
-      'css/huxtable.css': 'scss/huxtable.scss'
+      'css/fixtable.css': 'scss/fixtable.scss'
