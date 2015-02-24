@@ -1,1 +1,1 @@
-angular.module 'huxtable', []
+angular.module 'fixtable', []

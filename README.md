@@ -1,2 +1,2 @@
-# huxtable-angular
-Angular wrapper for the Huxtable table library
+# fixtable-angular
+Angular wrapper for the Fixtable table library
