@@ -3,6 +3,6 @@ module.exports = ( grunt, options ) ->
     sourceMap: true
     extDot: 'last'
 
-  huxtable:
+  fixtable:
     files:
-      'dist/huxtable.js': ['coffee/huxtable.coffee']
+      'dist/fixtable.js': ['coffee/fixtable.coffee']

@@ -1,2 +1,2 @@
 module.exports = ( grunt, options ) ->
-  huxtable: 'dist'
+  fixtable: 'dist'
