@@ -1,0 +1,25 @@
+{
+  "name": "fixie-angular",
+  "version": "1.0.0",
+  "description": "Angular wrapper for the Fixie grid",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MyPureCloud/fixie-angular.git"
+  },
+  "keywords": [
+    "Fixie",
+    "Grid",
+    "Table",
+    "Angular"
+  ],
+  "author": "Interactive Intelligence",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MyPureCloud/fixie-angular/issues"
+  },
+  "homepage": "https://github.com/MyPureCloud/fixie-angular"
+}
