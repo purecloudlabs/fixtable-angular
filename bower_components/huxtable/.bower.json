@@ -1,0 +1,37 @@
+{
+  "name": "huxtable",
+  "homepage": "https://github.com/MyPureCloud/huxtable",
+  "authors": [
+    "Interactive Intelligence"
+  ],
+  "description": "A grid library to present tabular data",
+  "main": [
+    ".cdd/huxtable.css",
+    "dist/huxtable.min.js"
+  ],
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "data",
+    "table"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_release": "11dad30a7d",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "11dad30a7d44130aab60edbb6f11b9cf5cfcd002"
+  },
+  "_source": "git://github.com/MyPureCloud/Huxtable.git",
+  "_target": "*",
+  "_originalSource": "huxtable",
+  "_direct": true
+}
