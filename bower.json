@@ -5,6 +5,9 @@
   "authors": [
     "Interactive Intelligence"
   ],
+  "dependencies": {
+    "angular": "1.2.26"
+  },
   "description": "Angular wrapper for the Fixtable table library",
   "main": "./dist/fixtable-angular.js",
   "moduleType": [
