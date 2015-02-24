@@ -1,2 +1,2 @@
-# fixie-angular
-Angular wrapper for Fixie grid 
+# huxtable-angular
+Angular wrapper for the Huxtable table library

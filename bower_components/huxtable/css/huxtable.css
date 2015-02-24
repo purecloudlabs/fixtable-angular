@@ -1,0 +1,32 @@
+.huxtable {
+  margin: 0 auto;
+  position: relative;
+}
+
+.huxtable * {
+  box-sizing: border-box;
+}
+
+.huxtable-inner {
+  height: 100%;
+  overflow: auto;
+}
+
+.huxtable table {
+  border: none;
+  border-collapse: collapse;
+  height: 100%;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.huxtable thead th {
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.huxtable thead div {
+  position: absolute;
+  top: 0;
+}

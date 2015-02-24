@@ -1,24 +1,21 @@
 {
-  "name": "fixie-angular",
+  "name": "huxtable-angular",
   "version": "0.0.1",
-  "homepage": "https://github.com/MyPureCloud/fixie-angular",
+  "homepage": "https://github.com/MyPureCloud/huxtable-angular",
   "authors": [
     "Interactive Intelligence"
   ],
-  "description": "Angular wrapper for Fixie grid",
-  "main": "dist/fixie-angular.js",
+  "description": "Angular wrapper for the Huxtable table library",
+  "main": "./dist/huxtable-angular.js",
   "moduleType": [
     "globals"
   ],
   "keywords": [
-    "angular",
-    "fixie",
-    "grid",
+    "data",
     "table",
-    "data"
+    "huxtable"
   ],
   "license": "MIT",
-  "private": true,
   "ignore": [
     "**/.*",
     "node_modules",
@@ -27,6 +24,6 @@
     "tests"
   ],
   "dependencies": {
-    "fixie": "~1.0.1"
+    "huxtable": "*"
   }
 }
