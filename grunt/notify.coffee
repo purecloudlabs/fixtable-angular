@@ -6,3 +6,7 @@ module.exports = ( grunt, options ) ->
   sass:
     options:
       message: 'sass compiled'
+
+  server_started:
+    options:
+      message: 'server started'
