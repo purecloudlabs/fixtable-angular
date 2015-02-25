@@ -9,8 +9,8 @@ angular.module 'fixtable'
 					if col.width then fixtable._setColumnWidth i+1, col.width
 				scope.data = scope.$parent[scope.options.data]
 		replace: true
-		restrict: 'A'
+		restrict: 'E'
 		scope:
-			options: '=fixtable'
+			options: '='
 		templateUrl: 'fixtable/templates/fixtable.html'
 ]
