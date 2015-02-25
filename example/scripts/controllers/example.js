@@ -16,6 +16,7 @@ angular.module('fixtableExample').controller('ExampleCtrl', [
     };
     return $scope.tableOptions = {
       data: 'data',
+      tableClass: 'table table-striped',
       columns: [
         {
           property: 'name',
