@@ -1,3 +1,4 @@
+angular.module 'fixtable', []
 angular.module 'fixtable'
 .directive 'fixtable', [
 	->
