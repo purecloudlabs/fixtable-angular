@@ -5,4 +5,4 @@ module.exports = ( grunt, options ) ->
 
   fixtable:
     files:
-      'dist/fixtable-angular.js': ['coffee/**/*.coffee']
+      '.tmp/fixtable-angular.js': ['coffee/**/*.coffee']

@@ -1,4 +1,4 @@
 module.exports = ( grunt, options ) ->
   fixtable:
     files:
-      'dist/fixtable.min.js': ['dist/fixtable.js']
+      'dist/fixtable-angular.min.js': ['dist/fixtable-angular.js']
