@@ -6,6 +6,7 @@
       return {
         link: function(scope, element, attrs) {
           var fixtable;
+          alert('yo');
           fixtable = new Fixtable(element);
           return scope.$watch('data', function() {
             var col, i, j, len, ref;

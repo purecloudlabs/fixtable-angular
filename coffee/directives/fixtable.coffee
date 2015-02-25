@@ -2,6 +2,7 @@ angular.module 'fixtable'
 .directive 'fixtable', [
 	->
 		link: (scope, element, attrs) ->
+			alert 'yo'
 			fixtable = new Fixtable element
 			scope.$watch 'data', ->
 				fixtable._setHeaderHeight()

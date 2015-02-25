@@ -1,11 +1,12 @@
-app.controller( 'MainCtrl', function( $scope ) {
-  $scope.options = false;
-});
-
-
-app.controller('MainCtrl', [
+angular.module('fixtableExample').controller('ExampleCtrl', [
   '$scope', function($scope) {
-    $scope.data = data;
+    $scope.data = [
+      {
+        name: 'george',
+        color: 'blue',
+        description: 'here is a description'
+      }
+    ];
     $scope.addItem = function() {
       return $scope.data.push({
         name: 'another',
