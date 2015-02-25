@@ -1,4 +1,4 @@
 module.exports = (grunt) ->
 	dist:
-		src: 'build/**/*.js'
+		src: '.tmp/**/*.js'
 		dest: 'dist/fixtable-angular.js'
