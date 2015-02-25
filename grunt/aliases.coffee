@@ -12,11 +12,12 @@ module.exports =
   dist: [
   	'clean'
   	'distJS'
-  	'ngtemplates'
   ]
 
   buildJS: [
   	'coffee'
+    'ngtemplates'
+    'concat'
   ]
 
   distJS: [
