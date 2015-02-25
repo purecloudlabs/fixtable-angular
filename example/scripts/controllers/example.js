@@ -138,7 +138,7 @@ angular.module('fixtableExample').controller('ExampleCtrl', [
       columns: [
         {
           property: 'year',
-          label: 'Year',
+          label: 'YearYearYear YearYearYearYear YearYearYear',
           width: 50
         }, {
           property: 'film',

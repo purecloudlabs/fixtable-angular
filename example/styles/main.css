@@ -1,5 +1,11 @@
 .fixtable {
-	height: 250px;
+	height: 300px;
+}
+
+body .fixtable table {
+  border: 10px solid blue;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 /*.fixtable .table > thead > tr > th {

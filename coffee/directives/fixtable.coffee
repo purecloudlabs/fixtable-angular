@@ -6,7 +6,7 @@ angular.module 'fixtable'
 			fixtable = new Fixtable element
 			scope.$watchCollection 'data', (newData) ->
 				unless newData then return
-				fixtable._copyHeaderStyles()
+				fixtable._circulateStyles()
 				for col, i in scope.options.columns
 					if col.width then fixtable._setColumnWidth i+1, col.width
 				$timeout ->
