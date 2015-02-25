@@ -1,7 +1,7 @@
 module.exports = (grunt) ->
 	fixtable:
 		src: ['templates/**/*.html']
-		dest: '.tmp/templates.js'
+		dest: 'dist/templates.js'
 		options:
 			module: 'fixtable'
 			htmlmin:

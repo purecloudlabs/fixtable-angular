@@ -17,7 +17,6 @@ module.exports =
   buildJS: [
   	'coffee'
     'ngtemplates'
-    'concat'
   ]
 
   distJS: [
