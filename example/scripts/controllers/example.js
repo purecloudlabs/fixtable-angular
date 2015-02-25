@@ -80,6 +80,56 @@ angular.module('fixtableExample').controller('ExampleCtrl', [
         year: 2000,
         film: 'American Beauty',
         director: 'Sam Mendes'
+      },
+      {
+        year: 1999,
+        film: 'Shakespeare in Love',
+        director: 'John Madden'
+      },
+      {
+        year: 1998,
+        film: 'Titanic',
+        director: 'James Cameron'
+      },
+      {
+        year: 1997,
+        film: 'The English Patient',
+        director: 'Anthony Minghella'
+      },
+      {
+        year: 1996,
+        film: 'Braveheart',
+        director: 'Mel Gibson'
+      },
+      {
+        year: 1995,
+        film: 'Forrest Gump',
+        director: 'Robert Zemeckis'
+      },
+      {
+        year: 1994,
+        film: 'Schindler\'s List',
+        director: 'Steven Spielberg'
+      },
+      {
+        year: 1993,
+        film: 'Unforgiven',
+        director: 'Clint Eastwood'
+      },
+      {
+        year: 1992,
+        film: 'The Silence of the Lambs',
+        director: 'Jonathan Demme'
+      },
+      {
+        year: 1991,
+        film: 'Dances with Wolves',
+        director: 'Kevin Costner'
+      },
+      {
+        year: 1990,
+        film: 'Driving Miss Daisy',
+        director: 'Bruce Beresford'
       }
     ];
     return $scope.tableOptions = {
