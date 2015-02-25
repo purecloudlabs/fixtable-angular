@@ -21,9 +21,9 @@
           });
         },
         replace: true,
-        restrict: 'A',
+        restrict: 'E',
         scope: {
-          options: '=fixtable'
+          options: '='
         },
         templateUrl: 'fixtable/templates/fixtable.html'
       };
