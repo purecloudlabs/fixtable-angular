@@ -7,8 +7,12 @@
         link: function(scope, element, attrs) {
           var fixtable;
           fixtable = new Fixtable(element);
-          scope.$watchCollection('data', function() {
+          scope.$watchCollection('data', function(newData) {
             var col, i, j, len, ref;
+            if (!newData) {
+              return;
+            }
+            fixtable._copyHeaderStyles();
             ref = scope.options.columns;
             for (i = j = 0, len = ref.length; j < len; i = ++j) {
               col = ref[i];

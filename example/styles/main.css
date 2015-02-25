@@ -1,8 +1,12 @@
 .fixtable {
-	height: 200px;
+	height: 250px;
 }
 
-.fixtable-header {
+/*.fixtable .table > thead > tr > th {
+  padding: 0;*/
+}
+
+/*.fixtable-header {
 	background: black;
 }
 
@@ -13,4 +17,4 @@
 .fixtable th > div,
 .fixtable td {
 	padding: 5px;
-}
+}*/
