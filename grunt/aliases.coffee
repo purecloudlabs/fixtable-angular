@@ -23,11 +23,3 @@ module.exports =
   	'buildJS'
   	'uglify'
   ]
-
-  server:
-    [
-      'dist'
-      'connect'
-      'notify:server_started'
-      'watch'
-    ]
