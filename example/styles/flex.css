@@ -1,0 +1,33 @@
+html {
+	height: 100%;
+	display: flex;
+}
+
+body {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	padding: 20px;
+}
+
+h2 {
+	flex-shrink: 0;
+}
+
+.fixtable {
+	display: flex;
+	border: 1px solid black;
+}
+
+.fixtable-header {
+	background: black;
+}
+
+.fixtable th {
+	color: white;
+}
+
+.fixtable th > div,
+.fixtable td {
+	padding: 5px;
+}
