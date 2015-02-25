@@ -82,13 +82,6 @@ angular.module('fixtableExample').controller('ExampleCtrl', [
         director: 'Sam Mendes'
       }
     ];
-    $scope.addItem = function() {
-      return $scope.data.push({
-        name: 'another',
-        color: 'blue',
-        description: 'here is another item'
-      });
-    };
     return $scope.tableOptions = {
       data: 'data',
       columns: [
