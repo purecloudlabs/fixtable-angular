@@ -32,4 +32,4 @@
 
 }).call(this);
 
-//# sourceMappingURL=fixtable.js.map
+//# sourceMappingURL=fixtable-angular.js.map
