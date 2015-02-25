@@ -1,0 +1,16 @@
+.fixtable {
+	height: 200px;
+}
+
+.fixtable-header {
+	background: black;
+}
+
+.fixtable th {
+	color: white;
+}
+
+.fixtable th > div,
+.fixtable td {
+	padding: 5px;
+}
