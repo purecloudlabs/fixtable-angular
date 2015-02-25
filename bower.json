@@ -24,6 +24,9 @@
     "tests"
   ],
   "dependencies": {
+    "angular": "~1.2.18",
+    "jquery": ">=1.9.0",
+    // "bootstrap": ">=2.3.2",
     "fixtable": "*"
   }
 }
