@@ -3,7 +3,7 @@ angular.module 'fixtable'
 	'$timeout'
 	($timeout) ->
 		link: (scope, element, attrs) ->
-			
+
 			fixtable = new Fixtable element
 
 			# update table data & calculated styles
@@ -21,6 +21,8 @@ angular.module 'fixtable'
 			scope.$watch 'options.pagingOptions', (opt) ->
 				scope.totalPages = Math.ceil(opt.totalItems / opt.pageSize) or 1
 				scope.totalPagesOoM = Math.floor Math.log10(opt.totalItems) + 1 or 1
+				if opt.currentPage > scope.totalPages
+					opt.currentPage = scope.totalPages
 				scope.$parent[scope.options.pagingOptions.callback] opt
 			, true
 

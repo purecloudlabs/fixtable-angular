@@ -164,6 +164,7 @@ angular.module('fixtableExample').controller('ExampleCtrl', [
         callback: 'getPageData',
         currentPage: 1,
         pageSize: 25,
+        pageSizeOptions: [10, 25, 50],
         totalItems: 26
       }
     }
