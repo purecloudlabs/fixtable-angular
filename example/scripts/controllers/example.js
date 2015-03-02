@@ -131,6 +131,56 @@ angular.module('fixtableExample').controller('ExampleCtrl', [
         year: 1990,
         film: 'Driving Miss Daisy',
         director: 'Bruce Beresford'
+      },
+      {
+        year: 1989,
+        film: 'Rain Man',
+        director: 'Barry Levinson'
+      },
+      {
+        year: 1988,
+        film: 'The Last Emperor',
+        director: 'Bernardo Bertolucci'
+      },
+      {
+        year: 1987,
+        film: 'Platoon',
+        director: 'Oliver Stone'
+      },
+      {
+        year: 1986,
+        film: 'Out of Africa',
+        director: 'Sydney Pollack'
+      },
+      {
+        year: 1985,
+        film: 'Amadeus',
+        director: 'Miloš Forman'
+      },
+      {
+        year: 1984,
+        film: 'Terms of Endearment',
+        director: 'James L. Brooks'
+      },
+      {
+        year: 1983,
+        film: 'Gandhi',
+        director: 'Richard Attenborough'
+      },
+      {
+        year: 1982,
+        film: 'Chariots of Fire',
+        director: 'Hugh Hudson'
+      },
+      {
+        year: 1981,
+        film: 'Ordinary People',
+        director: 'Robert Redford'
+      },
+      {
+        year: 1980,
+        film: 'Kramer vs. Kramer',
+        director: 'Robert Benton'
       }
     ];
 
@@ -165,7 +215,7 @@ angular.module('fixtableExample').controller('ExampleCtrl', [
         currentPage: 1,
         pageSize: 25,
         pageSizeOptions: [10, 25, 50],
-        totalItems: 26
+        totalItems: 36
       }
     }
 
