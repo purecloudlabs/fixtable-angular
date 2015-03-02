@@ -1,0 +1,22 @@
+Page
+
+<button
+type="button"
+ng-disabled="pagingOptions.currentPage === 1"
+ng-click="prevPage()">
+	&laquo;
+</button>
+
+<input
+type="text"
+value="{{ pagingOptions.currentPage }}"
+size="{{ totalPagesOoM }}">
+
+<button
+type="button"
+ng-disabled="pagingOptions.currentPage === totalPages"
+ng-click="nextPage()">
+	&raquo;
+</button>
+
+of {{ totalPages }}

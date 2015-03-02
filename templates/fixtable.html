@@ -18,4 +18,10 @@
             </tbody>
         </table>
     </div>
+    <div
+    class="fixtable-footer"
+    ng-show="options.paging"
+    ng-include="options.footerTemplate || 'fixtable/templates/footer.html'"
+    onload="pagingOptions = options.pagingOptions">
+    </div>
 </div>
