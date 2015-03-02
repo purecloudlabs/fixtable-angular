@@ -7,11 +7,12 @@
         link: function(scope, element, attrs) {
           var fixtable;
           fixtable = new Fixtable(element);
-          scope.$watchCollection('data', function(newData) {
+          scope.$parent.$watchCollection(scope.options.data, function(newData) {
             var col, i, j, len, ref;
             if (!newData) {
               return;
             }
+            scope.data = newData;
             fixtable._circulateStyles();
             ref = scope.options.columns;
             for (i = j = 0, len = ref.length; j < len; i = ++j) {
@@ -21,10 +22,21 @@
               }
             }
             return $timeout(function() {
-              return fixtable._setHeaderHeight();
+              fixtable._setHeaderHeight();
+              return fixtable._setFooterHeight();
             });
           });
-          return scope.data = scope.$parent[scope.options.data];
+          scope.$watch('options.pagingOptions', function(opt) {
+            scope.totalPages = Math.ceil(opt.totalItems / opt.pageSize) || 1;
+            scope.totalPagesOoM = Math.floor(Math.log10(opt.totalItems) + 1 || 1);
+            return scope.$parent[scope.options.pagingOptions.callback](opt);
+          }, true);
+          scope.nextPage = function() {
+            return scope.pagingOptions.currentPage += 1;
+          };
+          return scope.prevPage = function() {
+            return scope.pagingOptions.currentPage -= 1;
+          };
         },
         replace: true,
         restrict: 'E',
