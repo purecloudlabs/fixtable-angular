@@ -1,6 +1,7 @@
 angular.module('fixtableExample').controller('ExampleCtrl', [
   '$scope', function($scope) {
-    $scope.data = [
+
+    $scope.rawData = [
       {
         year: 2015,
         film: 'Birdman or (The Unexpected Virtue of Ignorance)',
@@ -132,13 +133,20 @@ angular.module('fixtableExample').controller('ExampleCtrl', [
         director: 'Bruce Beresford'
       }
     ];
-    return $scope.tableOptions = {
-      data: 'data',
+
+    $scope.getPageData = function(opt) {
+      begin = opt.pageSize * (opt.currentPage - 1)
+      end = begin + opt.pageSize
+      $scope.tableData = $scope.rawData.slice(begin, end);
+    }
+
+    $scope.tableOptions = {
+      data: 'tableData',
       tableClass: 'table table-striped',
       columns: [
         {
           property: 'year',
-          label: 'YearYearYear YearYearYearYear YearYearYear',
+          label: 'Year',
           width: 50
         }, {
           property: 'film',
@@ -149,7 +157,16 @@ angular.module('fixtableExample').controller('ExampleCtrl', [
           label: 'Director',
           width: 100
         }
-      ]
-    };
+      ],
+      footerTemplate: null,
+      paging: true,
+      pagingOptions: {
+        callback: 'getPageData',
+        currentPage: 1,
+        pageSize: 25,
+        totalItems: 26
+      }
+    }
+
   }
 ]);

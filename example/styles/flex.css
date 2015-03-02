@@ -1,3 +1,5 @@
+/* flexbox all the things */
+
 html {
 	height: 100%;
 	display: flex;
@@ -7,27 +9,41 @@ body {
 	height: 100%;
 	display: flex;
 	flex-direction: column;
-	padding: 20px;
+}
+
+.fixtable {
+	display: flex;
 }
 
 h2 {
 	flex-shrink: 0;
 }
 
-.fixtable {
-	display: flex;
-	border: 1px solid black;
+body {
+	padding: 20px;
 }
+
+/* these styles will be copied over to .fixtable */
+
+.fixtable table {
+	border: 1px solid #aaa;
+}
+
+/* style header & footer */
 
 .fixtable-header {
-	background: black;
+	border-bottom: 1px solid #aaa;
+	background: #ddd;
 }
 
-.fixtable th {
-	color: white;
-}
-
-.fixtable th > div,
-.fixtable td {
+.fixtable-footer {
 	padding: 5px;
+	border-top: 1px solid #aaa;
+	background: #ddd;
+}
+
+/* kill double border between header & first row */
+
+.fixtable table tbody tr:first-of-type td {
+	border-top: none;
 }
