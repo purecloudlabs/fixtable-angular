@@ -29,6 +29,9 @@
           scope.$watch('options.pagingOptions', function(opt) {
             scope.totalPages = Math.ceil(opt.totalItems / opt.pageSize) || 1;
             scope.totalPagesOoM = Math.floor(Math.log10(opt.totalItems) + 1 || 1);
+            if (opt.currentPage > scope.totalPages) {
+              opt.currentPage = scope.totalPages;
+            }
             return scope.$parent[scope.options.pagingOptions.callback](opt);
           }, true);
           scope.nextPage = function() {
