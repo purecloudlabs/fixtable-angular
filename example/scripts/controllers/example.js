@@ -201,6 +201,7 @@ angular.module('fixtableExample').controller('ExampleCtrl', [
         }, {
           property: 'film',
           label: 'Film',
+          template: 'partials/filmCell.html',
           width: 200
         }, {
           property: 'director',

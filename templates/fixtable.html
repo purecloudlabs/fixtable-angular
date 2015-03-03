@@ -11,9 +11,10 @@
             </thead>
             <tbody>
                 <tr ng-repeat="row in data">
-                    <td ng-repeat="col in options.columns">
-                        {{ row[col.property] }}
-                    </td>
+                    <td
+                    ng-repeat="col in options.columns"
+                    ng-include="col.template || 'fixtable/templates/bodyCell.html'"
+                    ></td>
                 </tr>
             </tbody>
         </table>
