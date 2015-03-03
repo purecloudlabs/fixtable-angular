@@ -7,13 +7,12 @@
         link: function(scope, element, attrs) {
           var fixtable;
           fixtable = new Fixtable(element);
+          $timeout(function() {
+            return fixtable._circulateStyles();
+          });
           scope.$parent.$watchCollection(scope.options.data, function(newData) {
             var col, i, j, len, ref;
-            if (!newData) {
-              return;
-            }
             scope.data = newData;
-            fixtable._circulateStyles();
             ref = scope.options.columns;
             for (i = j = 0, len = ref.length; j < len; i = ++j) {
               col = ref[i];
