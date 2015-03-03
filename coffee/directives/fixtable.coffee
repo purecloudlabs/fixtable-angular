@@ -6,11 +6,12 @@ angular.module 'fixtable'
 
 			fixtable = new Fixtable element
 
-			# update table data & calculated styles
+			# circulate styles on table elements in next digest cycle
+			$timeout -> fixtable._circulateStyles()
+
+			# update table data & calculated styles when source data changes
 			scope.$parent.$watchCollection scope.options.data, (newData) ->
-				unless newData then return
 				scope.data = newData
-				fixtable._circulateStyles()
 				for col, i in scope.options.columns
 					if col.width then fixtable._setColumnWidth i+1, col.width
 				$timeout ->
