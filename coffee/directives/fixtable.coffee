@@ -20,6 +20,7 @@ angular.module 'fixtable'
 
 			# refresh when paging options change
 			scope.$watch 'options.pagingOptions', (opt) ->
+				return unless opt
 				scope.totalPages = Math.ceil(opt.totalItems / opt.pageSize) or 1
 				scope.totalPagesOoM = Math.floor Math.log10(opt.totalItems) + 1 or 1
 				if opt.currentPage > scope.totalPages
