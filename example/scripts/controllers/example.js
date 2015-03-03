@@ -197,16 +197,16 @@ angular.module('fixtableExample').controller('ExampleCtrl', [
         {
           property: 'year',
           label: 'Year',
-          width: 50
+          width: 75
         }, {
           property: 'film',
           label: 'Film',
           template: 'partials/filmCell.html',
-          width: 200
+          width: '67%'
         }, {
           property: 'director',
           label: 'Director',
-          width: 100
+          width: '33%'
         }
       ],
       footerTemplate: null,
