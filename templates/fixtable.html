@@ -5,7 +5,8 @@
             <thead>
                 <tr>
                     <th ng-repeat="col in options.columns">
-                        <div>{{ col.label }}</div>
+                        <div ng-include="options.headerTemplate || 'fixtable/templates/headerCell.html'">
+                        </div>
                     </th>
                 </tr>
             </thead>
@@ -13,8 +14,8 @@
                 <tr ng-repeat="row in data">
                     <td
                     ng-repeat="col in options.columns"
-                    ng-include="col.template || 'fixtable/templates/bodyCell.html'"
-                    ></td>
+                    ng-include="col.template || 'fixtable/templates/bodyCell.html'">
+                    </td>
                 </tr>
             </tbody>
         </table>

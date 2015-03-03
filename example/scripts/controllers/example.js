@@ -209,6 +209,7 @@ angular.module('fixtableExample').controller('ExampleCtrl', [
           width: '33%'
         }
       ],
+      headerTemplate: null,
       footerTemplate: null,
       paging: true,
       pagingOptions: {
