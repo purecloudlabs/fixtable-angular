@@ -6,7 +6,7 @@
     "Interactive Intelligence"
   ],
   "description": "Angular wrapper for the Fixtable table library",
-  "main": "./dist/fixtable-angular.js",
+  "main": "./dist/fixtable-angular.min.js",
   "moduleType": [
     "globals"
   ],
