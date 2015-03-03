@@ -7,7 +7,7 @@ angular.module('fixtable').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('fixtable/templates/fixtable.html',
-    "<div class=\"fixtable\"><div class=\"fixtable-header\"></div><div class=\"fixtable-inner\"><table ng-class=\"options.tableClass\"><thead><tr><th ng-repeat=\"col in options.columns\"><div ng-include=\"options.headerTemplate || 'fixtable/templates/headerCell.html'\"></div></th></tr></thead><tbody><tr ng-repeat=\"row in data\"><td ng-repeat=\"col in options.columns\" ng-include=\"col.template || 'fixtable/templates/bodyCell.html'\"></td></tr></tbody></table></div><div class=\"fixtable-footer\" ng-show=\"options.paging\" ng-include=\"options.footerTemplate || 'fixtable/templates/footer.html'\" onload=\"pagingOptions = options.pagingOptions\"></div></div>"
+    "<div class=\"fixtable\"><div class=\"fixtable-header\"></div><div class=\"fixtable-inner\"><table ng-class=\"options.tableClass\"><thead><tr><th ng-repeat=\"(colIndex, col) in options.columns\"><div ng-include=\"options.headerTemplate || 'fixtable/templates/headerCell.html'\"></div></th></tr></thead><tbody><tr ng-repeat=\"(rowIndex, row) in data\"><td ng-repeat=\"(colIndex, col) in options.columns\" ng-include=\"col.template || 'fixtable/templates/bodyCell.html'\"></td></tr></tbody></table></div><div class=\"fixtable-footer\" ng-show=\"options.paging\" ng-include=\"options.footerTemplate || 'fixtable/templates/footer.html'\" onload=\"pagingOptions = options.pagingOptions\"></div></div>"
   );
 
 
