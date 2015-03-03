@@ -13,9 +13,9 @@ angular.module 'fixtable'
 			# update table data & calculated styles when source data changes
 			scope.$parent.$watchCollection scope.options.data, (newData) ->
 				scope.data = newData
-				for col, i in scope.options.columns
-					if col.width then fixtable._setColumnWidth i+1, col.width
 				$timeout ->
+					for col, i in scope.options.columns
+						if col.width then fixtable._setColumnWidth i+1, col.width
 					fixtable._setHeaderHeight()
 					fixtable._setFooterHeight()
 

@@ -11,16 +11,16 @@
             return fixtable._circulateStyles();
           });
           scope.$parent.$watchCollection(scope.options.data, function(newData) {
-            var col, i, j, len, ref;
             scope.data = newData;
-            ref = scope.options.columns;
-            for (i = j = 0, len = ref.length; j < len; i = ++j) {
-              col = ref[i];
-              if (col.width) {
-                fixtable._setColumnWidth(i + 1, col.width);
-              }
-            }
             return $timeout(function() {
+              var col, i, j, len, ref;
+              ref = scope.options.columns;
+              for (i = j = 0, len = ref.length; j < len; i = ++j) {
+                col = ref[i];
+                if (col.width) {
+                  fixtable._setColumnWidth(i + 1, col.width);
+                }
+              }
               fixtable._setHeaderHeight();
               return fixtable._setFooterHeight();
             });
