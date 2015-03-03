@@ -36,9 +36,10 @@
           scope.nextPage = function() {
             return scope.pagingOptions.currentPage += 1;
           };
-          return scope.prevPage = function() {
+          scope.prevPage = function() {
             return scope.pagingOptions.currentPage -= 1;
           };
+          return scope.parent = scope.$parent;
         },
         replace: true,
         restrict: 'E',

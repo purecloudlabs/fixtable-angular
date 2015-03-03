@@ -34,6 +34,9 @@ angular.module 'fixtable'
 			scope.prevPage = ->
 				scope.pagingOptions.currentPage -= 1
 
+			# provide a hook to parent scope
+			scope.parent = scope.$parent
+
 		replace: true
 		restrict: 'E'
 		scope:
