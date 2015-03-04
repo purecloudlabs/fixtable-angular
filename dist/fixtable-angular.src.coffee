@@ -2,10 +2,16 @@ angular.module 'fixtable', []
 angular.module 'fixtable'
 .directive 'fixtable', [
 	'$timeout'
-	($timeout) ->
+	'defaultOptions'
+	($timeout, defaultOptions) ->
 		link: (scope, element, attrs) ->
 
 			fixtable = new Fixtable element
+
+			# use default options to fill in missing values
+			for key, value of defaultOptions
+				unless Object::hasOwnProperty.call scope.options, key
+					scope.options[key] = value
 
 			# circulate styles on table elements in next digest cycle
 			$timeout -> fixtable._circulateStyles()
@@ -44,3 +50,13 @@ angular.module 'fixtable'
 			options: '='
 		templateUrl: 'fixtable/templates/fixtable.html'
 ]
+angular.module 'fixtable'
+.provider 'defaultOptions', ->
+
+	@defaultOptions = {}
+
+	@$get = -> @defaultOptions
+
+	@setDefaultOptions = (options) -> @defaultOptions = options
+
+	null
