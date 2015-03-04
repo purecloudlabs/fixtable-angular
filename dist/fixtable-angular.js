@@ -30,7 +30,7 @@
               return;
             }
             scope.totalPages = Math.ceil(opt.totalItems / opt.pageSize) || 1;
-            scope.totalPagesOoM = Math.floor(Math.log10(opt.totalItems) + 1 || 1);
+            scope.totalPagesOoM = Math.floor(Math.log10(opt.totalPages) + 1 || 1);
             if (opt.currentPage > scope.totalPages) {
               opt.currentPage = scope.totalPages;
             }
