@@ -1,5 +1,5 @@
 angular.module 'fixtable'
-.provider 'defaultOptions', ->
+.provider 'fixtableDefaultOptions', ->
 
 	@defaultOptions = {}
 

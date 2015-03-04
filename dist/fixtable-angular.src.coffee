@@ -2,14 +2,14 @@ angular.module 'fixtable', []
 angular.module 'fixtable'
 .directive 'fixtable', [
 	'$timeout'
-	'defaultOptions'
-	($timeout, defaultOptions) ->
+	'fixtableDefaultOptions'
+	($timeout, fixtableDefaultOptions) ->
 		link: (scope, element, attrs) ->
 
 			fixtable = new Fixtable element
 
 			# use default options to fill in missing values
-			for key, value of defaultOptions
+			for key, value of fixtableDefaultOptions
 				unless Object::hasOwnProperty.call scope.options, key
 					scope.options[key] = value
 
@@ -51,7 +51,7 @@ angular.module 'fixtable'
 		templateUrl: 'fixtable/templates/fixtable.html'
 ]
 angular.module 'fixtable'
-.provider 'defaultOptions', ->
+.provider 'fixtableDefaultOptions', ->
 
 	@defaultOptions = {}
 

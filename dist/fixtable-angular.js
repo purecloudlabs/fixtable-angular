@@ -2,13 +2,13 @@
   angular.module('fixtable', []);
 
   angular.module('fixtable').directive('fixtable', [
-    '$timeout', 'defaultOptions', function($timeout, defaultOptions) {
+    '$timeout', 'fixtableDefaultOptions', function($timeout, fixtableDefaultOptions) {
       return {
         link: function(scope, element, attrs) {
           var fixtable, key, value;
           fixtable = new Fixtable(element);
-          for (key in defaultOptions) {
-            value = defaultOptions[key];
+          for (key in fixtableDefaultOptions) {
+            value = fixtableDefaultOptions[key];
             if (!Object.prototype.hasOwnProperty.call(scope.options, key)) {
               scope.options[key] = value;
             }
@@ -60,7 +60,7 @@
     }
   ]);
 
-  angular.module('fixtable').provider('defaultOptions', function() {
+  angular.module('fixtable').provider('fixtableDefaultOptions', function() {
     this.defaultOptions = {};
     this.$get = function() {
       return this.defaultOptions;
