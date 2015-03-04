@@ -23,7 +23,7 @@ angular.module 'fixtable'
 			scope.$watch 'options.pagingOptions', (opt) ->
 				return unless opt
 				scope.totalPages = Math.ceil(opt.totalItems / opt.pageSize) or 1
-				scope.totalPagesOoM = Math.floor Math.log10(opt.totalPages) + 1 or 1
+				scope.totalPagesOoM = Math.floor Math.log10(scope.totalPages) + 1 or 1
 				if opt.currentPage > scope.totalPages
 					opt.currentPage = scope.totalPages
 				scope.$parent[scope.options.pagingOptions.callback] opt
