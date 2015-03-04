@@ -35,6 +35,7 @@
             if (!opt) {
               return;
             }
+            opt.currentPage = parseInt(opt.currentPage);
             scope.totalPages = Math.ceil(opt.totalItems / opt.pageSize) || 1;
             scope.totalPagesOoM = Math.floor(Math.log10(scope.totalPages) + 1 || 1);
             if (opt.currentPage > scope.totalPages) {
