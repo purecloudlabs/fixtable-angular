@@ -19,6 +19,10 @@
                 </tr>
             </tbody>
         </table>
+        <div
+        ng-if="loading"
+        ng-include="options.loadingTemplate || 'fixtable/templates/loading.html'">
+        </div>
     </div>
     <div
     class="fixtable-footer"
