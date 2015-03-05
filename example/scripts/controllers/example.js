@@ -1,5 +1,5 @@
 angular.module('fixtableExample').controller('ExampleCtrl', [
-  '$scope', function($scope) {
+  '$scope', '$timeout', function($scope, $timeout) {
 
     $scope.rawData = [
       {
@@ -185,9 +185,15 @@ angular.module('fixtableExample').controller('ExampleCtrl', [
     ];
 
     $scope.getPageData = function(opt) {
+      $scope.tableData = []
+      $scope.loadingData = true
       begin = opt.pageSize * (opt.currentPage - 1)
       end = begin + opt.pageSize
-      $scope.tableData = $scope.rawData.slice(begin, end);
+      
+      $timeout(function(){
+        $scope.loadingData = false
+        $scope.tableData = $scope.rawData.slice(begin, end);
+      }, 500);
     }
 
     $scope.tableOptions = {
@@ -211,6 +217,8 @@ angular.module('fixtableExample').controller('ExampleCtrl', [
       ],
       headerTemplate: null,
       footerTemplate: null,
+      loading: 'loadingData',
+      loadingTemplate: null,
       paging: true,
       pagingOptions: {
         callback: 'getPageData',
