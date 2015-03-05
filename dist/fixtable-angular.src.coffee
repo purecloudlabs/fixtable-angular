@@ -36,6 +36,11 @@ angular.module 'fixtable'
 				scope.$parent[scope.options.pagingOptions.callback] opt
 			, true
 
+			# watch loading status
+			if scope.options.loading
+				scope.$parent.$watch scope.options.loading, (newValue) ->
+					scope.loading = newValue
+
 			# provide methods to page forward/back in footer template
 			scope.nextPage = ->
 				scope.pagingOptions.currentPage += 1

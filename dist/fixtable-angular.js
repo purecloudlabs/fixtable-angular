@@ -43,6 +43,11 @@
             }
             return scope.$parent[scope.options.pagingOptions.callback](opt);
           }, true);
+          if (scope.options.loading) {
+            scope.$parent.$watch(scope.options.loading, function(newValue) {
+              return scope.loading = newValue;
+            });
+          }
           scope.nextPage = function() {
             return scope.pagingOptions.currentPage += 1;
           };
