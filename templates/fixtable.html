@@ -14,7 +14,10 @@
                 <tr ng-repeat="(rowIndex, row) in data">
                     <td
                     ng-repeat="(colIndex, col) in options.columns"
-                    ng-include="col.template || 'fixtable/templates/bodyCell.html'">
+                    ng-include="getCellTemplate()"
+                    ng-controller="cellCtrl"
+                    ng-class="{'fixtable-cell-editing': editing, 'fixtable-cell-editable': col.editable}"
+                    ng-click="beginEdit()">
                     </td>
                 </tr>
             </tbody>

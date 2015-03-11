@@ -6,8 +6,18 @@ angular.module('fixtable').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('fixtable/templates/editCell.html',
+    "<fixtable-input></fixtable-input>"
+  );
+
+
   $templateCache.put('fixtable/templates/fixtable.html',
-    "<div class=\"fixtable\"><div class=\"fixtable-header\"></div><div class=\"fixtable-inner\"><table ng-class=\"options.tableClass\"><thead><tr><th ng-repeat=\"(colIndex, col) in options.columns\"><div ng-include=\"options.headerTemplate || 'fixtable/templates/headerCell.html'\"></div></th></tr></thead><tbody><tr ng-repeat=\"(rowIndex, row) in data\"><td ng-repeat=\"(colIndex, col) in options.columns\" ng-include=\"col.template || 'fixtable/templates/bodyCell.html'\"></td></tr></tbody></table><div ng-if=\"loading\" ng-include=\"options.loadingTemplate || 'fixtable/templates/loading.html'\"></div></div><div class=\"fixtable-footer\" ng-show=\"options.paging\" ng-include=\"options.footerTemplate || 'fixtable/templates/footer.html'\" onload=\"pagingOptions = options.pagingOptions\"></div></div>"
+    "<div class=\"fixtable\"><div class=\"fixtable-header\"></div><div class=\"fixtable-inner\"><table ng-class=\"options.tableClass\"><thead><tr><th ng-repeat=\"(colIndex, col) in options.columns\"><div ng-include=\"options.headerTemplate || 'fixtable/templates/headerCell.html'\"></div></th></tr></thead><tbody><tr ng-repeat=\"(rowIndex, row) in data\"><td ng-repeat=\"(colIndex, col) in options.columns\" ng-include=\"getCellTemplate()\" ng-controller=\"cellCtrl\" ng-class=\"{'fixtable-cell-editing': editing, 'fixtable-cell-editable': col.editable}\" ng-click=\"beginEdit()\"></td></tr></tbody></table><div ng-if=\"loading\" ng-include=\"options.loadingTemplate || 'fixtable/templates/loading.html'\"></div></div><div class=\"fixtable-footer\" ng-show=\"options.paging\" ng-include=\"options.footerTemplate || 'fixtable/templates/footer.html'\" onload=\"pagingOptions = options.pagingOptions\"></div></div>"
+  );
+
+
+  $templateCache.put('fixtable/templates/fixtableInput.html',
+    "<input ng-blur=\"endEdit()\" ng-keypress=\"handleKeypress($event)\" ng-model=\"row[col.property]\">"
   );
 
 
