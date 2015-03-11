@@ -29,6 +29,17 @@ body {
 	background: #ddd;
 }
 
+/* style cells that are being edited */
+
+.fixtable-cell-editing {
+	padding: 0 !important;
+}
+
+.fixtable-cell-editing input {
+	padding: 6px;
+	font-style: italic;
+}
+
 /* kill double border between header & first row */
 
 .fixtable table tbody tr:first-of-type td {

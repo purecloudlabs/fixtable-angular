@@ -208,13 +208,15 @@ angular.module('fixtableExample').controller('ExampleCtrl', [
           property: 'film',
           label: 'Film',
           template: 'partials/filmCell.html',
-          width: '67%'
+          width: '67%',
+          editable: true
         }, {
           property: 'director',
           label: 'Director',
           width: '33%'
         }
       ],
+      editTemplate: null,
       headerTemplate: null,
       footerTemplate: null,
       loading: 'loadingData',
@@ -229,5 +231,9 @@ angular.module('fixtableExample').controller('ExampleCtrl', [
       }
     }
 
+    $scope.$on('fixtableEndEdit', function(event){
+      newValue = event.targetScope.row[event.targetScope.col.property];
+      console.log('Finished editing cell:', newValue);
+    });
   }
 ]);
