@@ -77,17 +77,22 @@
               return fixtable._setFooterHeight();
             });
           });
-          scope.$watch('options.pagingOptions', function(opt) {
-            if (!opt) {
+          scope.$watch('options.pagingOptions', function(newVal, oldVal) {
+            var pageChanged, pageSizeChanged;
+            if (!newVal) {
               return;
             }
-            opt.currentPage = parseInt(opt.currentPage);
-            scope.totalPages = Math.ceil(opt.totalItems / opt.pageSize) || 1;
+            newVal.currentPage = parseInt(newVal.currentPage);
+            scope.totalPages = Math.ceil(newVal.totalItems / newVal.pageSize) || 1;
             scope.totalPagesOoM = (scope.totalPages + "").length + 1;
-            if (opt.currentPage > scope.totalPages) {
-              opt.currentPage = scope.totalPages;
+            if (newVal.currentPage > scope.totalPages) {
+              newVal.currentPage = scope.totalPages;
             }
-            return scope.$parent[scope.options.pagingOptions.callback](opt);
+            pageChanged = newVal.currentPage !== oldVal.currentPage;
+            pageSizeChanged = newVal.pageSize !== oldVal.pageSize;
+            if (newVal === oldVal || pageChanged || pageSizeChanged) {
+              return scope.$parent[scope.options.pagingOptions.callback](newVal);
+            }
           }, true);
           if (scope.options.loading) {
             scope.$parent.$watch(scope.options.loading, function(newValue) {

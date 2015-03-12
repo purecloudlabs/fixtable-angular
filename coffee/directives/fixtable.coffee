@@ -25,14 +25,22 @@ angular.module 'fixtable'
 					fixtable._setFooterHeight()
 
 			# refresh when paging options change
-			scope.$watch 'options.pagingOptions', (opt) ->
-				return unless opt
-				opt.currentPage = parseInt opt.currentPage
-				scope.totalPages = Math.ceil(opt.totalItems / opt.pageSize) or 1
+			scope.$watch 'options.pagingOptions', (newVal, oldVal) ->
+				return unless newVal
+				newVal.currentPage = parseInt newVal.currentPage
+				scope.totalPages = Math.ceil(newVal.totalItems / newVal.pageSize) or 1
 				scope.totalPagesOoM = (scope.totalPages+"").length + 1
-				if opt.currentPage > scope.totalPages
-					opt.currentPage = scope.totalPages
-				scope.$parent[scope.options.pagingOptions.callback] opt
+
+				# don't allow currentPage to be set too high
+				if newVal.currentPage > scope.totalPages
+					newVal.currentPage = scope.totalPages
+
+				# run callback (on pagingOptions init or currentPage/pageSize change)
+				pageChanged = newVal.currentPage isnt oldVal.currentPage
+				pageSizeChanged = newVal.pageSize isnt oldVal.pageSize
+				if newVal is oldVal or pageChanged or pageSizeChanged
+					scope.$parent[scope.options.pagingOptions.callback] newVal
+
 			, true
 
 			# watch loading status
