@@ -21,7 +21,14 @@
     "node_modules",
     "bower_components",
     "test",
-    "tests"
+    "tests",
+    "coffee",
+    "grunt",
+    "templates",
+    "bower.json",
+    "Gruntfile.coffee",
+    "package.json",
+    "README.md"
   ],
   "dependencies": {
     "angular": "~1.2.18",
