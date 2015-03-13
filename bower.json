@@ -1,12 +1,12 @@
 {
   "name": "fixtable-angular",
-  "version": "0.0.1",
+  "version": "1.0.3",
   "homepage": "https://github.com/MyPureCloud/fixtable-angular",
   "authors": [
     "Interactive Intelligence"
   ],
   "description": "Angular wrapper for the Fixtable table library",
-  "main": "./dist/fixtable-angular.js",
+  "main": "./dist/fixtable-angular.min.js",
   "moduleType": [
     "globals"
   ],
@@ -31,9 +31,9 @@
     "README.md"
   ],
   "dependencies": {
-    "angular": "~1.2.18",
-    "jquery": "~2.1.3",
-    "fixtable": "*",
-    "bootstrap": "~3.3.2"
+    "angular": "^1.2.18",
+    "jquery": "^2.1.3",
+    "fixtable": "^1.0.2",
+    "bootstrap": "^3.3.2"
   }
 }

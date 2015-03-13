@@ -1,6 +1,7 @@
 angular.module('fixtableExample').controller('ExampleCtrl', [
-  '$scope', function($scope) {
-    $scope.data = [
+  '$scope', '$timeout', function($scope, $timeout) {
+
+    $scope.rawData = [
       {
         year: 2015,
         film: 'Birdman or (The Unexpected Virtue of Ignorance)',
@@ -130,26 +131,109 @@ angular.module('fixtableExample').controller('ExampleCtrl', [
         year: 1990,
         film: 'Driving Miss Daisy',
         director: 'Bruce Beresford'
+      },
+      {
+        year: 1989,
+        film: 'Rain Man',
+        director: 'Barry Levinson'
+      },
+      {
+        year: 1988,
+        film: 'The Last Emperor',
+        director: 'Bernardo Bertolucci'
+      },
+      {
+        year: 1987,
+        film: 'Platoon',
+        director: 'Oliver Stone'
+      },
+      {
+        year: 1986,
+        film: 'Out of Africa',
+        director: 'Sydney Pollack'
+      },
+      {
+        year: 1985,
+        film: 'Amadeus',
+        director: 'Miloš Forman'
+      },
+      {
+        year: 1984,
+        film: 'Terms of Endearment',
+        director: 'James L. Brooks'
+      },
+      {
+        year: 1983,
+        film: 'Gandhi',
+        director: 'Richard Attenborough'
+      },
+      {
+        year: 1982,
+        film: 'Chariots of Fire',
+        director: 'Hugh Hudson'
+      },
+      {
+        year: 1981,
+        film: 'Ordinary People',
+        director: 'Robert Redford'
+      },
+      {
+        year: 1980,
+        film: 'Kramer vs. Kramer',
+        director: 'Robert Benton'
       }
     ];
-    return $scope.tableOptions = {
-      data: 'data',
+
+    $scope.getPageData = function(opt) {
+      $scope.tableData = []
+      $scope.loadingData = true
+      begin = opt.pageSize * (opt.currentPage - 1)
+      end = begin + opt.pageSize
+      
+      $timeout(function(){
+        $scope.loadingData = false
+        $scope.tableData = $scope.rawData.slice(begin, end);
+      }, 500);
+    }
+
+    $scope.tableOptions = {
+      data: 'tableData',
       tableClass: 'table table-striped',
       columns: [
         {
           property: 'year',
-          label: 'YearYearYear YearYearYearYear YearYearYear',
-          width: 50
+          label: 'Year',
+          width: 75
         }, {
           property: 'film',
           label: 'Film',
-          width: 200
+          template: 'partials/filmCell.html',
+          width: '67%',
+          editable: true
         }, {
           property: 'director',
           label: 'Director',
-          width: 100
+          width: '33%'
         }
-      ]
-    };
+      ],
+      editTemplate: null,
+      headerTemplate: null,
+      footerTemplate: null,
+      loading: 'loadingData',
+      loadingTemplate: null,
+      paging: true,
+      pagingOptions: {
+        callback: 'getPageData',
+        currentPage: 1,
+        pageSize: 25,
+        pageSizeOptions: [10, 25, 50],
+        totalItems: 36
+      }
+    }
+
+    $scope.$on('fixtableEndEdit', function(event){
+      newValue = event.targetScope.row[event.targetScope.col.property];
+      console.log('Finished editing cell:', newValue);
+    });
   }
 ]);

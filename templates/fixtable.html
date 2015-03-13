@@ -4,18 +4,33 @@
         <table ng-class="options.tableClass">
             <thead>
                 <tr>
-                    <th ng-repeat="col in options.columns">
-                        <div>{{ col.label }}</div>
+                    <th ng-repeat="(colIndex, col) in options.columns">
+                        <div ng-include="options.headerTemplate || 'fixtable/templates/headerCell.html'">
+                        </div>
                     </th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="row in data">
-                    <td ng-repeat="col in options.columns">
-                        {{ row[col.property] }}
+                <tr ng-repeat="(rowIndex, row) in data">
+                    <td
+                    ng-repeat="(colIndex, col) in options.columns"
+                    ng-include="getCellTemplate()"
+                    ng-controller="cellCtrl"
+                    ng-class="{'fixtable-cell-editing': editing, 'fixtable-cell-editable': col.editable}"
+                    ng-click="beginEdit()">
                     </td>
                 </tr>
             </tbody>
         </table>
+        <div
+        ng-if="loading"
+        ng-include="options.loadingTemplate || 'fixtable/templates/loading.html'">
+        </div>
+    </div>
+    <div
+    class="fixtable-footer"
+    ng-show="options.paging"
+    ng-include="options.footerTemplate || 'fixtable/templates/footer.html'"
+    onload="pagingOptions = options.pagingOptions">
     </div>
 </div>

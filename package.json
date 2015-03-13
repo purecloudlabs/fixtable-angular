@@ -1,8 +1,8 @@
 {
   "name": "fixtable-angular",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Angular wrapper for the Fixtable table library",
-  "main": "dist/fixtable-angular.js",
+  "main": "dist/fixtable-angular.min.js",
   "scripts": {
     "test": "grunt test"
   },
