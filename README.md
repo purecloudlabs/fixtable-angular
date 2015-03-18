@@ -277,11 +277,10 @@ We welcome contributions to this project. Feel free to fork or submit pull reque
 
 ## Authors
 
-Brian Herold ([bmherold](https://github.com/bmherold))
-Michael McAuley ([michaelmcauley](https://github.com/michaelmcauley))
-Ryan Curtis ([rbrcurtis](https://github.com/rbrcurtis))
-Trezy ([trezy](https://github.com/trezy))
-
+* Brian Herold ([bmherold](https://github.com/bmherold))
+* Michael McAuley ([michaelmcauley](https://github.com/michaelmcauley))
+* Ryan Curtis ([rbrcurtis](https://github.com/rbrcurtis))
+* Trezy ([trezy](https://github.com/trezy))
 
 [version-shield]: http://img.shields.io/bower/v/fixtable-angular.svg?style=flat
 [bower-url]: http://bower.io/search/?q=fixtable-angular
