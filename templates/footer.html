@@ -21,11 +21,15 @@ ng-click="nextPage()">
 
 of {{ totalPages }}
 
-&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+<span ng-if="pagingOptions.pageSizeOptions.length > 1">
 
-<select
-ng-model="pagingOptions.pageSize"
-ng-options="pageSize for pageSize in pagingOptions.pageSizeOptions">
-</select>
+	&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
 
-&nbsp;items per page
+	<select
+	ng-model="pagingOptions.pageSize"
+	ng-options="pageSize for pageSize in pagingOptions.pageSizeOptions">
+	</select>
+
+	&nbsp;items per page
+
+</span>

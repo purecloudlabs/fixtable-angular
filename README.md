@@ -158,7 +158,7 @@ $scope.getPageData = function (pagingOptions) {
 }
 ```
 
-In the `pagingOptions` object, you should specify the initial `pageSize` as well as an array of all available `pageSizeOptions` (which will be presented to the user as a drop-down list).
+In the `pagingOptions` object, you should specify the initial `pageSize` as well as an array of all available `pageSizeOptions` (which will be presented to the user as a drop-down list). You may omit `pageSizeOptions` if all pages should be a given size.
 
 The `totalItems` value will be used along with the page size to determine the number of available pages; if the total is unknown, you may omit this value (or set to to `0`) and then update it once the total is known.
 
