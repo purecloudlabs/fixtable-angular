@@ -52,7 +52,7 @@
       return {
         link: function(scope, element, attrs) {
           var fixtable, key, value;
-          fixtable = new Fixtable(element);
+          fixtable = new Fixtable(element[0]);
           for (key in fixtableDefaultOptions) {
             value = fixtableDefaultOptions[key];
             if (!Object.prototype.hasOwnProperty.call(scope.options, key)) {
@@ -60,7 +60,7 @@
             }
           }
           $timeout(function() {
-            return fixtable._circulateStyles();
+            return fixtable.moveTableStyles();
           });
           scope.$parent.$watchCollection(scope.options.data, function(newData) {
             scope.data = newData;
@@ -70,11 +70,10 @@
               for (i = j = 0, len = ref.length; j < len; i = ++j) {
                 col = ref[i];
                 if (col.width) {
-                  fixtable._setColumnWidth(i + 1, col.width);
+                  fixtable.setColumnWidth(i + 1, col.width);
                 }
               }
-              fixtable._setHeaderHeight();
-              return fixtable._setFooterHeight();
+              return fixtable.setDimensions();
             });
           });
           scope.$watch('options.pagingOptions', function(newVal, oldVal) {

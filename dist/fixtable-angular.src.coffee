@@ -46,7 +46,7 @@ angular.module 'fixtable'
 	($timeout, fixtableDefaultOptions) ->
 		link: (scope, element, attrs) ->
 
-			fixtable = new Fixtable element
+			fixtable = new Fixtable element[0]
 
 			# use default options to fill in missing values
 			for key, value of fixtableDefaultOptions
@@ -54,16 +54,15 @@ angular.module 'fixtable'
 					scope.options[key] = value
 
 			# circulate styles on table elements in next digest cycle
-			$timeout -> fixtable._circulateStyles()
+			$timeout -> fixtable.moveTableStyles()
 
 			# update table data & calculated styles when source data changes
 			scope.$parent.$watchCollection scope.options.data, (newData) ->
 				scope.data = newData
 				$timeout ->
 					for col, i in scope.options.columns
-						if col.width then fixtable._setColumnWidth i+1, col.width
-					fixtable._setHeaderHeight()
-					fixtable._setFooterHeight()
+						if col.width then fixtable.setColumnWidth i+1, col.width
+					fixtable.setDimensions()
 
 			# refresh when paging options change
 			scope.$watch 'options.pagingOptions', (newVal, oldVal) ->
