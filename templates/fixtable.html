@@ -1,11 +1,21 @@
 <div class="fixtable">
     <div class="fixtable-header"></div>
+    <div class="fixtable-filters" ng-show="showFilters">
+        <button type="button">Apply</button>
+    </div>
     <div class="fixtable-inner">
         <table ng-class="options.tableClass">
             <thead>
-                <tr>
+                <tr class="fixtable-column-headers">
                     <th ng-repeat="(colIndex, col) in options.columns">
                         <div ng-include="options.headerTemplate || 'fixtable/templates/headerCell.html'">
+                        </div>
+                    </th>
+                </tr>
+                <tr class="fixtable-column-filters">
+                    <th ng-repeat="(colIndex, col) in options.columns">
+                        <div ng-if="col.filter">
+                            FILTER HERE
                         </div>
                     </th>
                 </tr>

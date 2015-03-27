@@ -56,6 +56,13 @@ angular.module 'fixtable'
 			# provide a hook to parent scope
 			scope.parent = scope.$parent
 
+			# check whether any filter row needs to be displayed
+			scope.showFilters = false
+			for column in scope.options.columns
+				if column.filter
+					scope.showFilters = true
+					break
+
 		replace: true
 		restrict: 'E'
 		scope:
