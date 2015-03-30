@@ -8,7 +8,7 @@
             <thead>
                 <tr class="fixtable-column-headers">
                     <th ng-repeat="(colIndex, col) in options.columns">
-                        <div ng-include="options.headerTemplate || 'fixtable/templates/headerCell.html'">
+                        <div ng-include="options.headerTemplate">
                         </div>
                     </th>
                 </tr>
@@ -34,13 +34,13 @@
         </table>
         <div
         ng-if="loading"
-        ng-include="options.loadingTemplate || 'fixtable/templates/loading.html'">
+        ng-include="options.loadingTemplate">
         </div>
     </div>
     <div
     class="fixtable-footer"
     ng-show="options.paging"
-    ng-include="options.footerTemplate || 'fixtable/templates/footer.html'"
+    ng-include="options.footerTemplate"
     onload="pagingOptions = options.pagingOptions">
     </div>
 </div>
