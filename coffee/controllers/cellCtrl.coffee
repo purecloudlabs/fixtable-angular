@@ -7,8 +7,8 @@ angular.module 'fixtable'
 		$scope.editing = false
 
 		$scope.getCellTemplate = ->
-			normalTemplate = $scope.col.template or 'fixtable/templates/bodyCell.html'
-			editTemplate = $scope.col.editTemplate or $scope.options.editTemplate or 'fixtable/templates/editCell.html'
+			normalTemplate = $scope.col.template or $scope.options.cellTemplate
+			editTemplate = $scope.col.editTemplate or $scope.options.editTemplate
 			if $scope.editing then editTemplate else normalTemplate
 
 		$scope.beginEdit = ->

@@ -2,6 +2,11 @@ angular.module 'fixtable'
 .provider 'fixtableDefaultOptions', ->
 
 	@defaultOptions =
+		cellTemplate: 'fixtable/templates/bodyCell.html'
+		editTemplate: 'fixtable/templates/editCell.html'
+		footerTemplate: 'fixtable/templates/footer.html'
+		headerTemplate: 'fixtable/templates/headerCell.html'
+		loadingTemplate: 'fixtable/templates/loading.html'
 		realtimeFiltering: true
 
 	@$get = -> @defaultOptions
