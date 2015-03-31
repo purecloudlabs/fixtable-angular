@@ -14,7 +14,7 @@ angular.module 'fixtable'
 
 	fixtableFilterTypesProvider.add 'select',
 		defaultValues:
-			selected: ''
+			selected: null
 		templateUrl: 'fixtable/templates/columnFilters/select.html'
 		filterFn: (testValue, filterValues) ->
 			return true unless filterValues.selected

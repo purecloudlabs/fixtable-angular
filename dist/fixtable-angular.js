@@ -16,7 +16,7 @@
       });
       return fixtableFilterTypesProvider.add('select', {
         defaultValues: {
-          selected: ''
+          selected: null
         },
         templateUrl: 'fixtable/templates/columnFilters/select.html',
         filterFn: function(testValue, filterValues) {
