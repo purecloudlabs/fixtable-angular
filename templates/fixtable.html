@@ -12,7 +12,7 @@
         <table ng-class="options.tableClass">
             <thead>
                 <tr class="fixtable-column-headers">
-                    <th ng-repeat="(colIndex, col) in options.columns">
+                    <th ng-repeat="(colIndex, col) in options.columns" class="{{ col.headerClass }}">
                         <div ng-include="options.headerTemplate">
                         </div>
                     </th>
@@ -30,6 +30,7 @@
             <tbody>
                 <tr ng-repeat="(rowIndex, row) in data">
                     <td
+                    class="{{ col.cellClass }}"
                     ng-repeat="(colIndex, col) in options.columns"
                     ng-include="getCellTemplate()"
                     ng-controller="cellCtrl"
