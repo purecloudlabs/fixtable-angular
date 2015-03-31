@@ -1,13 +1,29 @@
 (function() {
   angular.module('fixtable', []);
 
+  angular.module('fixtable').config([
+    'fixtableFilterTypesProvider', function(fixtableFilterTypesProvider) {
+      return fixtableFilterTypesProvider.add('search', {
+        defaultValues: {
+          query: ''
+        },
+        templateUrl: 'fixtable/templates/columnFilters/search.html',
+        filterFn: function(testValue, filterValues) {
+          var pattern;
+          pattern = new RegExp(filterValues.query, 'i');
+          return pattern.test(testValue);
+        }
+      });
+    }
+  ]);
+
   angular.module('fixtable').controller('cellCtrl', [
     '$scope', '$rootScope', function($scope, $rootScope) {
       $scope.editing = false;
       $scope.getCellTemplate = function() {
         var editTemplate, normalTemplate;
-        normalTemplate = $scope.col.template || 'fixtable/templates/bodyCell.html';
-        editTemplate = $scope.col.editTemplate || $scope.options.editTemplate || 'fixtable/templates/editCell.html';
+        normalTemplate = $scope.col.template || $scope.options.cellTemplate;
+        editTemplate = $scope.col.editTemplate || $scope.options.editTemplate;
         if ($scope.editing) {
           return editTemplate;
         } else {
@@ -48,10 +64,10 @@
   ]);
 
   angular.module('fixtable').directive('fixtable', [
-    '$timeout', 'fixtableDefaultOptions', function($timeout, fixtableDefaultOptions) {
+    '$timeout', 'fixtableDefaultOptions', 'fixtableFilterTypes', function($timeout, fixtableDefaultOptions, fixtableFilterTypes) {
       return {
         link: function(scope, element, attrs) {
-          var fixtable, key, value;
+          var base, column, defaultValues, fixtable, getCurrentFilterValues, index, j, key, len, ref, value, valuesObj;
           fixtable = new Fixtable(element[0]);
           for (key in fixtableDefaultOptions) {
             value = fixtableDefaultOptions[key];
@@ -104,7 +120,87 @@
           scope.prevPage = function() {
             return scope.pagingOptions.currentPage -= 1;
           };
-          return scope.parent = scope.$parent;
+          scope.parent = scope.$parent;
+          scope.columnFilters = [];
+          ref = scope.options.columns;
+          for (index = j = 0, len = ref.length; j < len; index = ++j) {
+            column = ref[index];
+            if (column.filter) {
+              defaultValues = fixtableFilterTypes[column.filter.type].defaultValues;
+              if ((base = column.filter).values == null) {
+                base.values = angular.copy(defaultValues) || {};
+              }
+              scope.columnFilters.push({
+                type: column.filter.type,
+                property: column.property,
+                values: column.filter.values
+              });
+              valuesObj = 'options.columns[' + index + '].filter.values';
+              scope.$watch(valuesObj, function(newVal, oldVal) {
+                var currentFilters;
+                if (newVal === oldVal) {
+                  return;
+                }
+                currentFilters = getCurrentFilterValues();
+                if (angular.equals(currentFilters, scope.appliedFilters)) {
+                  return scope.filtersDirty = false;
+                } else {
+                  scope.filtersDirty = true;
+                  if (scope.options.realtimeFiltering) {
+                    return scope.applyFilters();
+                  }
+                }
+              }, true);
+            }
+          }
+          if (!scope.options.realtimeFiltering) {
+            scope.$watch('filtersDirty', function() {
+              return $timeout(function() {
+                return fixtable.setDimensions();
+              });
+            });
+          }
+          scope.applyFilters = function() {
+            var filter, filterFn, i, k, l, len1, len2, m, ref1, ref2, ref3, results;
+            if (scope.options.paging) {
+              console.log('run callback here');
+            } else {
+              scope.data = angular.copy(scope.$parent[scope.options.data]);
+              ref2 = (function() {
+                results = [];
+                for (var l = 0, ref1 = scope.data.length - 1; 0 <= ref1 ? l <= ref1 : l >= ref1; 0 <= ref1 ? l++ : l--){ results.push(l); }
+                return results;
+              }).apply(this).reverse();
+              for (k = 0, len1 = ref2.length; k < len1; k++) {
+                i = ref2[k];
+                ref3 = scope.columnFilters;
+                for (m = 0, len2 = ref3.length; m < len2; m++) {
+                  filter = ref3[m];
+                  filterFn = fixtableFilterTypes[filter.type].filterFn;
+                  if (!filterFn(scope.data[i][filter.property], filter.values)) {
+                    scope.data.splice(i, 1);
+                    break;
+                  }
+                }
+              }
+            }
+            scope.appliedFilters = getCurrentFilterValues();
+            return scope.filtersDirty = false;
+          };
+          getCurrentFilterValues = function() {
+            var filter, k, len1, obj, ref1;
+            obj = {};
+            ref1 = scope.columnFilters;
+            for (k = 0, len1 = ref1.length; k < len1; k++) {
+              filter = ref1[k];
+              obj[filter.property] = angular.copy(filter.values);
+            }
+            return obj;
+          };
+          scope.appliedFilters = getCurrentFilterValues();
+          return scope.getFilterTemplate = function(filterType) {
+            return fixtableFilterTypes[filterType].templateUrl;
+          };
         },
         replace: true,
         restrict: 'E',
@@ -130,12 +226,45 @@
   ]);
 
   angular.module('fixtable').provider('fixtableDefaultOptions', function() {
-    this.defaultOptions = {};
+    this.defaultOptions = {
+      cellTemplate: 'fixtable/templates/bodyCell.html',
+      editTemplate: 'fixtable/templates/editCell.html',
+      footerTemplate: 'fixtable/templates/footer.html',
+      headerTemplate: 'fixtable/templates/headerCell.html',
+      loadingTemplate: 'fixtable/templates/loading.html',
+      realtimeFiltering: true
+    };
     this.$get = function() {
       return this.defaultOptions;
     };
     this.setDefaultOptions = function(options) {
-      return this.defaultOptions = options;
+      var option, results, value;
+      results = [];
+      for (option in options) {
+        value = options[option];
+        results.push(this.defaultOptions[option] = value);
+      }
+      return results;
+    };
+    return null;
+  });
+
+  angular.module('fixtable').provider('fixtableFilterTypes', function() {
+    this.filterTypes = {};
+    this.$get = function() {
+      return this.filterTypes;
+    };
+    this.add = function(type, definition) {
+      return this.filterTypes[type] = definition;
+    };
+    this.update = function(type, properties) {
+      var property, results, value;
+      results = [];
+      for (property in properties) {
+        value = properties[property];
+        results.push(this.filterTypes[type][property] = value);
+      }
+      return results;
     };
     return null;
   });
