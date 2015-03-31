@@ -1,5 +1,5 @@
 <select
 ng-model="values.selected"
 ng-options="opt.value as opt.label for opt in options.selectOptions">
-	<option value="">All</option>
+	<option value="">{{ options.nullOptionLabel || 'All' }}</option>
 </select>

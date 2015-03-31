@@ -12,7 +12,7 @@ angular.module('fixtable').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('fixtable/templates/columnFilters/select.html',
-    "<select ng-model=\"values.selected\" ng-options=\"opt.value as opt.label for opt in options.selectOptions\"><option value=\"\">All</option></select>"
+    "<select ng-model=\"values.selected\" ng-options=\"opt.value as opt.label for opt in options.selectOptions\"><option value=\"\">{{ options.nullOptionLabel || 'All' }}</option></select>"
   );
 
 
