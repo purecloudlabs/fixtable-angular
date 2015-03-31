@@ -22,7 +22,7 @@
                         <div
                         ng-if="col.filter"
                         ng-include="getFilterTemplate(col.filter.type)"
-                        ng-init="values=col.filter.values">
+                        ng-init="values=col.filter.values;options=col.filter.options">
                         </div>
                     </th>
                 </tr>

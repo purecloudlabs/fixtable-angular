@@ -3,7 +3,7 @@
 
   angular.module('fixtable').config([
     'fixtableFilterTypesProvider', function(fixtableFilterTypesProvider) {
-      return fixtableFilterTypesProvider.add('search', {
+      fixtableFilterTypesProvider.add('search', {
         defaultValues: {
           query: ''
         },
@@ -12,6 +12,18 @@
           var pattern;
           pattern = new RegExp(filterValues.query, 'i');
           return pattern.test(testValue);
+        }
+      });
+      return fixtableFilterTypesProvider.add('select', {
+        defaultValues: {
+          selected: ''
+        },
+        templateUrl: 'fixtable/templates/columnFilters/select.html',
+        filterFn: function(testValue, filterValues) {
+          if (!filterValues.selected) {
+            return true;
+          }
+          return testValue === filterValues.selected;
         }
       });
     }

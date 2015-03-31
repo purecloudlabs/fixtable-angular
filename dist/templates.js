@@ -11,13 +11,18 @@ angular.module('fixtable').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('fixtable/templates/columnFilters/select.html',
+    "<select ng-model=\"values.selected\" ng-options=\"opt.value as opt.label for opt in options.selectOptions\"><option value=\"\">All</option></select>"
+  );
+
+
   $templateCache.put('fixtable/templates/editCell.html',
     "<fixtable-input></fixtable-input>"
   );
 
 
   $templateCache.put('fixtable/templates/fixtable.html',
-    "<div class=\"fixtable\"><div class=\"fixtable-header\"></div><div class=\"fixtable-filters\" ng-show=\"columnFilters.length\"><button type=\"button\" ng-show=\"!options.realtimeFiltering && filtersDirty\" ng-click=\"applyFilters()\">Apply</button></div><div class=\"fixtable-inner\"><table ng-class=\"options.tableClass\"><thead><tr class=\"fixtable-column-headers\"><th ng-repeat=\"(colIndex, col) in options.columns\"><div ng-include=\"options.headerTemplate\"></div></th></tr><tr class=\"fixtable-column-filters\"><th ng-repeat=\"(colIndex, col) in options.columns\"><div ng-if=\"col.filter\" ng-include=\"getFilterTemplate(col.filter.type)\" ng-init=\"values=col.filter.values\"></div></th></tr></thead><tbody><tr ng-repeat=\"(rowIndex, row) in data\"><td ng-repeat=\"(colIndex, col) in options.columns\" ng-include=\"getCellTemplate()\" ng-controller=\"cellCtrl\" ng-class=\"{'fixtable-cell-editing': editing, 'fixtable-cell-editable': col.editable}\" ng-click=\"beginEdit()\"></td></tr></tbody></table><div ng-if=\"loading\" ng-include=\"options.loadingTemplate\"></div></div><div class=\"fixtable-footer\" ng-show=\"options.paging\" ng-include=\"options.footerTemplate\" onload=\"pagingOptions = options.pagingOptions\"></div></div>"
+    "<div class=\"fixtable\"><div class=\"fixtable-header\"></div><div class=\"fixtable-filters\" ng-show=\"columnFilters.length\"><button type=\"button\" ng-show=\"!options.realtimeFiltering && filtersDirty\" ng-click=\"applyFilters()\">Apply</button></div><div class=\"fixtable-inner\"><table ng-class=\"options.tableClass\"><thead><tr class=\"fixtable-column-headers\"><th ng-repeat=\"(colIndex, col) in options.columns\"><div ng-include=\"options.headerTemplate\"></div></th></tr><tr class=\"fixtable-column-filters\"><th ng-repeat=\"(colIndex, col) in options.columns\"><div ng-if=\"col.filter\" ng-include=\"getFilterTemplate(col.filter.type)\" ng-init=\"values=col.filter.values;options=col.filter.options\"></div></th></tr></thead><tbody><tr ng-repeat=\"(rowIndex, row) in data\"><td ng-repeat=\"(colIndex, col) in options.columns\" ng-include=\"getCellTemplate()\" ng-controller=\"cellCtrl\" ng-class=\"{'fixtable-cell-editing': editing, 'fixtable-cell-editable': col.editable}\" ng-click=\"beginEdit()\"></td></tr></tbody></table><div ng-if=\"loading\" ng-include=\"options.loadingTemplate\"></div></div><div class=\"fixtable-footer\" ng-show=\"options.paging\" ng-include=\"options.footerTemplate\" onload=\"pagingOptions = options.pagingOptions\"></div></div>"
   );
 
 
