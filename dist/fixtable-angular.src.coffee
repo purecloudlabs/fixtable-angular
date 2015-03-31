@@ -101,7 +101,7 @@ angular.module 'fixtable'
 				pageChanged = newVal.currentPage isnt oldVal.currentPage
 				pageSizeChanged = newVal.pageSize isnt oldVal.pageSize
 				if newVal is oldVal or pageChanged or pageSizeChanged
-					scope.$parent[scope.options.pagingOptions.callback] newVal
+					getPageData()
 
 			, true
 
@@ -109,6 +109,11 @@ angular.module 'fixtable'
 			if scope.options.loading
 				scope.$parent.$watch scope.options.loading, (newValue) ->
 					scope.loading = newValue
+
+			# get new page data
+			getPageData = ->
+				cb = scope.$parent[scope.options.pagingOptions.callback]
+				cb scope.pagingOptions, null, scope.appliedFilters
 
 			# provide methods to page forward/back in footer template
 			scope.nextPage = ->
@@ -155,9 +160,11 @@ angular.module 'fixtable'
 			# apply updated filter values
 			scope.applyFilters = ->
 
+				scope.appliedFilters = getCurrentFilterValues()
+				scope.filtersDirty = false
+
 				# run callback method to filter paged data
-				if scope.options.paging
-					console.log 'run callback here'
+				if scope.options.paging then getPageData()
 
 				# or filter data here if we already have the whole dataset
 				else
@@ -168,9 +175,6 @@ angular.module 'fixtable'
 							unless filterFn scope.data[i][filter.property], filter.values
 								scope.data.splice i, 1
 								break
-
-				scope.appliedFilters = getCurrentFilterValues()
-				scope.filtersDirty = false
 
 			getCurrentFilterValues = ->
 				obj = {}
