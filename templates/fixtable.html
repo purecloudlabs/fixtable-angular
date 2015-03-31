@@ -1,7 +1,12 @@
 <div class="fixtable">
     <div class="fixtable-header"></div>
-    <div class="fixtable-filters" ng-show="showFilters">
-        <button type="button" ng-show="!options.realtimeFiltering">Apply</button>
+    <div class="fixtable-filters" ng-show="columnFilters.length">
+        <button
+        type="button"
+        ng-show="!options.realtimeFiltering && filtersDirty"
+        ng-click="applyFilters()">
+            Apply
+        </button>
     </div>
     <div class="fixtable-inner">
         <table ng-class="options.tableClass">
@@ -14,8 +19,10 @@
                 </tr>
                 <tr class="fixtable-column-filters">
                     <th ng-repeat="(colIndex, col) in options.columns">
-                        <div ng-if="col.filter">
-                            FILTER HERE
+                        <div
+                        ng-if="col.filter"
+                        ng-include="getFilterTemplate(col.filter.type)"
+                        ng-init="values=col.filter.values">
                         </div>
                     </th>
                 </tr>

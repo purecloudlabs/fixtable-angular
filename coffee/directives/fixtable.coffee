@@ -2,7 +2,8 @@ angular.module 'fixtable'
 .directive 'fixtable', [
 	'$timeout'
 	'fixtableDefaultOptions'
-	($timeout, fixtableDefaultOptions) ->
+	'fixtableFilterTypes'
+	($timeout, fixtableDefaultOptions, fixtableFilterTypes) ->
 		link: (scope, element, attrs) ->
 
 			fixtable = new Fixtable element[0]
@@ -56,12 +57,71 @@ angular.module 'fixtable'
 			# provide a hook to parent scope
 			scope.parent = scope.$parent
 
-			# check whether any filter row needs to be displayed
-			scope.showFilters = false
-			for column in scope.options.columns
+			# keep track of column filters & watch for value changes
+			scope.columnFilters = []
+			for column, index in scope.options.columns
 				if column.filter
-					scope.showFilters = true
-					break
+
+					# ensure values property exists
+					defaultValues = fixtableFilterTypes[column.filter.type].defaultValues
+					column.filter.values ?= angular.copy(defaultValues) or {}
+
+					# track this filter object
+					scope.columnFilters.push
+						type: column.filter.type
+						property: column.property
+						values: column.filter.values
+
+					# watch for changes to the values object
+					valuesObj = 'options.columns[' + index + '].filter.values'
+					scope.$watch valuesObj, (newVal, oldVal) ->
+						return if newVal is oldVal
+						currentFilters = getCurrentFilterValues()
+						if angular.equals currentFilters, scope.appliedFilters
+							scope.filtersDirty = false
+						else
+							scope.filtersDirty = true
+							if scope.options.realtimeFiltering
+								scope.applyFilters()
+					, true
+
+			# re-calculate dimensions when apply button visibility changes
+			unless scope.options.realtimeFiltering
+				scope.$watch 'filtersDirty', ->
+					$timeout -> fixtable.setDimensions() # next digest cycle
+
+			# apply updated filter values
+			scope.applyFilters = ->
+
+				# run callback method to filter paged data
+				if scope.options.paging
+					console.log 'run callback here'
+
+				# or filter data here if we already have the whole dataset
+				else
+					scope.data = angular.copy scope.$parent[scope.options.data]
+					for i in [0..scope.data.length-1].reverse()
+						for filter in scope.columnFilters
+							filterFn = fixtableFilterTypes[filter.type].filterFn
+							unless filterFn scope.data[i][filter.property], filter.values
+								scope.data.splice i, 1
+								break
+
+				scope.appliedFilters = getCurrentFilterValues()
+				scope.filtersDirty = false
+
+			getCurrentFilterValues = ->
+				obj = {}
+				for filter in scope.columnFilters
+					obj[filter.property] = angular.copy filter.values
+				obj
+
+			# set appliedFilters to initial filter values
+			scope.appliedFilters = getCurrentFilterValues()
+
+			# get templateUrl for a given filter type
+			scope.getFilterTemplate = (filterType) ->
+				fixtableFilterTypes[filterType].templateUrl
 
 		replace: true
 		restrict: 'E'
