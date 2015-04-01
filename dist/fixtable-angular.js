@@ -101,7 +101,8 @@
                   fixtable.setColumnWidth(i + 1, col.width);
                 }
               }
-              return fixtable.setDimensions();
+              fixtable.setDimensions();
+              return fixtable.scrollTop();
             });
           });
           scope.$watch('options.pagingOptions', function(newVal, oldVal) {
@@ -129,7 +130,7 @@
           getPageData = function() {
             var cb;
             cb = scope.$parent[scope.options.pagingOptions.callback];
-            return cb(scope.pagingOptions, null, scope.appliedFilters);
+            return cb(scope.options.pagingOptions, null, scope.appliedFilters);
           };
           scope.nextPage = function() {
             return scope.pagingOptions.currentPage += 1;

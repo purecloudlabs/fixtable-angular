@@ -85,6 +85,7 @@ angular.module 'fixtable'
 					for col, i in scope.options.columns
 						if col.width then fixtable.setColumnWidth i+1, col.width
 					fixtable.setDimensions()
+					fixtable.scrollTop()
 
 			# refresh when paging options change
 			scope.$watch 'options.pagingOptions', (newVal, oldVal) ->
@@ -113,7 +114,7 @@ angular.module 'fixtable'
 			# get new page data
 			getPageData = ->
 				cb = scope.$parent[scope.options.pagingOptions.callback]
-				cb scope.pagingOptions, null, scope.appliedFilters
+				cb scope.options.pagingOptions, null, scope.appliedFilters
 
 			# provide methods to page forward/back in footer template
 			scope.nextPage = ->
