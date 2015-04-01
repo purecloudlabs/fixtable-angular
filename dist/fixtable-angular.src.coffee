@@ -180,7 +180,9 @@ angular.module 'fixtable'
 			getCurrentFilterValues = ->
 				obj = {}
 				for filter in scope.columnFilters
-					obj[filter.property] = angular.copy filter.values
+					obj[filter.property] =
+						type: filter.type
+						values: angular.copy filter.values
 				obj
 
 			# set appliedFilters to initial filter values

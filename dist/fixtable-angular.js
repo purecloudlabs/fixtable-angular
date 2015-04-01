@@ -220,7 +220,10 @@
             ref1 = scope.columnFilters;
             for (k = 0, len1 = ref1.length; k < len1; k++) {
               filter = ref1[k];
-              obj[filter.property] = angular.copy(filter.values);
+              obj[filter.property] = {
+                type: filter.type,
+                values: angular.copy(filter.values)
+              };
             }
             return obj;
           };
