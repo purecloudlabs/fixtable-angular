@@ -52,7 +52,7 @@ angular.module 'fixtable'
 			# get new page data
 			getPageData = ->
 				cb = scope.$parent[scope.options.pagingOptions.callback]
-				cb scope.pagingOptions, null, scope.appliedFilters
+				cb scope.options.pagingOptions, null, scope.appliedFilters
 
 			# provide methods to page forward/back in footer template
 			scope.nextPage = ->
