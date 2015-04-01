@@ -23,6 +23,7 @@ angular.module 'fixtable'
 					for col, i in scope.options.columns
 						if col.width then fixtable.setColumnWidth i+1, col.width
 					fixtable.setDimensions()
+					fixtable.scrollTop()
 
 			# refresh when paging options change
 			scope.$watch 'options.pagingOptions', (newVal, oldVal) ->
