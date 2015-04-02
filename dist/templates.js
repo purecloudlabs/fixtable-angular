@@ -1,6 +1,11 @@
 angular.module('fixtable').run(['$templateCache', function($templateCache) {
   'use strict';
 
+  $templateCache.put('fixtable/templates/applyFilters.html',
+    "<button type=\"button\" ng-click=\"applyFilters()\">Apply</button>"
+  );
+
+
   $templateCache.put('fixtable/templates/bodyCell.html',
     "{{ row[col.property] }}"
   );
@@ -22,7 +27,7 @@ angular.module('fixtable').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('fixtable/templates/fixtable.html',
-    "<div class=\"fixtable\"><div class=\"fixtable-header\"></div><div class=\"fixtable-filters\" ng-show=\"columnFilters.length\"><button type=\"button\" ng-show=\"!options.realtimeFiltering && filtersDirty\" ng-click=\"applyFilters()\">Apply</button></div><div class=\"fixtable-inner\"><table ng-class=\"options.tableClass\"><thead><tr class=\"fixtable-column-headers\"><th ng-repeat=\"(colIndex, col) in options.columns\" class=\"{{ col.headerClass }}\"><div ng-include=\"options.headerTemplate\"></div></th></tr><tr class=\"fixtable-column-filters\"><th ng-repeat=\"(colIndex, col) in options.columns\"><div ng-if=\"col.filter\" ng-include=\"getFilterTemplate(col.filter.type)\" ng-init=\"values=col.filter.values;options=col.filter.options\"></div></th></tr></thead><tbody><tr ng-repeat=\"(rowIndex, row) in data\"><td class=\"{{ col.cellClass }}\" ng-repeat=\"(colIndex, col) in options.columns\" ng-include=\"getCellTemplate()\" ng-controller=\"cellCtrl\" ng-class=\"{'fixtable-cell-editing': editing, 'fixtable-cell-editable': col.editable}\" ng-click=\"beginEdit()\"></td></tr></tbody></table><div ng-if=\"loading\" ng-include=\"options.loadingTemplate\"></div></div><div class=\"fixtable-footer\" ng-show=\"options.paging\" ng-include=\"options.footerTemplate\" onload=\"pagingOptions = options.pagingOptions\"></div></div>"
+    "<div class=\"fixtable\"><div class=\"fixtable-header\"></div><div class=\"fixtable-filters\" ng-show=\"columnFilters.length\"><div ng-show=\"!options.realtimeFiltering && filtersDirty\" ng-include=\"options.applyFiltersTemplate\"></div></div><div class=\"fixtable-inner\"><table ng-class=\"options.tableClass\"><thead><tr class=\"fixtable-column-headers\"><th ng-repeat=\"(colIndex, col) in options.columns\" class=\"{{ col.headerClass }}\"><div ng-include=\"options.headerTemplate\"></div></th></tr><tr class=\"fixtable-column-filters\"><th ng-repeat=\"(colIndex, col) in options.columns\"><div ng-if=\"col.filter\" ng-include=\"getFilterTemplate(col.filter.type)\" ng-init=\"values=col.filter.values;options=col.filter.options\"></div></th></tr></thead><tbody><tr ng-repeat=\"(rowIndex, row) in data\"><td class=\"{{ col.cellClass }}\" ng-repeat=\"(colIndex, col) in options.columns\" ng-include=\"getCellTemplate()\" ng-controller=\"cellCtrl\" ng-class=\"{'fixtable-cell-editing': editing, 'fixtable-cell-editable': col.editable}\" ng-click=\"beginEdit()\"></td></tr></tbody></table><div ng-if=\"loading\" ng-include=\"options.loadingTemplate\"></div></div><div class=\"fixtable-footer\" ng-show=\"options.paging\" ng-include=\"options.footerTemplate\" onload=\"pagingOptions = options.pagingOptions\"></div></div>"
   );
 
 

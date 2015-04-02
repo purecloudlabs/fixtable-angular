@@ -2,6 +2,7 @@ angular.module 'fixtable'
 .provider 'fixtableDefaultOptions', ->
 
 	@defaultOptions =
+		applyFiltersTemplate: 'fixtable/templates/applyFilters.html'
 		cellTemplate: 'fixtable/templates/bodyCell.html'
 		editTemplate: 'fixtable/templates/editCell.html'
 		footerTemplate: 'fixtable/templates/footer.html'

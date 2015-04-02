@@ -1,12 +1,10 @@
 <div class="fixtable">
     <div class="fixtable-header"></div>
     <div class="fixtable-filters" ng-show="columnFilters.length">
-        <button
-        type="button"
+        <div
         ng-show="!options.realtimeFiltering && filtersDirty"
-        ng-click="applyFilters()">
-            Apply
-        </button>
+        ng-include="options.applyFiltersTemplate">
+        </div>
     </div>
     <div class="fixtable-inner">
         <table ng-class="options.tableClass">
