@@ -179,7 +179,7 @@
             });
           }
           scope.applyFilters = function() {
-            var filter, filterFn, i, k, l, len1, ref1, ref2, results, results1;
+            var filter, filterFn, i, k, l, len1, len2, m, ref1, ref2, ref3, results;
             scope.appliedFilters = getCurrentFilterValues();
             scope.filtersDirty = false;
             if (scope.options.paging) {
@@ -187,31 +187,26 @@
             } else {
               scope.data = angular.copy(scope.$parent[scope.options.data]);
               ref2 = (function() {
-                results1 = [];
-                for (var l = 0, ref1 = scope.data.length - 1; 0 <= ref1 ? l <= ref1 : l >= ref1; 0 <= ref1 ? l++ : l--){ results1.push(l); }
-                return results1;
+                results = [];
+                for (var l = 0, ref1 = scope.data.length - 1; 0 <= ref1 ? l <= ref1 : l >= ref1; 0 <= ref1 ? l++ : l--){ results.push(l); }
+                return results;
               }).apply(this).reverse();
-              results = [];
               for (k = 0, len1 = ref2.length; k < len1; k++) {
                 i = ref2[k];
-                results.push((function() {
-                  var len2, m, ref3, results2;
-                  ref3 = scope.columnFilters;
-                  results2 = [];
-                  for (m = 0, len2 = ref3.length; m < len2; m++) {
-                    filter = ref3[m];
-                    filterFn = fixtableFilterTypes[filter.type].filterFn;
-                    if (!filterFn(scope.data[i][filter.property], filter.values)) {
-                      scope.data.splice(i, 1);
-                      break;
-                    } else {
-                      results2.push(void 0);
-                    }
+                ref3 = scope.columnFilters;
+                for (m = 0, len2 = ref3.length; m < len2; m++) {
+                  filter = ref3[m];
+                  filterFn = fixtableFilterTypes[filter.type].filterFn;
+                  if (!filterFn(scope.data[i][filter.property], filter.values)) {
+                    scope.data.splice(i, 1);
+                    break;
                   }
-                  return results2;
-                })());
+                }
               }
-              return results;
+              console.log('set dims again');
+              return $timeout(function() {
+                return fixtable.setDimensions();
+              });
             }
           };
           getCurrentFilterValues = function() {

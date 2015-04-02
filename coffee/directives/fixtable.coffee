@@ -114,6 +114,7 @@ angular.module 'fixtable'
 							unless filterFn scope.data[i][filter.property], filter.values
 								scope.data.splice i, 1
 								break
+					$timeout -> fixtable.setDimensions()
 
 			getCurrentFilterValues = ->
 				obj = {}
