@@ -1,25 +1,4 @@
 angular.module 'fixtable', []
-
-# configure built-in filter types
-angular.module 'fixtable'
-.config ['fixtableFilterTypesProvider', (fixtableFilterTypesProvider) ->
-
-	fixtableFilterTypesProvider.add 'search',
-		defaultValues:
-			query: ''
-		templateUrl: 'fixtable/templates/columnFilters/search.html'
-		filterFn: (testValue, filterValues) ->
-			pattern = new RegExp filterValues.query, 'i'
-			pattern.test testValue
-
-	fixtableFilterTypesProvider.add 'select',
-		defaultValues:
-			selected: null
-		templateUrl: 'fixtable/templates/columnFilters/select.html'
-		filterFn: (testValue, filterValues) ->
-			return true unless filterValues.selected
-			testValue is filterValues.selected
-]
 angular.module 'fixtable'
 .controller 'cellCtrl', [
 	'$scope'
@@ -114,7 +93,7 @@ angular.module 'fixtable'
 			# get new page data
 			getPageData = ->
 				cb = scope.$parent[scope.options.pagingOptions.callback]
-				cb scope.options.pagingOptions, null, scope.appliedFilters
+				cb scope.options.pagingOptions, scope.options.sort, scope.appliedFilters
 
 			# provide methods to page forward/back in footer template
 			scope.nextPage = ->
@@ -176,7 +155,6 @@ angular.module 'fixtable'
 							unless filterFn scope.data[i][filter.property], filter.values
 								scope.data.splice i, 1
 								break
-					console.log 'set dims again'
 					$timeout -> fixtable.setDimensions()
 
 			getCurrentFilterValues = ->
@@ -193,6 +171,31 @@ angular.module 'fixtable'
 			# get templateUrl for a given filter type
 			scope.getFilterTemplate = (filterType) ->
 				fixtableFilterTypes[filterType].templateUrl
+
+			scope.changeSort = (property) ->
+				scope.options.sort ?= {}
+				if scope.options.sort.property is property
+					dir = scope.options.sort.direction
+					scope.options.sort.direction = if dir is 'asc' then 'desc' else 'asc'
+				else
+					scope.options.sort.property = property
+					scope.options.sort.direction = 'asc'
+				applySort()
+
+			applySort = ->
+				if scope.options.paging then getPageData()
+				else
+					scope.data = angular.copy scope.$parent[scope.options.data]
+					scope.data.sort (a, b) ->
+						aVal = a[scope.options.sort.property]
+						bVal = b[scope.options.sort.property]
+						if aVal > bVal
+							if scope.options.sort.direction is 'asc' then return 1
+							if scope.options.sort.direction is 'desc' then return -1
+						if bVal > aVal
+							if scope.options.sort.direction is 'asc' then return -1
+							if scope.options.sort.direction is 'desc' then return 1
+						return 0
 
 		replace: true
 		restrict: 'E'
@@ -233,6 +236,24 @@ angular.module 'fixtable'
 .provider 'fixtableFilterTypes', ->
 
 	@filterTypes = {}
+
+	# define search filter type
+	@filterTypes.search = 
+		defaultValues:
+			query: ''
+		templateUrl: 'fixtable/templates/columnFilters/search.html'
+		filterFn: (testValue, filterValues) ->
+			pattern = new RegExp filterValues.query, 'i'
+			pattern.test testValue
+
+	# define select filter type
+	@filterTypes.select =
+		defaultValues:
+			selected: null
+		templateUrl: 'fixtable/templates/columnFilters/select.html'
+		filterFn: (testValue, filterValues) ->
+			return true unless filterValues.selected
+			testValue is filterValues.selected
 
 	@$get = -> @filterTypes
 

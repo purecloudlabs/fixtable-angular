@@ -1,34 +1,6 @@
 (function() {
   angular.module('fixtable', []);
 
-  angular.module('fixtable').config([
-    'fixtableFilterTypesProvider', function(fixtableFilterTypesProvider) {
-      fixtableFilterTypesProvider.add('search', {
-        defaultValues: {
-          query: ''
-        },
-        templateUrl: 'fixtable/templates/columnFilters/search.html',
-        filterFn: function(testValue, filterValues) {
-          var pattern;
-          pattern = new RegExp(filterValues.query, 'i');
-          return pattern.test(testValue);
-        }
-      });
-      return fixtableFilterTypesProvider.add('select', {
-        defaultValues: {
-          selected: null
-        },
-        templateUrl: 'fixtable/templates/columnFilters/select.html',
-        filterFn: function(testValue, filterValues) {
-          if (!filterValues.selected) {
-            return true;
-          }
-          return testValue === filterValues.selected;
-        }
-      });
-    }
-  ]);
-
   angular.module('fixtable').controller('cellCtrl', [
     '$scope', '$rootScope', function($scope, $rootScope) {
       $scope.editing = false;
@@ -79,7 +51,7 @@
     '$timeout', 'fixtableDefaultOptions', 'fixtableFilterTypes', function($timeout, fixtableDefaultOptions, fixtableFilterTypes) {
       return {
         link: function(scope, element, attrs) {
-          var base, column, defaultValues, fixtable, getCurrentFilterValues, getPageData, index, j, key, len, ref, value, valuesObj;
+          var applySort, base, column, defaultValues, fixtable, getCurrentFilterValues, getPageData, index, j, key, len, ref, value, valuesObj;
           fixtable = new Fixtable(element[0]);
           for (key in fixtableDefaultOptions) {
             value = fixtableDefaultOptions[key];
@@ -130,7 +102,7 @@
           getPageData = function() {
             var cb;
             cb = scope.$parent[scope.options.pagingOptions.callback];
-            return cb(scope.options.pagingOptions, null, scope.appliedFilters);
+            return cb(scope.options.pagingOptions, scope.options.sort, scope.appliedFilters);
           };
           scope.nextPage = function() {
             return scope.pagingOptions.currentPage += 1;
@@ -203,7 +175,6 @@
                   }
                 }
               }
-              console.log('set dims again');
               return $timeout(function() {
                 return fixtable.setDimensions();
               });
@@ -223,8 +194,51 @@
             return obj;
           };
           scope.appliedFilters = getCurrentFilterValues();
-          return scope.getFilterTemplate = function(filterType) {
+          scope.getFilterTemplate = function(filterType) {
             return fixtableFilterTypes[filterType].templateUrl;
+          };
+          scope.changeSort = function(property) {
+            var base1, dir;
+            if ((base1 = scope.options).sort == null) {
+              base1.sort = {};
+            }
+            if (scope.options.sort.property === property) {
+              dir = scope.options.sort.direction;
+              scope.options.sort.direction = dir === 'asc' ? 'desc' : 'asc';
+            } else {
+              scope.options.sort.property = property;
+              scope.options.sort.direction = 'asc';
+            }
+            return applySort();
+          };
+          return applySort = function() {
+            if (scope.options.paging) {
+              return getPageData();
+            } else {
+              scope.data = angular.copy(scope.$parent[scope.options.data]);
+              return scope.data.sort(function(a, b) {
+                var aVal, bVal;
+                aVal = a[scope.options.sort.property];
+                bVal = b[scope.options.sort.property];
+                if (aVal > bVal) {
+                  if (scope.options.sort.direction === 'asc') {
+                    return 1;
+                  }
+                  if (scope.options.sort.direction === 'desc') {
+                    return -1;
+                  }
+                }
+                if (bVal > aVal) {
+                  if (scope.options.sort.direction === 'asc') {
+                    return -1;
+                  }
+                  if (scope.options.sort.direction === 'desc') {
+                    return 1;
+                  }
+                }
+                return 0;
+              });
+            }
           };
         },
         replace: true,
@@ -277,6 +291,29 @@
 
   angular.module('fixtable').provider('fixtableFilterTypes', function() {
     this.filterTypes = {};
+    this.filterTypes.search = {
+      defaultValues: {
+        query: ''
+      },
+      templateUrl: 'fixtable/templates/columnFilters/search.html',
+      filterFn: function(testValue, filterValues) {
+        var pattern;
+        pattern = new RegExp(filterValues.query, 'i');
+        return pattern.test(testValue);
+      }
+    };
+    this.filterTypes.select = {
+      defaultValues: {
+        selected: null
+      },
+      templateUrl: 'fixtable/templates/columnFilters/select.html',
+      filterFn: function(testValue, filterValues) {
+        if (!filterValues.selected) {
+          return true;
+        }
+        return testValue === filterValues.selected;
+      }
+    };
     this.$get = function() {
       return this.filterTypes;
     };
