@@ -191,7 +191,7 @@
             if (scope.options.paging) {
               return getPageData();
             } else {
-              scope.data = angular.copy(scope.$parent[scope.options.data]);
+              scope.data = scope.$parent[scope.options.data].slice(0);
               if ((ref1 = scope.options.sort) != null ? ref1.property : void 0) {
                 scope.data.sort(function(a, b) {
                   var aVal, bVal;
