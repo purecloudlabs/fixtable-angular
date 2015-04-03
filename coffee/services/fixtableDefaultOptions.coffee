@@ -9,6 +9,7 @@ angular.module 'fixtable'
 		headerTemplate: 'fixtable/templates/headerCell.html'
 		loadingTemplate: 'fixtable/templates/loading.html'
 		realtimeFiltering: true
+		sortIndicatorTemplate: 'fixtable/templates/sortIndicator.html'
 
 	@$get = -> @defaultOptions
 

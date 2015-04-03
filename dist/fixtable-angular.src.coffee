@@ -71,7 +71,7 @@ angular.module 'fixtable'
 				return unless newVal
 				newVal.currentPage = parseInt newVal.currentPage
 				scope.totalPages = Math.ceil(newVal.totalItems / newVal.pageSize) or 1
-				scope.totalPagesOoM = (scope.totalPages+"").length + 1
+				scope.totalPagesOoM = (scope.totalPages+"").length
 
 				# don't allow currentPage to be set too high
 				if newVal.currentPage > scope.totalPages
@@ -230,6 +230,7 @@ angular.module 'fixtable'
 		headerTemplate: 'fixtable/templates/headerCell.html'
 		loadingTemplate: 'fixtable/templates/loading.html'
 		realtimeFiltering: true
+		sortIndicatorTemplate: 'fixtable/templates/sortIndicator.html'
 
 	@$get = -> @defaultOptions
 

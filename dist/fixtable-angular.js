@@ -84,7 +84,7 @@
             }
             newVal.currentPage = parseInt(newVal.currentPage);
             scope.totalPages = Math.ceil(newVal.totalItems / newVal.pageSize) || 1;
-            scope.totalPagesOoM = (scope.totalPages + "").length + 1;
+            scope.totalPagesOoM = (scope.totalPages + "").length;
             if (newVal.currentPage > scope.totalPages) {
               newVal.currentPage = scope.totalPages;
             }
@@ -270,7 +270,8 @@
       footerTemplate: 'fixtable/templates/footer.html',
       headerTemplate: 'fixtable/templates/headerCell.html',
       loadingTemplate: 'fixtable/templates/loading.html',
-      realtimeFiltering: true
+      realtimeFiltering: true,
+      sortIndicatorTemplate: 'fixtable/templates/sortIndicator.html'
     };
     this.$get = function() {
       return this.defaultOptions;
