@@ -197,42 +197,52 @@
             }
           };
           return filterAndSortData = function() {
-            var filter, filterFn, i, k, l, len1, len2, m, ref1, ref2, ref3, ref4, results;
+            var col, compareFn, customCompareFn, filter, filterFn, i, k, l, len1, len2, len3, m, n, ref1, ref2, ref3, ref4, ref5, results;
             scope.data = scope.$parent[scope.options.data].slice(0);
             if ((ref1 = scope.options.sort) != null ? ref1.property : void 0) {
-              scope.data.sort(function(a, b) {
+              ref2 = scope.options.columns;
+              for (k = 0, len1 = ref2.length; k < len1; k++) {
+                col = ref2[k];
+                if (col.property === scope.options.sort.property) {
+                  if (col.sortCompareFunction) {
+                    customCompareFn = col.sortCompareFunction;
+                    break;
+                  }
+                }
+              }
+              compareFn = customCompareFn || function(a, b) {
                 var aVal, bVal;
                 aVal = a[scope.options.sort.property];
                 bVal = b[scope.options.sort.property];
                 if (aVal > bVal) {
-                  if (scope.options.sort.direction === 'asc') {
-                    return 1;
-                  }
-                  if (scope.options.sort.direction === 'desc') {
-                    return -1;
-                  }
+                  return 1;
+                } else if (aVal < bVal) {
+                  return -1;
+                } else {
+                  return 0;
                 }
-                if (bVal > aVal) {
-                  if (scope.options.sort.direction === 'asc') {
-                    return -1;
-                  }
-                  if (scope.options.sort.direction === 'desc') {
-                    return 1;
-                  }
+              };
+              scope.data.sort(function(a, b) {
+                var compared, dir;
+                dir = scope.options.sort.direction;
+                compared = compareFn(a, b);
+                if (dir === 'asc') {
+                  return compared;
+                } else {
+                  return ~--compared;
                 }
-                return 0;
               });
             }
-            ref3 = (function() {
+            ref4 = (function() {
               results = [];
-              for (var l = 0, ref2 = scope.data.length - 1; 0 <= ref2 ? l <= ref2 : l >= ref2; 0 <= ref2 ? l++ : l--){ results.push(l); }
+              for (var m = 0, ref3 = scope.data.length - 1; 0 <= ref3 ? m <= ref3 : m >= ref3; 0 <= ref3 ? m++ : m--){ results.push(m); }
               return results;
             }).apply(this).reverse();
-            for (k = 0, len1 = ref3.length; k < len1; k++) {
-              i = ref3[k];
-              ref4 = scope.columnFilters;
-              for (m = 0, len2 = ref4.length; m < len2; m++) {
-                filter = ref4[m];
+            for (l = 0, len2 = ref4.length; l < len2; l++) {
+              i = ref4[l];
+              ref5 = scope.columnFilters;
+              for (n = 0, len3 = ref5.length; n < len3; n++) {
+                filter = ref5[n];
                 filterFn = fixtableFilterTypes[filter.type].filterFn;
                 if (!filterFn(scope.data[i][filter.property], filter.values)) {
                   scope.data.splice(i, 1);

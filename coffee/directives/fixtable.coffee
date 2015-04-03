@@ -143,16 +143,24 @@ angular.module 'fixtable'
 
 				# sort
 				if scope.options.sort?.property
-					scope.data.sort (a, b) ->
+
+					# get custom compare function or fallback to standard compareFn
+					for col in scope.options.columns
+						if col.property is scope.options.sort.property
+							if col.sortCompareFunction
+								customCompareFn = col.sortCompareFunction
+								break
+					compareFn = customCompareFn or (a, b) ->
 						aVal = a[scope.options.sort.property]
 						bVal = b[scope.options.sort.property]
-						if aVal > bVal
-							if scope.options.sort.direction is 'asc' then return 1
-							if scope.options.sort.direction is 'desc' then return -1
-						if bVal > aVal
-							if scope.options.sort.direction is 'asc' then return -1
-							if scope.options.sort.direction is 'desc' then return 1
-						return 0
+						if aVal > bVal then return 1
+						else if aVal < bVal then return -1
+						else return 0
+
+					scope.data.sort (a, b) ->
+						dir = scope.options.sort.direction
+						compared = compareFn a, b
+						return if dir is 'asc' then compared else ~--compared
 
 				# filter
 				for i in [0..scope.data.length-1].reverse()
