@@ -60,6 +60,7 @@ angular.module 'fixtable'
 			# update table data & calculated styles when source data changes
 			scope.$parent.$watchCollection scope.options.data, (newData) ->
 				scope.data = newData
+				unless scope.options.paging then filterAndSortData()
 				$timeout ->
 					for col, i in scope.options.columns
 						if col.width then fixtable.setColumnWidth i+1, col.width
@@ -174,34 +175,36 @@ angular.module 'fixtable'
 				if scope.options.paging then getPageData()
 
 				# or do it all here if we have the full dataset
-				else
+				else filterAndSortData()
 
-					# start with a fresh copy of data from parent
-					scope.data = scope.$parent[scope.options.data].slice(0)
+			filterAndSortData = ->
 
-					# sort
-					if scope.options.sort?.property
-						scope.data.sort (a, b) ->
-							aVal = a[scope.options.sort.property]
-							bVal = b[scope.options.sort.property]
-							if aVal > bVal
-								if scope.options.sort.direction is 'asc' then return 1
-								if scope.options.sort.direction is 'desc' then return -1
-							if bVal > aVal
-								if scope.options.sort.direction is 'asc' then return -1
-								if scope.options.sort.direction is 'desc' then return 1
-							return 0
+				# start with a fresh copy of data from parent
+				scope.data = scope.$parent[scope.options.data].slice(0)
 
-					# filter
-					for i in [0..scope.data.length-1].reverse()
-						for filter in scope.columnFilters
-							filterFn = fixtableFilterTypes[filter.type].filterFn
-							unless filterFn scope.data[i][filter.property], filter.values
-								scope.data.splice i, 1
-								break
+				# sort
+				if scope.options.sort?.property
+					scope.data.sort (a, b) ->
+						aVal = a[scope.options.sort.property]
+						bVal = b[scope.options.sort.property]
+						if aVal > bVal
+							if scope.options.sort.direction is 'asc' then return 1
+							if scope.options.sort.direction is 'desc' then return -1
+						if bVal > aVal
+							if scope.options.sort.direction is 'asc' then return -1
+							if scope.options.sort.direction is 'desc' then return 1
+						return 0
 
-					# re-calculate dimensions since column widths may have changed
-					$timeout -> fixtable.setDimensions()
+				# filter
+				for i in [0..scope.data.length-1].reverse()
+					for filter in scope.columnFilters
+						filterFn = fixtableFilterTypes[filter.type].filterFn
+						unless filterFn scope.data[i][filter.property], filter.values
+							scope.data.splice i, 1
+							break
+
+				# re-calculate dimensions since column widths may have changed
+				$timeout -> fixtable.setDimensions()
 
 		replace: true
 		restrict: 'E'
