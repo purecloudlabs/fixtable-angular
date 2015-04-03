@@ -10,7 +10,11 @@
         <table ng-class="options.tableClass">
             <thead>
                 <tr class="fixtable-column-headers">
-                    <th ng-repeat="(colIndex, col) in options.columns" class="{{ col.headerClass }}">
+                    <th
+                    ng-repeat="(colIndex, col) in options.columns"
+                    ng-click="col.sortable && changeSort(col.property)"
+                    ng-class="{'fixtable-sortable-column-header': col.sortable}"
+                    class="{{ col.headerClass }}">
                         <div ng-include="options.headerTemplate">
                         </div>
                     </th>

@@ -51,7 +51,7 @@
     '$timeout', 'fixtableDefaultOptions', 'fixtableFilterTypes', function($timeout, fixtableDefaultOptions, fixtableFilterTypes) {
       return {
         link: function(scope, element, attrs) {
-          var applySort, base, column, defaultValues, fixtable, getCurrentFilterValues, getPageData, index, j, key, len, ref, value, valuesObj;
+          var base, column, defaultValues, fixtable, getCurrentFilterValues, getPageData, index, j, key, len, ref, updateData, value, valuesObj;
           fixtable = new Fixtable(element[0]);
           for (key in fixtableDefaultOptions) {
             value = fixtableDefaultOptions[key];
@@ -151,34 +151,9 @@
             });
           }
           scope.applyFilters = function() {
-            var filter, filterFn, i, k, l, len1, len2, m, ref1, ref2, ref3, results;
             scope.appliedFilters = getCurrentFilterValues();
             scope.filtersDirty = false;
-            if (scope.options.paging) {
-              return getPageData();
-            } else {
-              scope.data = angular.copy(scope.$parent[scope.options.data]);
-              ref2 = (function() {
-                results = [];
-                for (var l = 0, ref1 = scope.data.length - 1; 0 <= ref1 ? l <= ref1 : l >= ref1; 0 <= ref1 ? l++ : l--){ results.push(l); }
-                return results;
-              }).apply(this).reverse();
-              for (k = 0, len1 = ref2.length; k < len1; k++) {
-                i = ref2[k];
-                ref3 = scope.columnFilters;
-                for (m = 0, len2 = ref3.length; m < len2; m++) {
-                  filter = ref3[m];
-                  filterFn = fixtableFilterTypes[filter.type].filterFn;
-                  if (!filterFn(scope.data[i][filter.property], filter.values)) {
-                    scope.data.splice(i, 1);
-                    break;
-                  }
-                }
-              }
-              return $timeout(function() {
-                return fixtable.setDimensions();
-              });
-            }
+            return updateData();
           };
           getCurrentFilterValues = function() {
             var filter, k, len1, obj, ref1;
@@ -209,34 +184,57 @@
               scope.options.sort.property = property;
               scope.options.sort.direction = 'asc';
             }
-            return applySort();
+            return updateData();
           };
-          return applySort = function() {
+          return updateData = function() {
+            var filter, filterFn, i, k, l, len1, len2, m, ref1, ref2, ref3, ref4, results;
             if (scope.options.paging) {
               return getPageData();
             } else {
               scope.data = angular.copy(scope.$parent[scope.options.data]);
-              return scope.data.sort(function(a, b) {
-                var aVal, bVal;
-                aVal = a[scope.options.sort.property];
-                bVal = b[scope.options.sort.property];
-                if (aVal > bVal) {
-                  if (scope.options.sort.direction === 'asc') {
-                    return 1;
+              if ((ref1 = scope.options.sort) != null ? ref1.property : void 0) {
+                scope.data.sort(function(a, b) {
+                  var aVal, bVal;
+                  aVal = a[scope.options.sort.property];
+                  bVal = b[scope.options.sort.property];
+                  if (aVal > bVal) {
+                    if (scope.options.sort.direction === 'asc') {
+                      return 1;
+                    }
+                    if (scope.options.sort.direction === 'desc') {
+                      return -1;
+                    }
                   }
-                  if (scope.options.sort.direction === 'desc') {
-                    return -1;
+                  if (bVal > aVal) {
+                    if (scope.options.sort.direction === 'asc') {
+                      return -1;
+                    }
+                    if (scope.options.sort.direction === 'desc') {
+                      return 1;
+                    }
+                  }
+                  return 0;
+                });
+              }
+              ref3 = (function() {
+                results = [];
+                for (var l = 0, ref2 = scope.data.length - 1; 0 <= ref2 ? l <= ref2 : l >= ref2; 0 <= ref2 ? l++ : l--){ results.push(l); }
+                return results;
+              }).apply(this).reverse();
+              for (k = 0, len1 = ref3.length; k < len1; k++) {
+                i = ref3[k];
+                ref4 = scope.columnFilters;
+                for (m = 0, len2 = ref4.length; m < len2; m++) {
+                  filter = ref4[m];
+                  filterFn = fixtableFilterTypes[filter.type].filterFn;
+                  if (!filterFn(scope.data[i][filter.property], filter.values)) {
+                    scope.data.splice(i, 1);
+                    break;
                   }
                 }
-                if (bVal > aVal) {
-                  if (scope.options.sort.direction === 'asc') {
-                    return -1;
-                  }
-                  if (scope.options.sort.direction === 'desc') {
-                    return 1;
-                  }
-                }
-                return 0;
+              }
+              return $timeout(function() {
+                return fixtable.setDimensions();
               });
             }
           };

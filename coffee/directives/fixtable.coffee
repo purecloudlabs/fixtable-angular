@@ -52,7 +52,7 @@ angular.module 'fixtable'
 			# get new page data
 			getPageData = ->
 				cb = scope.$parent[scope.options.pagingOptions.callback]
-				cb scope.options.pagingOptions, null, scope.appliedFilters
+				cb scope.options.pagingOptions, scope.options.sort, scope.appliedFilters
 
 			# provide methods to page forward/back in footer template
 			scope.nextPage = ->
@@ -98,23 +98,9 @@ angular.module 'fixtable'
 
 			# apply updated filter values
 			scope.applyFilters = ->
-
 				scope.appliedFilters = getCurrentFilterValues()
 				scope.filtersDirty = false
-
-				# run callback method to filter paged data
-				if scope.options.paging then getPageData()
-
-				# or filter data here if we already have the whole dataset
-				else
-					scope.data = angular.copy scope.$parent[scope.options.data]
-					for i in [0..scope.data.length-1].reverse()
-						for filter in scope.columnFilters
-							filterFn = fixtableFilterTypes[filter.type].filterFn
-							unless filterFn scope.data[i][filter.property], filter.values
-								scope.data.splice i, 1
-								break
-					$timeout -> fixtable.setDimensions()
+				updateData()
 
 			getCurrentFilterValues = ->
 				obj = {}
@@ -130,6 +116,51 @@ angular.module 'fixtable'
 			# get templateUrl for a given filter type
 			scope.getFilterTemplate = (filterType) ->
 				fixtableFilterTypes[filterType].templateUrl
+
+			scope.changeSort = (property) ->
+				scope.options.sort ?= {}
+				if scope.options.sort.property is property
+					dir = scope.options.sort.direction
+					scope.options.sort.direction = if dir is 'asc' then 'desc' else 'asc'
+				else
+					scope.options.sort.property = property
+					scope.options.sort.direction = 'asc'
+				updateData()
+
+			updateData = ->
+
+				# run callback method to get sorted/filtered data
+				if scope.options.paging then getPageData()
+
+				# or do it all here if we have the full dataset
+				else
+
+					# start with a fresh copy of data from parent
+					scope.data = angular.copy scope.$parent[scope.options.data]
+
+					# sort
+					if scope.options.sort?.property
+						scope.data.sort (a, b) ->
+							aVal = a[scope.options.sort.property]
+							bVal = b[scope.options.sort.property]
+							if aVal > bVal
+								if scope.options.sort.direction is 'asc' then return 1
+								if scope.options.sort.direction is 'desc' then return -1
+							if bVal > aVal
+								if scope.options.sort.direction is 'asc' then return -1
+								if scope.options.sort.direction is 'desc' then return 1
+							return 0
+
+					# filter
+					for i in [0..scope.data.length-1].reverse()
+						for filter in scope.columnFilters
+							filterFn = fixtableFilterTypes[filter.type].filterFn
+							unless filterFn scope.data[i][filter.property], filter.values
+								scope.data.splice i, 1
+								break
+
+					# re-calculate dimensions since column widths may have changed
+					$timeout -> fixtable.setDimensions()
 
 		replace: true
 		restrict: 'E'
