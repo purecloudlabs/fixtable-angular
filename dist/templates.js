@@ -42,7 +42,7 @@ angular.module('fixtable').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('fixtable/templates/headerCell.html',
-    "{{ col.label }} <span ng-if=\"options.sort.property === col.property\"><span class=\"fixtable-triangle\" ng-class=\"{'fixtable-triangle-reversed': options.sort.direction === 'asc'}\">&blacktriangledown;</span></span>"
+    "{{ col.label }} <span ng-if=\"col.property && options.sort.property === col.property\"><span class=\"fixtable-triangle\" ng-class=\"{'fixtable-triangle-reversed': options.sort.direction === 'asc'}\">&blacktriangledown;</span></span>"
   );
 
 

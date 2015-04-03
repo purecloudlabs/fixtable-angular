@@ -177,7 +177,6 @@ angular.module 'fixtable'
 				else
 
 					# start with a fresh copy of data from parent
-					# scope.data = angular.copy scope.$parent[scope.options.data]
 					scope.data = scope.$parent[scope.options.data].slice(0)
 
 					# sort
