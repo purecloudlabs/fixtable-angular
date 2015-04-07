@@ -13,12 +13,6 @@
 	max-height: 33em;
 }
 
-/* add a reverse caret to use in sort indicator */
-.caret-reversed {
-  border-top: 0;
-  border-bottom: 4px solid;
-}
-
 /* fix borders messed up by missing collapsed borders on fake table elements */
 .table tbody tr:first-of-type td {
 	border-top: 0;
