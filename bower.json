@@ -32,7 +32,7 @@
     "README.md"
   ],
   "dependencies": {
-    "fixtable": "column-filtering"
+    "fixtable": "1.1"
   },
   "devDependencies": {
     "angular": "^1.2.18",
