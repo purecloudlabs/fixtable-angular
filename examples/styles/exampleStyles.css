@@ -1,0 +1,136 @@
+/* remove table margin so .panel can provide a nice border */
+.table {
+	margin: 0;
+}
+
+/* remove bottom margins on .form-groups in column filter headers */
+.fixtable-column-filters .form-group {
+	margin: 0;
+}
+
+/* make .pre-scrollable same height as example tables */
+.pre-scrollable {
+	max-height: 33em;
+}
+
+/* add a reverse caret to use in sort indicator */
+.caret-reversed {
+  border-top: 0;
+  border-bottom: 4px solid;
+}
+
+/* fix borders messed up by missing collapsed borders on fake table elements */
+.table tbody tr:first-of-type td {
+	border-top: 0;
+}
+
+/* transfer padding from table cells to input while editing */
+
+td.fixtable-cell-editing {
+  padding: 0 !important;
+}
+td.fixtable-cell-editing input {
+  padding: 6px;
+}
+
+/* a few styles to make filters & footer consistent with bootstrap table */
+
+.fixtable-filters {
+	background-color: #f5f5f5;
+	border-bottom: 2px solid #ddd;
+}
+
+.fixtable-column-filters th > div {
+	padding: 8px;
+}
+
+.fixtable-footer {
+	padding: 8px;
+	border-top: 2px solid #ddd;
+}
+
+.fixtable-filters .btn-primary {
+  margin-bottom: 8px;
+}
+
+.fixtable-footer .form-control {
+  display: inline-block;
+  width: auto;
+}
+
+.fixtable-footer input.form-control {
+  text-align: center;
+  margin: 0 4px;
+}
+
+/* loading indicator */
+
+@-ms-keyframes spin {
+    from { -ms-transform: rotate(0deg); }
+    to { -ms-transform: rotate(360deg); }
+}
+@-moz-keyframes spin {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
+}
+.loading-indicator {
+	font-size: 3em;
+	-webkit-animation-name: spin;
+  -webkit-animation-duration: 2000ms;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  -moz-animation-name: spin;
+  -moz-animation-duration: 2000ms;
+  -moz-animation-iteration-count: infinite;
+  -moz-animation-timing-function: linear;
+  -ms-animation-name: spin;
+  -ms-animation-duration: 2000ms;
+  -ms-animation-iteration-count: infinite;
+  -ms-animation-timing-function: linear;
+  animation-name: spin;
+  animation-duration: 2000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+/* film rating badges */
+
+.rating {
+	background-repeat: no-repeat;
+	background-position: 0 3px;
+	background-size: auto 1em;
+}
+
+.rating::after {
+	content: '\00A0';
+}
+
+.rating-pg {
+	background-image: url(../images/RATED_PG.svg);
+}
+
+.rating-pg-13 {
+	background-image: url(../images/RATED_PG-13.svg);
+}
+
+.rating-r {
+	background-image: url(../images/RATED_R.svg);
+}
+
+/* utility styles */
+
+.text-italic {
+	font-style: italic;
+}

@@ -185,7 +185,7 @@ angular.module 'fixtable'
 				# sort
 				if scope.options.sort?.property
 
-					# COMMENT ME
+					# get custom compare function or fallback to standard compareFn
 					for col in scope.options.columns
 						if col.property is scope.options.sort.property
 							if col.sortCompareFunction

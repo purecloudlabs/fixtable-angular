@@ -1,0 +1,1 @@
+angular.module('examples', ['ngMockE2E', 'fixtable']);

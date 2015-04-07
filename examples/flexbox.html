@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+
+  <head>
+
+    <meta charset="utf-8"> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Fixtable for AngularJS Flexbox Example</title>
+
+    <!-- stylesheets -->
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/fixtable/dist/fixtable.min.css">
+    <link rel="stylesheet" href="styles/exampleStyles.css">
+    <link rel="stylesheet" href="styles/flexboxStyles.css">
+
+  </head>
+
+  <body ng-app="examples">
+
+    <div class="container fillHeight">
+
+      <div class="row noShrink">
+        <div class="col-xs-12 col-md-10 col-md-offset-1">
+          <div class="page-header">
+            <h1>Flexbox Example</h1>
+          </div>
+          <p>
+            Through the <a href="http://philipwalton.github.io/solved-by-flexbox/">magic of flexbox</a>, the table below will size itself to fit the available height!
+          </p>
+        </div>
+      </div>
+
+      <div class="row fillHeight" ng-controller="example4Ctrl">
+        <div class="col-xs-12 col-md-10 col-md-offset-1 fillHeight">
+          <div class="panel panel-default fillHeight">
+            <fixtable options="options"></fixtable>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- libraries -->
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/angular-mocks/angular-mocks.js"></script>
+    <script src="../bower_components/fixtable/dist/fixtable.min.js"></script>
+    <script src="../dist/fixtable-angular.min.js"></script>
+
+    <!-- example code -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/config.js"></script>
+    <script src="scripts/mockApi.js"></script>
+    <script src="scripts/templates.js"></script>
+    <script src="scripts/services/rawData.js"></script>
+    <script src="scripts/controllers/example4Ctrl.js"></script>
+
+  </body>
+
+</html>

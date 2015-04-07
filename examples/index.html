@@ -1,0 +1,219 @@
+<!doctype html>
+<html>
+
+  <head>
+
+    <meta charset="utf-8"> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Fixtable for AngularJS Examples</title>
+
+    <!-- stylesheets -->
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bower_components/fixtable/dist/fixtable.min.css">
+    <link rel="stylesheet" href="styles/exampleStyles.css">
+
+  </head>
+
+  <body ng-app="examples">
+
+    <div class="container">
+
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="page-header">
+            <h1>Fixtable <small>for <img src="images/angular_shield.png" style="height:1.5em; vertical-align: -33%;">ngularJS</small></h1>
+          </div>
+        </div>
+      </div>
+
+      <!-- example 1 -->
+      <div class="row" ng-controller="example1Ctrl">
+        <div class="col-xs-12">
+          <h3>Example 1 &ndash; Simple Table</h3>
+          <p>
+            At its simplest, Fixtable allows for presenting an array of data as a table, with very minimal configuration.
+          </p>
+          <p>
+            In this example, we've declared an array, <code>$scope.data</code>, in our controller. This array contains objects representing the ten most recent Oscar Best Picture winners. Then, in the configuration object, we simply point to this array as our <code>data</code> source and set up columns by specifying which object <code>property</code> should be displayed in the table, and what <code>label</code> to use in the column heading. For styling purposes, we've also specified a <code>tableClass</code> to be applied to our table.
+          </p>
+          <p>
+            And, <em>voil&agrave;</em>, we get a beautiful table. Yes, it's just that easy!
+          </p>
+        </div>
+        <div class="col-xs-12 col-md-5">
+        <h4>Configuration</h4>
+          <pre class="pre-scrollable" ng-bind="localOptions | json"></pre>
+        </div>
+        <div class="col-xs-12 col-md-7">
+        <h4>Result</h4>
+          <div class="panel panel-default">
+            <fixtable options="options"></fixtable>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- example 2 -->
+      <div class="row" ng-controller="example2Ctrl">
+        <div class="col-xs-12">
+          <h3>Example 2 &ndash; Fixed Headers &amp; Custom Data Presentation</h3>
+          <p>
+            In this next example, we're going to include all the Best Picture winners back through 1970. But we want to limit the height of our table to only display around 10 rows at a time.
+          </p>
+          <p>
+            All we have to do is specify a height on the <code>&lt;fixtable&gt;</code> element. The output table will be set to that height and if necessary, the viewport will be scrollable. The header row is fixed in place and will remain visible as the user scrolls. We have found that a really compelling use case for this is to use flexbox to limit your table's height to the available viewport space. This way the browser page doesn't scroll, just the data in the table! (<a href="flexbox.html">See an example of this</a>)
+          </p>
+          <p>
+            This example also demonstrates the two ways in which you can customize the presentation of data in your table. You can specify a <code>cellClass</code> to be applied to all data cells in a column, as we've done here to italicize the film titles. If your needs are more complex, you can instead supply your own <code>template</code> where you have complete control over presentation. In this case, we have a custom template that displays the film rating as an image rather than plain text.
+          </p>
+          <p>
+            Also, notice we've now specified a <code>width</code> for the first and last columns. The other columns, since they were left unspecified, will divide the remaining width evenly.
+          </p>
+        </div>
+        <div class="col-xs-12 col-md-5">
+        <h4>Configuration</h4>
+          <pre class="pre-scrollable" ng-bind="localOptions | json"></pre>
+        </div>
+        <div class="col-xs-12 col-md-7">
+        <h4>Result</h4>
+          <div class="panel panel-default">
+            <fixtable options="options" style="height: 30.5em;"></fixtable>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- example 3 -->
+      <div class="row" ng-controller="example3Ctrl">
+        <div class="col-xs-12">
+          <h3>Example 3 &ndash; Pagination &amp; Loading Indicator</h3>
+          <p>
+            A common requirement is to populate your table with dynamic data. For instance, loading records from an API with paginated output.
+          </p>
+          <p>
+            In the example below, we've turned on <code>paging</code> on and configured <code>pagingOptions</code>. The <code>callback</code> parameter specifies the name of a method in the parent controller that handles populating the <code>data</code> array. In this example, our callback method makes requests to a mock API.
+          </p>
+          <p>
+            Also, the <code>loading</code> option specifies the name of a scope variable that will be set <code>true</code> while new data is loading. The loading indicator will be toggled on or off as this value changes.
+          </p>
+        </div>
+        <div class="col-xs-12 col-md-5">
+        <h4>Configuration</h4>
+          <pre class="pre-scrollable" ng-bind="localOptions | json"></pre>
+        </div>
+        <div class="col-xs-12 col-md-7">
+        <h4>Result</h4>
+          <div class="panel panel-default">
+            <fixtable options="options" style="height: 30.5em;"></fixtable>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- example 4 -->
+      <div class="row" ng-controller="example4Ctrl">
+        <div class="col-xs-12">
+          <h3>Example 4 &ndash; Column Filtering &amp; Sorting</h3>
+          <p>
+            In this next example, we've set up all the columns to be <code>sortable</code>. Simply click on a column heading to toggle between ascending and descending sort. Also, notice the <code>sort</code> option that sets up the table to initially sort by film titles in ascending order.
+          </p>
+          <p>
+            We've also configured column filters for three of the columns. There are two built-in filter types, <code>search</code> and <code>select</code>; both are utilized below. It is also possible to pass initial values to these filters, or even to create your own custom filter types. Review the documentation for further detail.
+          </p>
+          <p>
+            This example also uses a custom comparison function when sorting the "Film" column. It ignores leading articles (such as "the") when comparing film titles. Unfortunately, this <code>sortCompareFunction</code> is stripped out of the configuration object displayed below as it doesn't translate to JSON. You may review the <a href="scripts/controllers/example4Ctrl.js">controller</a> if you're curious to see how it works.
+          </p>
+        </div>
+        <div class="col-xs-12 col-md-5">
+        <h4>Configuration</h4>
+          <pre class="pre-scrollable" ng-bind="localOptions | json"></pre>
+        </div>
+        <div class="col-xs-12 col-md-7">
+        <h4>Result</h4>
+          <div class="panel panel-default">
+            <fixtable options="options" style="height: 30.5em;"></fixtable>
+          </div>
+        </div>
+      </div>
+
+      <!-- example 5 -->
+      <div class="row" ng-controller="example5Ctrl">
+        <div class="col-xs-12">
+          <h3>Example 5 &ndash; Column Filtering (with Manual Application)</h3>
+          <p>
+            In the previous example, changes to the column filter fields cause the data to be re-filtered instantly. This isn't always desireable. For instance, if your data is pulled from a paginated API, you may need to limit the rate of requests. If you set <code>realtimeFiltering</code> to <code>false</code> then changes to the filter values will not be applied until the user manually clicks the "Apply" button.
+          </p>
+        </div>
+        <div class="col-xs-12 col-md-5">
+        <h4>Configuration</h4>
+          <pre class="pre-scrollable" ng-bind="localOptions | json"></pre>
+        </div>
+        <div class="col-xs-12 col-md-7">
+        <h4>Result</h4>
+          <div class="panel panel-default">
+            <fixtable options="options" style="height: 30.5em;"></fixtable>
+          </div>
+        </div>
+      </div>
+
+      <!-- example 6 -->
+      <div class="row" ng-controller="example6Ctrl">
+        <div class="col-xs-12">
+          <h3>Example 6 &ndash; Edit-In-Place</h3>
+          <p>
+            If you need to give users a way to edit the data in your table, it's as easy as setting the column to be <code>editable</code>. In this example, all four columns are editable. Simply click on any cell to begin editing.
+          </p>
+          <p>
+            Thanks to AngularJS's two-way binding, the edits made in the UI are being made directly on the objects in the parent controller's data array. Go ahead, make some changes. Then (because all the examples on this page get their data from the same AngularJS service) notice how your updates are displayed in the other tables, too! Note: The tables with pagination won't reflect the changes immediately since they got their data via <code>$http</code> but in essence the changes you make here are updating the data on the "server" and they will get the updated film objects in their next request.
+          </p>
+          <p>
+            Fixtable also emits events when a user begins or finishes editing a cell, so if you need to react to these events you can listen for them in your controller. In this example, if you open your JavaScript console, you'll notice that all your changes are being logged via an event listener.
+          </p>
+        </div>
+        <div class="col-xs-12 col-md-5">
+        <h4>Configuration</h4>
+          <pre class="pre-scrollable" ng-bind="localOptions | json"></pre>
+        </div>
+        <div class="col-xs-12 col-md-7">
+        <h4>Result</h4>
+          <div class="panel panel-default">
+            <fixtable options="options" style="height: 30.5em;"></fixtable>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="alert alert-info">
+            <strong>Note:</strong> In addition to the configuration objects you see in each of the examples above, there are a few options that were configured to apply to all the tables on this page. You may view the <a href="scripts/config.js">app's config block</a> to see how this was done. The only options that were configured in this manner were specifying custom templates for the column filters, table footer &amp; loading indicator to style them more consistently with the Bootstrap tables.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- libraries -->
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/angular-mocks/angular-mocks.js"></script>
+    <script src="../bower_components/fixtable/dist/fixtable.min.js"></script>
+    <script src="../dist/fixtable-angular.min.js"></script>
+
+    <!-- example code -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/config.js"></script>
+    <script src="scripts/mockApi.js"></script>
+    <script src="scripts/templates.js"></script>
+    <script src="scripts/services/rawData.js"></script>
+    <script src="scripts/controllers/example1Ctrl.js"></script>
+    <script src="scripts/controllers/example2Ctrl.js"></script>
+    <script src="scripts/controllers/example3Ctrl.js"></script>
+    <script src="scripts/controllers/example4Ctrl.js"></script>
+    <script src="scripts/controllers/example5Ctrl.js"></script>
+    <script src="scripts/controllers/example6Ctrl.js"></script>
+
+  </body>
+
+</html>
