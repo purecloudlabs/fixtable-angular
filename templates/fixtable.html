@@ -30,7 +30,9 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="(rowIndex, row) in data">
+                <tr
+                ng-repeat="(rowIndex, row) in data"
+                ng-class="{{ options.rowClass }}">
                     <td
                     class="{{ col.cellClass }}"
                     ng-repeat="(colIndex, col) in options.columns"
