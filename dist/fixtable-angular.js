@@ -197,12 +197,12 @@
             }
           };
           return filterAndSortData = function() {
-            var col, compareFn, customCompareFn, filter, filterFn, i, k, l, len1, len2, len3, m, n, ref1, ref2, ref3, ref4, ref5, results;
-            scope.data = scope.$parent[scope.options.data].slice(0);
-            if ((ref1 = scope.options.sort) != null ? ref1.property : void 0) {
-              ref2 = scope.options.columns;
-              for (k = 0, len1 = ref2.length; k < len1; k++) {
-                col = ref2[k];
+            var col, compareFn, customCompareFn, filter, filterFn, i, k, l, len1, len2, len3, m, n, ref1, ref2, ref3, ref4, ref5, ref6, results;
+            scope.data = ((ref1 = scope.$parent[scope.options.data]) != null ? ref1.slice(0) : void 0) || [];
+            if ((ref2 = scope.options.sort) != null ? ref2.property : void 0) {
+              ref3 = scope.options.columns;
+              for (k = 0, len1 = ref3.length; k < len1; k++) {
+                col = ref3[k];
                 if (col.property === scope.options.sort.property) {
                   if (col.sortCompareFunction) {
                     customCompareFn = col.sortCompareFunction;
@@ -233,20 +233,22 @@
                 }
               });
             }
-            ref4 = (function() {
-              results = [];
-              for (var m = 0, ref3 = scope.data.length - 1; 0 <= ref3 ? m <= ref3 : m >= ref3; 0 <= ref3 ? m++ : m--){ results.push(m); }
-              return results;
-            }).apply(this).reverse();
-            for (l = 0, len2 = ref4.length; l < len2; l++) {
-              i = ref4[l];
-              ref5 = scope.columnFilters;
-              for (n = 0, len3 = ref5.length; n < len3; n++) {
-                filter = ref5[n];
-                filterFn = fixtableFilterTypes[filter.type].filterFn;
-                if (!filterFn(scope.data[i][filter.property], filter.values)) {
-                  scope.data.splice(i, 1);
-                  break;
+            if (scope.data.length) {
+              ref5 = (function() {
+                results = [];
+                for (var m = 0, ref4 = scope.data.length - 1; 0 <= ref4 ? m <= ref4 : m >= ref4; 0 <= ref4 ? m++ : m--){ results.push(m); }
+                return results;
+              }).apply(this).reverse();
+              for (l = 0, len2 = ref5.length; l < len2; l++) {
+                i = ref5[l];
+                ref6 = scope.columnFilters;
+                for (n = 0, len3 = ref6.length; n < len3; n++) {
+                  filter = ref6[n];
+                  filterFn = fixtableFilterTypes[filter.type].filterFn;
+                  if (!filterFn(scope.data[i][filter.property], filter.values)) {
+                    scope.data.splice(i, 1);
+                    break;
+                  }
                 }
               }
             }

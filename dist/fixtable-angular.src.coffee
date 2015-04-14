@@ -180,7 +180,7 @@ angular.module 'fixtable'
 			filterAndSortData = ->
 
 				# start with a fresh copy of data from parent
-				scope.data = scope.$parent[scope.options.data].slice(0)
+				scope.data = scope.$parent[scope.options.data]?.slice(0) or []
 
 				# sort
 				if scope.options.sort?.property
@@ -204,12 +204,13 @@ angular.module 'fixtable'
 						return if dir is 'asc' then compared else ~--compared
 
 				# filter
-				for i in [0..scope.data.length-1].reverse()
-					for filter in scope.columnFilters
-						filterFn = fixtableFilterTypes[filter.type].filterFn
-						unless filterFn scope.data[i][filter.property], filter.values
-							scope.data.splice i, 1
-							break
+				if scope.data.length
+					for i in [0..scope.data.length-1].reverse()
+						for filter in scope.columnFilters
+							filterFn = fixtableFilterTypes[filter.type].filterFn
+							unless filterFn scope.data[i][filter.property], filter.values
+								scope.data.splice i, 1
+								break
 
 				# re-calculate dimensions since column widths may have changed
 				$timeout -> fixtable.setDimensions()
