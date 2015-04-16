@@ -82,9 +82,7 @@
           });
           if (scope.options.reflow) {
             scope.$parent.$watch(scope.options.reflow, function() {
-              return $timeout(function() {
-                return fixtable.setDimensions();
-              });
+              return fixtable.setDimensions();
             });
           }
           scope.$watch('options.pagingOptions', function(newVal, oldVal) {
