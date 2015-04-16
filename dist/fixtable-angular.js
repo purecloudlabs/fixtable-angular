@@ -80,6 +80,12 @@
               return fixtable.scrollTop();
             });
           });
+          if (scope.options.reflow) {
+            scope.$parent.$watch(scope.options.reflow, function() {
+              console.log('reflow');
+              return fixtable.setDimensions();
+            });
+          }
           scope.$watch('options.pagingOptions', function(newVal, oldVal) {
             var pageChanged, pageSizeChanged;
             if (!newVal) {

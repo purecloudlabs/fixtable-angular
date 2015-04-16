@@ -26,6 +26,12 @@ angular.module 'fixtable'
 					fixtable.setDimensions()
 					fixtable.scrollTop()
 
+			# update calculated styles when reflow property changes
+			if scope.options.reflow
+				scope.$parent.$watch scope.options.reflow, ->
+					console.log 'reflow'
+					fixtable.setDimensions()
+
 			# refresh when paging options change
 			scope.$watch 'options.pagingOptions', (newVal, oldVal) ->
 				return unless newVal
