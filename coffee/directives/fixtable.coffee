@@ -29,7 +29,8 @@ angular.module 'fixtable'
 			# update calculated styles when reflow property changes
 			if scope.options.reflow
 				scope.$parent.$watch scope.options.reflow, ->
-					fixtable.setDimensions()
+					$timeout ->
+						fixtable.setDimensions()
 
 			# refresh when paging options change
 			scope.$watch 'options.pagingOptions', (newVal, oldVal) ->
