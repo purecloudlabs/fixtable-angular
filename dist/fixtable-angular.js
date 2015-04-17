@@ -330,7 +330,7 @@
       },
       templateUrl: 'fixtable/templates/columnFilters/select.html',
       filterFn: function(testValue, filterValues) {
-        if (!filterValues.selected) {
+        if (filterValues.selected == null) {
           return true;
         }
         return testValue === filterValues.selected;

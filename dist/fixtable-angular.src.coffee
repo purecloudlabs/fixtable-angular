@@ -263,7 +263,7 @@ angular.module 'fixtable'
 	@filterTypes = {}
 
 	# define search filter type
-	@filterTypes.search = 
+	@filterTypes.search =
 		defaultValues:
 			query: ''
 		templateUrl: 'fixtable/templates/columnFilters/search.html'
@@ -277,7 +277,7 @@ angular.module 'fixtable'
 			selected: null
 		templateUrl: 'fixtable/templates/columnFilters/select.html'
 		filterFn: (testValue, filterValues) ->
-			return true unless filterValues.selected
+			return true unless filterValues.selected?
 			testValue is filterValues.selected
 
 	@$get = -> @filterTypes
