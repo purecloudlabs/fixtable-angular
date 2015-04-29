@@ -1,6 +1,6 @@
 {
   "name": "fixtable-angular",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "homepage": "https://github.com/MyPureCloud/fixtable-angular",
   "authors": [
     "Interactive Intelligence"
@@ -32,7 +32,7 @@
     "README.md"
   ],
   "dependencies": {
-    "fixtable": "1.1"
+    "fixtable": "1.2"
   },
   "devDependencies": {
     "angular": "^1.2.18",
