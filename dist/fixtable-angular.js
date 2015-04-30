@@ -81,8 +81,12 @@
             });
           });
           if (scope.options.reflow) {
-            scope.$parent.$watch(scope.options.reflow, function() {
-              return fixtable.setDimensions();
+            scope.$parent.$watch(scope.options.reflow, function(newValue) {
+              if (newValue) {
+                return $timeout(function() {
+                  return fixtable.setDimensions();
+                });
+              }
             });
           }
           scope.$watch('options.pagingOptions', function(newVal, oldVal) {
