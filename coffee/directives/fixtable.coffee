@@ -13,16 +13,17 @@ angular.module 'fixtable'
 				unless Object::hasOwnProperty.call scope.options, key
 					scope.options[key] = value
 
-			# circulate styles on table elements in next digest cycle
-			$timeout -> fixtable.moveTableStyles()
+			# immediately circulate styles, calculate dimensions & set column widths
+			fixtable.moveTableStyles()
+			fixtable.setDimensions()
+			for col, i in scope.options.columns
+				if col.width then fixtable.setColumnWidth i+1, col.width
 
 			# update table data & calculated styles when source data changes
 			scope.$parent.$watchCollection scope.options.data, (newData) ->
 				scope.data = newData
 				unless scope.options.paging then filterAndSortData()
 				$timeout ->
-					for col, i in scope.options.columns
-						if col.width then fixtable.setColumnWidth i+1, col.width
 					fixtable.setDimensions()
 					fixtable.scrollTop()
 
