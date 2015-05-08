@@ -47,18 +47,17 @@ angular.module 'fixtable'
 	($timeout, fixtableDefaultOptions, fixtableFilterTypes) ->
 		link: (scope, element, attrs) ->
 
-			fixtable = new Fixtable element[0]
-
 			# use default options to fill in missing values
 			for key, value of fixtableDefaultOptions
 				unless Object::hasOwnProperty.call scope.options, key
 					scope.options[key] = value
 
-			# immediately circulate styles, calculate dimensions & set column widths
-			fixtable.moveTableStyles()
-			fixtable.setDimensions()
+			fixtable = new Fixtable element[0], scope.options.debugMode
+
+			# immediately set column widths & calculate dimensions of table elements
 			for col, i in scope.options.columns
 				if col.width then fixtable.setColumnWidth i+1, col.width
+			fixtable.setDimensions()
 
 			# update table data & calculated styles when source data changes
 			scope.$parent.$watchCollection scope.options.data, (newData) ->
@@ -244,6 +243,7 @@ angular.module 'fixtable'
 	@defaultOptions =
 		applyFiltersTemplate: 'fixtable/templates/applyFilters.html'
 		cellTemplate: 'fixtable/templates/bodyCell.html'
+		debugMode: false
 		editTemplate: 'fixtable/templates/editCell.html'
 		footerTemplate: 'fixtable/templates/footer.html'
 		headerTemplate: 'fixtable/templates/headerCell.html'
@@ -258,6 +258,7 @@ angular.module 'fixtable'
 			@defaultOptions[option] = value
 
 	null
+
 angular.module 'fixtable'
 .provider 'fixtableFilterTypes', ->
 

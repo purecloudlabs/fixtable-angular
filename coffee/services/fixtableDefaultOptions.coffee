@@ -4,6 +4,7 @@ angular.module 'fixtable'
 	@defaultOptions =
 		applyFiltersTemplate: 'fixtable/templates/applyFilters.html'
 		cellTemplate: 'fixtable/templates/bodyCell.html'
+		debugMode: false
 		editTemplate: 'fixtable/templates/editCell.html'
 		footerTemplate: 'fixtable/templates/footer.html'
 		headerTemplate: 'fixtable/templates/headerCell.html'

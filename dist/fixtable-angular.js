@@ -52,15 +52,13 @@
       return {
         link: function(scope, element, attrs) {
           var base, col, column, defaultValues, filterAndSortData, fixtable, getCurrentFilterValues, getPageData, i, index, j, k, key, len, len1, ref, ref1, updateData, value, valuesObj;
-          fixtable = new Fixtable(element[0]);
           for (key in fixtableDefaultOptions) {
             value = fixtableDefaultOptions[key];
             if (!Object.prototype.hasOwnProperty.call(scope.options, key)) {
               scope.options[key] = value;
             }
           }
-          fixtable.moveTableStyles();
-          fixtable.setDimensions();
+          fixtable = new Fixtable(element[0], scope.options.debugMode);
           ref = scope.options.columns;
           for (i = j = 0, len = ref.length; j < len; i = ++j) {
             col = ref[i];
@@ -68,6 +66,7 @@
               fixtable.setColumnWidth(i + 1, col.width);
             }
           }
+          fixtable.setDimensions();
           scope.$parent.$watchCollection(scope.options.data, function(newData) {
             scope.data = newData;
             if (!scope.options.paging) {
@@ -291,6 +290,7 @@
     this.defaultOptions = {
       applyFiltersTemplate: 'fixtable/templates/applyFilters.html',
       cellTemplate: 'fixtable/templates/bodyCell.html',
+      debugMode: false,
       editTemplate: 'fixtable/templates/editCell.html',
       footerTemplate: 'fixtable/templates/footer.html',
       headerTemplate: 'fixtable/templates/headerCell.html',
