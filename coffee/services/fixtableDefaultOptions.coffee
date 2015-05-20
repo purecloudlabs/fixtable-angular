@@ -11,6 +11,7 @@ angular.module 'fixtable'
 		loadingTemplate: 'fixtable/templates/loading.html'
 		realtimeFiltering: true
 		sortIndicatorTemplate: 'fixtable/templates/sortIndicator.html'
+		rowSelection: false
 
 	@$get = -> @defaultOptions
 
