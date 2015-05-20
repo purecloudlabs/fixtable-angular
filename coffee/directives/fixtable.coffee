@@ -11,6 +11,12 @@ angular.module 'fixtable'
 				unless Object::hasOwnProperty.call scope.options, key
 					scope.options[key] = value
 
+			# set up things for row selection
+			if scope.options.rowSelection
+				scope.options.columns.unshift
+					rowSelectionColumn: true
+					width: scope.options.rowSelectionColumnWidth
+
 			fixtable = new Fixtable element[0], scope.options.debugMode
 
 			# immediately set column widths & calculate dimensions of table elements

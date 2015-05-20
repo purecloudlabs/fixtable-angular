@@ -4,6 +4,8 @@ angular.module 'fixtable'
 	@defaultOptions =
 		applyFiltersTemplate: 'fixtable/templates/applyFilters.html'
 		cellTemplate: 'fixtable/templates/bodyCell.html'
+		checkboxCellTemplate: 'fixtable/templates/checkboxCell.html'
+		checkboxHeaderTemplate: 'fixtable/templates/checkboxHeaderCell.html'
 		debugMode: false
 		editTemplate: 'fixtable/templates/editCell.html'
 		footerTemplate: 'fixtable/templates/footer.html'
@@ -12,6 +14,7 @@ angular.module 'fixtable'
 		realtimeFiltering: true
 		sortIndicatorTemplate: 'fixtable/templates/sortIndicator.html'
 		rowSelection: false
+		rowSelectionColumnWidth: 40
 
 	@$get = -> @defaultOptions
 

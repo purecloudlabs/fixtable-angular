@@ -10,8 +10,12 @@
         <table ng-class="options.tableClass">
             <thead>
                 <tr class="fixtable-column-headers">
+                    <th ng-if="options.rowSelection">
+                      <div ng-include="options.checkboxHeaderTemplate"></div>
+                    </th>
                     <th
                     ng-repeat="(colIndex, col) in options.columns"
+                    ng-if="!col.rowSelectionColumn"
                     ng-click="col.sortable && changeSort(col.property)"
                     ng-class="{'fixtable-sortable-column-header': col.sortable}"
                     class="{{ col.headerClass }}">
@@ -34,8 +38,13 @@
                 ng-repeat="(rowIndex, row) in data"
                 ng-class="{{ options.rowClass }}">
                     <td
+                    ng-if="options.rowSelection"
+                    ng-include="options.checkboxCellTemplate">
+                    </td>
+                    <td
                     class="{{ col.cellClass }}"
                     ng-repeat="(colIndex, col) in options.columns"
+                    ng-if="!col.rowSelectionColumn"
                     ng-include="getCellTemplate()"
                     ng-controller="cellCtrl"
                     ng-class="{'fixtable-cell-editing': editing, 'fixtable-cell-editable': col.editable}"
