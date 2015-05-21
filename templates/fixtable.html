@@ -36,6 +36,7 @@
             <tbody>
                 <tr
                 ng-repeat="(rowIndex, row) in data"
+                class="{{ rowSelected(row) ? options.selectedRowClass: '' }}"
                 ng-class="{{ options.rowClass }}">
                     <td
                     ng-if="options.rowSelection"

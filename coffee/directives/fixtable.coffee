@@ -142,6 +142,7 @@ angular.module 'fixtable'
 				updateData()
 
 			scope.rowSelected = (row) ->
+				unless scope.selectedItems?.length then return false
 				for item in scope.selectedItems
 					if angular.equals item, row
 						return true
