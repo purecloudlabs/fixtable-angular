@@ -16,6 +16,8 @@ angular.module 'fixtable'
 				scope.options.columns.unshift
 					rowSelectionColumn: true
 					width: scope.options.rowSelectionColumnWidth
+			scope.$parent.$watchCollection scope.options.selectedItems, (newData) ->
+				scope.selectedItems = newData
 
 			fixtable = new Fixtable element[0], scope.options.debugMode
 
@@ -138,6 +140,18 @@ angular.module 'fixtable'
 					scope.options.sort.property = property
 					scope.options.sort.direction = 'asc'
 				updateData()
+
+			scope.rowSelected = (row) ->
+				for item in scope.selectedItems
+					if angular.equals item, row
+						return true
+				return false
+
+			scope.toggleRowSelection = (row) ->
+				if scope.rowSelected row
+					scope.selectedItems.splice scope.selectedItems.indexOf(row), 1
+				else
+					scope.selectedItems.push row
 
 			updateData = ->
 
