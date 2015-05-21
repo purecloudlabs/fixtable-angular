@@ -260,31 +260,25 @@
             return false;
           };
           scope.togglePageSelection = function() {
-            var l, len2, len3, m, ref2, ref3, results, results1, row;
+            var l, len2, len3, m, ref2, ref3, row;
             if (scope.pageSelected()) {
               ref2 = scope.data;
-              results = [];
               for (l = 0, len2 = ref2.length; l < len2; l++) {
                 row = ref2[l];
                 if (scope.rowSelected(row)) {
-                  results.push(scope.selectedItems.splice(getSelectedItemIndex(row), 1));
-                } else {
-                  results.push(void 0);
+                  scope.selectedItems.splice(getSelectedItemIndex(row), 1);
                 }
               }
-              return results;
+              return scope.$emit('fixtableUnselectAllRows');
             } else {
               ref3 = scope.data;
-              results1 = [];
               for (m = 0, len3 = ref3.length; m < len3; m++) {
                 row = ref3[m];
                 if (!scope.rowSelected(row)) {
-                  results1.push(scope.selectedItems.push(row));
-                } else {
-                  results1.push(void 0);
+                  scope.selectedItems.push(row);
                 }
               }
-              return results1;
+              return scope.$emit('fixtableSelectAllRows');
             }
           };
           updateData = function() {
