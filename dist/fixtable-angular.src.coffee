@@ -195,8 +195,10 @@ angular.module 'fixtable'
 			scope.toggleRowSelection = (row) ->
 				if scope.rowSelected row
 					scope.selectedItems.splice getSelectedItemIndex(row), 1
+					scope.$emit 'fixtableUnselectRow', row
 				else
 					scope.selectedItems.push row
+					scope.$emit 'fixtableSelectRow', row
 
 			scope.pageSelected = ->
 				unless scope.selectedItems?.length and scope.data?.length then return false

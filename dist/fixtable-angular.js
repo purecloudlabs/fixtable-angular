@@ -223,9 +223,11 @@
           };
           scope.toggleRowSelection = function(row) {
             if (scope.rowSelected(row)) {
-              return scope.selectedItems.splice(getSelectedItemIndex(row), 1);
+              scope.selectedItems.splice(getSelectedItemIndex(row), 1);
+              return scope.$emit('fixtableUnselectRow', row);
             } else {
-              return scope.selectedItems.push(row);
+              scope.selectedItems.push(row);
+              return scope.$emit('fixtableSelectRow', row);
             }
           };
           scope.pageSelected = function() {
