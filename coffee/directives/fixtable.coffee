@@ -163,6 +163,13 @@ angular.module 'fixtable'
 					unless scope.rowSelected(row) then return false
 				return true
 
+			scope.pagePartiallySelected = ->
+				unless scope.selectedItems?.length and scope.data?.length then return false
+				if pageSelected = scope.pageSelected() then return false
+				for row in scope.data
+					if scope.rowSelected(row) then return true
+				return false
+
 			scope.togglePageSelection = ->
 				if scope.pageSelected()
 					for row in scope.data
