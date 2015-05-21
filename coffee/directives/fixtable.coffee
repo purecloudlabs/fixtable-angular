@@ -141,18 +141,37 @@ angular.module 'fixtable'
 					scope.options.sort.direction = 'asc'
 				updateData()
 
+			getSelectedItemIndex = (item) ->
+				unless scope.selectedItems?.length then return -1
+				for selectedItem, index in scope.selectedItems
+					if angular.equals item, selectedItem
+						return index
+				return -1
+
 			scope.rowSelected = (row) ->
-				unless scope.selectedItems?.length then return false
-				for item in scope.selectedItems
-					if angular.equals item, row
-						return true
-				return false
+				return getSelectedItemIndex(row) isnt -1
 
 			scope.toggleRowSelection = (row) ->
 				if scope.rowSelected row
-					scope.selectedItems.splice scope.selectedItems.indexOf(row), 1
+					scope.selectedItems.splice getSelectedItemIndex(row), 1
 				else
 					scope.selectedItems.push row
+
+			scope.pageSelected = ->
+				unless scope.selectedItems?.length and scope.data?.length then return false
+				for row in scope.data
+					unless scope.rowSelected(row) then return false
+				return true
+
+			scope.togglePageSelection = ->
+				if scope.pageSelected()
+					for row in scope.data
+						if scope.rowSelected(row)
+							scope.selectedItems.splice getSelectedItemIndex(row), 1
+				else
+					for row in scope.data
+						unless scope.rowSelected(row)
+							scope.selectedItems.push row
 
 			updateData = ->
 
