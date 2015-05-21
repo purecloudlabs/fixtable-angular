@@ -175,10 +175,12 @@ angular.module 'fixtable'
 					for row in scope.data
 						if scope.rowSelected(row)
 							scope.selectedItems.splice getSelectedItemIndex(row), 1
+					scope.$emit 'fixtableUnselectAllRows'
 				else
 					for row in scope.data
 						unless scope.rowSelected(row)
 							scope.selectedItems.push row
+					scope.$emit 'fixtableSelectAllRows'
 
 			updateData = ->
 
