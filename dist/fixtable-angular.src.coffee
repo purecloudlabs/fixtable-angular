@@ -52,6 +52,14 @@ angular.module 'fixtable'
 				unless Object::hasOwnProperty.call scope.options, key
 					scope.options[key] = value
 
+			# set up things for row selection
+			if scope.options.rowSelection
+				scope.options.columns.unshift
+					rowSelectionColumn: true
+					width: scope.options.rowSelectionColumnWidth
+			scope.$parent.$watchCollection scope.options.selectedItems, (newData) ->
+				scope.selectedItems = newData
+
 			fixtable = new Fixtable element[0], scope.options.debugMode
 
 			# immediately set column widths & calculate dimensions of table elements
@@ -174,6 +182,45 @@ angular.module 'fixtable'
 					scope.options.sort.direction = 'asc'
 				updateData()
 
+			getSelectedItemIndex = (item) ->
+				unless scope.selectedItems?.length then return -1
+				for selectedItem, index in scope.selectedItems
+					if angular.equals item, selectedItem
+						return index
+				return -1
+
+			scope.rowSelected = (row) ->
+				return getSelectedItemIndex(row) isnt -1
+
+			scope.toggleRowSelection = (row) ->
+				if scope.rowSelected row
+					scope.selectedItems.splice getSelectedItemIndex(row), 1
+				else
+					scope.selectedItems.push row
+
+			scope.pageSelected = ->
+				unless scope.selectedItems?.length and scope.data?.length then return false
+				for row in scope.data
+					unless scope.rowSelected(row) then return false
+				return true
+
+			scope.pagePartiallySelected = ->
+				unless scope.selectedItems?.length and scope.data?.length then return false
+				if scope.pageSelected() then return false
+				for row in scope.data
+					if scope.rowSelected(row) then return true
+				return false
+
+			scope.togglePageSelection = ->
+				if scope.pageSelected()
+					for row in scope.data
+						if scope.rowSelected(row)
+							scope.selectedItems.splice getSelectedItemIndex(row), 1
+				else
+					for row in scope.data
+						unless scope.rowSelected(row)
+							scope.selectedItems.push row
+
 			updateData = ->
 
 				# run callback method to get sorted/filtered data
@@ -228,6 +275,15 @@ angular.module 'fixtable'
 ]
 
 angular.module 'fixtable'
+.directive 'fixtableIndeterminateCheckbox', [
+	->
+		restrict: 'A'
+		link: (scope, element, attrs) ->
+      attrs.$observe 'fixtableIndeterminateCheckbox', (newVal) ->
+        element[0].indeterminate = if newVal is 'true' then true else false
+]
+
+angular.module 'fixtable'
 .directive 'fixtableInput', [
 	-> 
 		replace: true
@@ -243,6 +299,8 @@ angular.module 'fixtable'
 	@defaultOptions =
 		applyFiltersTemplate: 'fixtable/templates/applyFilters.html'
 		cellTemplate: 'fixtable/templates/bodyCell.html'
+		checkboxCellTemplate: 'fixtable/templates/checkboxCell.html'
+		checkboxHeaderTemplate: 'fixtable/templates/checkboxHeaderCell.html'
 		debugMode: false
 		editTemplate: 'fixtable/templates/editCell.html'
 		footerTemplate: 'fixtable/templates/footer.html'
@@ -250,6 +308,10 @@ angular.module 'fixtable'
 		loadingTemplate: 'fixtable/templates/loading.html'
 		realtimeFiltering: true
 		sortIndicatorTemplate: 'fixtable/templates/sortIndicator.html'
+		rowSelection: false
+		rowSelectionColumnWidth: 40
+		rowSelectionWithCheckboxOnly: false
+		selectedRowClass: 'active'
 
 	@$get = -> @defaultOptions
 

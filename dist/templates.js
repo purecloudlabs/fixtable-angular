@@ -11,6 +11,16 @@ angular.module('fixtable').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('fixtable/templates/checkboxCell.html',
+    "<div style=\"text-align: center\"><input type=\"checkbox\" ng-checked=\"rowSelected(row)\" ng-click=\"options.rowSelectionWithCheckboxOnly && toggleRowSelection(row)\"></div>"
+  );
+
+
+  $templateCache.put('fixtable/templates/checkboxHeaderCell.html',
+    "<div style=\"text-align: center\"><input type=\"checkbox\" fixtable-indeterminate-checkbox=\"{{ pagePartiallySelected() }}\" ng-checked=\"pageSelected()\" ng-click=\"togglePageSelection()\"></div>"
+  );
+
+
   $templateCache.put('fixtable/templates/columnFilters/search.html',
     "<input type=\"text\" ng-model=\"values.query\">"
   );
@@ -27,7 +37,7 @@ angular.module('fixtable').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('fixtable/templates/fixtable.html',
-    "<div class=\"fixtable\"><div class=\"fixtable-header\"></div><div class=\"fixtable-filters\" ng-show=\"columnFilters.length\"><div ng-show=\"!options.realtimeFiltering && filtersDirty\" ng-include=\"options.applyFiltersTemplate\"></div></div><div class=\"fixtable-inner\"><table ng-class=\"options.tableClass\"><thead><tr class=\"fixtable-column-headers\"><th ng-repeat=\"(colIndex, col) in options.columns\" ng-click=\"col.sortable && changeSort(col.property)\" ng-class=\"{'fixtable-sortable-column-header': col.sortable}\" class=\"{{ col.headerClass }}\"><div ng-include=\"options.headerTemplate\"></div></th></tr><tr class=\"fixtable-column-filters\"><th ng-repeat=\"(colIndex, col) in options.columns\"><div ng-if=\"col.filter\" ng-include=\"getFilterTemplate(col.filter.type)\" ng-init=\"values=col.filter.values;options=col.filter.options\"></div></th></tr></thead><tbody><tr ng-repeat=\"(rowIndex, row) in data\" ng-class=\"{{ options.rowClass }}\"><td class=\"{{ col.cellClass }}\" ng-repeat=\"(colIndex, col) in options.columns\" ng-include=\"getCellTemplate()\" ng-controller=\"cellCtrl\" ng-class=\"{'fixtable-cell-editing': editing, 'fixtable-cell-editable': col.editable}\" ng-click=\"beginEdit()\"></td></tr></tbody></table><div ng-if=\"loading\" ng-include=\"options.loadingTemplate\"></div></div><div class=\"fixtable-footer\" ng-show=\"options.paging\" ng-include=\"options.footerTemplate\" onload=\"pagingOptions = options.pagingOptions\"></div></div>"
+    "<div class=\"fixtable\"><div class=\"fixtable-header\"></div><div class=\"fixtable-filters\" ng-show=\"columnFilters.length\"><div ng-show=\"!options.realtimeFiltering && filtersDirty\" ng-include=\"options.applyFiltersTemplate\"></div></div><div class=\"fixtable-inner\"><table ng-class=\"options.tableClass\"><thead><tr class=\"fixtable-column-headers\"><th ng-if=\"options.rowSelection\"><div ng-include=\"options.checkboxHeaderTemplate\"></div></th><th ng-repeat=\"(colIndex, col) in options.columns\" ng-if=\"!col.rowSelectionColumn\" ng-click=\"col.sortable && changeSort(col.property)\" ng-class=\"{'fixtable-sortable-column-header': col.sortable}\" class=\"{{ col.headerClass }}\"><div ng-include=\"options.headerTemplate\"></div></th></tr><tr class=\"fixtable-column-filters\"><th ng-repeat=\"(colIndex, col) in options.columns\"><div ng-if=\"col.filter\" ng-include=\"getFilterTemplate(col.filter.type)\" ng-init=\"values=col.filter.values;options=col.filter.options\"></div></th></tr></thead><tbody><tr ng-repeat=\"(rowIndex, row) in data\" class=\"{{ rowSelected(row) ? options.selectedRowClass: '' }}\" ng-click=\"!options.rowSelectionWithCheckboxOnly && toggleRowSelection(row)\" style=\"{{ !options.rowSelectionWithCheckboxOnly ? 'cursor:pointer;' : '' }}\" ng-class=\"{{ options.rowClass }}\"><td ng-if=\"options.rowSelection\" ng-include=\"options.checkboxCellTemplate\"></td><td class=\"{{ col.cellClass }}\" ng-repeat=\"(colIndex, col) in options.columns\" ng-if=\"!col.rowSelectionColumn\" ng-include=\"getCellTemplate()\" ng-controller=\"cellCtrl\" ng-class=\"{'fixtable-cell-editing': editing, 'fixtable-cell-editable': col.editable}\" ng-click=\"beginEdit()\"></td></tr></tbody></table><div ng-if=\"loading\" ng-include=\"options.loadingTemplate\"></div></div><div class=\"fixtable-footer\" ng-show=\"options.paging\" ng-include=\"options.footerTemplate\" onload=\"pagingOptions = options.pagingOptions\"></div></div>"
   );
 
 

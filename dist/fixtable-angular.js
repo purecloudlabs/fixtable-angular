@@ -51,13 +51,22 @@
     '$timeout', 'fixtableDefaultOptions', 'fixtableFilterTypes', function($timeout, fixtableDefaultOptions, fixtableFilterTypes) {
       return {
         link: function(scope, element, attrs) {
-          var base, col, column, defaultValues, filterAndSortData, fixtable, getCurrentFilterValues, getPageData, i, index, j, k, key, len, len1, ref, ref1, updateData, value, valuesObj;
+          var base, col, column, defaultValues, filterAndSortData, fixtable, getCurrentFilterValues, getPageData, getSelectedItemIndex, i, index, j, k, key, len, len1, ref, ref1, updateData, value, valuesObj;
           for (key in fixtableDefaultOptions) {
             value = fixtableDefaultOptions[key];
             if (!Object.prototype.hasOwnProperty.call(scope.options, key)) {
               scope.options[key] = value;
             }
           }
+          if (scope.options.rowSelection) {
+            scope.options.columns.unshift({
+              rowSelectionColumn: true,
+              width: scope.options.rowSelectionColumnWidth
+            });
+          }
+          scope.$parent.$watchCollection(scope.options.selectedItems, function(newData) {
+            return scope.selectedItems = newData;
+          });
           fixtable = new Fixtable(element[0], scope.options.debugMode);
           ref = scope.options.columns;
           for (i = j = 0, len = ref.length; j < len; i = ++j) {
@@ -195,6 +204,89 @@
             }
             return updateData();
           };
+          getSelectedItemIndex = function(item) {
+            var l, len2, ref2, ref3, selectedItem;
+            if (!((ref2 = scope.selectedItems) != null ? ref2.length : void 0)) {
+              return -1;
+            }
+            ref3 = scope.selectedItems;
+            for (index = l = 0, len2 = ref3.length; l < len2; index = ++l) {
+              selectedItem = ref3[index];
+              if (angular.equals(item, selectedItem)) {
+                return index;
+              }
+            }
+            return -1;
+          };
+          scope.rowSelected = function(row) {
+            return getSelectedItemIndex(row) !== -1;
+          };
+          scope.toggleRowSelection = function(row) {
+            if (scope.rowSelected(row)) {
+              return scope.selectedItems.splice(getSelectedItemIndex(row), 1);
+            } else {
+              return scope.selectedItems.push(row);
+            }
+          };
+          scope.pageSelected = function() {
+            var l, len2, ref2, ref3, ref4, row;
+            if (!(((ref2 = scope.selectedItems) != null ? ref2.length : void 0) && ((ref3 = scope.data) != null ? ref3.length : void 0))) {
+              return false;
+            }
+            ref4 = scope.data;
+            for (l = 0, len2 = ref4.length; l < len2; l++) {
+              row = ref4[l];
+              if (!scope.rowSelected(row)) {
+                return false;
+              }
+            }
+            return true;
+          };
+          scope.pagePartiallySelected = function() {
+            var l, len2, ref2, ref3, ref4, row;
+            if (!(((ref2 = scope.selectedItems) != null ? ref2.length : void 0) && ((ref3 = scope.data) != null ? ref3.length : void 0))) {
+              return false;
+            }
+            if (scope.pageSelected()) {
+              return false;
+            }
+            ref4 = scope.data;
+            for (l = 0, len2 = ref4.length; l < len2; l++) {
+              row = ref4[l];
+              if (scope.rowSelected(row)) {
+                return true;
+              }
+            }
+            return false;
+          };
+          scope.togglePageSelection = function() {
+            var l, len2, len3, m, ref2, ref3, results, results1, row;
+            if (scope.pageSelected()) {
+              ref2 = scope.data;
+              results = [];
+              for (l = 0, len2 = ref2.length; l < len2; l++) {
+                row = ref2[l];
+                if (scope.rowSelected(row)) {
+                  results.push(scope.selectedItems.splice(getSelectedItemIndex(row), 1));
+                } else {
+                  results.push(void 0);
+                }
+              }
+              return results;
+            } else {
+              ref3 = scope.data;
+              results1 = [];
+              for (m = 0, len3 = ref3.length; m < len3; m++) {
+                row = ref3[m];
+                if (!scope.rowSelected(row)) {
+                  results1.push(scope.selectedItems.push(row));
+                } else {
+                  results1.push(void 0);
+                }
+              }
+              return results1;
+            }
+          };
           updateData = function() {
             if (scope.options.paging) {
               return getPageData();
@@ -273,6 +365,19 @@
     }
   ]);
 
+  angular.module('fixtable').directive('fixtableIndeterminateCheckbox', [
+    function() {
+      return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+          return attrs.$observe('fixtableIndeterminateCheckbox', function(newVal) {
+            return element[0].indeterminate = newVal === 'true' ? true : false;
+          });
+        }
+      };
+    }
+  ]);
+
   angular.module('fixtable').directive('fixtableInput', [
     function() {
       return {
@@ -290,13 +395,19 @@
     this.defaultOptions = {
       applyFiltersTemplate: 'fixtable/templates/applyFilters.html',
       cellTemplate: 'fixtable/templates/bodyCell.html',
+      checkboxCellTemplate: 'fixtable/templates/checkboxCell.html',
+      checkboxHeaderTemplate: 'fixtable/templates/checkboxHeaderCell.html',
       debugMode: false,
       editTemplate: 'fixtable/templates/editCell.html',
       footerTemplate: 'fixtable/templates/footer.html',
       headerTemplate: 'fixtable/templates/headerCell.html',
       loadingTemplate: 'fixtable/templates/loading.html',
       realtimeFiltering: true,
-      sortIndicatorTemplate: 'fixtable/templates/sortIndicator.html'
+      sortIndicatorTemplate: 'fixtable/templates/sortIndicator.html',
+      rowSelection: false,
+      rowSelectionColumnWidth: 40,
+      rowSelectionWithCheckboxOnly: false,
+      selectedRowClass: 'active'
     };
     this.$get = function() {
       return this.defaultOptions;
