@@ -37,8 +37,8 @@
                 <tr
                 ng-repeat="(rowIndex, row) in data"
                 class="{{ rowSelected(row) ? options.selectedRowClass: '' }}"
-                ng-click="!options.rowSelectionWithCheckboxOnly && toggleRowSelection(row)"
-                style="{{ !options.rowSelectionWithCheckboxOnly ? 'cursor:pointer;' : '' }}"
+                ng-click="options.rowSelection && !options.rowSelectionWithCheckboxOnly && toggleRowSelection(row)"
+                style="{{ options.rowSelection && !options.rowSelectionWithCheckboxOnly ? 'cursor:pointer;' : '' }}"
                 ng-class="{{ options.rowClass }}">
                     <td
                     ng-if="options.rowSelection"
