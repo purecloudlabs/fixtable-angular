@@ -291,7 +291,7 @@
             }
           };
           return filterAndSortData = function() {
-            var compareFn, customCompareFn, filter, filterFn, l, len2, len3, len4, m, n, o, ref2, ref3, ref4, ref5, ref6, ref7, results;
+            var compareFn, customCompareFn, filter, filterFn, l, len2, len3, len4, m, n, o, ref2, ref3, ref4, ref5, ref6, ref7, results, testValue;
             scope.data = ((ref2 = scope.$parent[scope.options.data]) != null ? ref2.slice(0) : void 0) || [];
             if ((ref3 = scope.options.sort) != null ? ref3.property : void 0) {
               ref4 = scope.options.columns;
@@ -339,7 +339,8 @@
                 for (o = 0, len4 = ref7.length; o < len4; o++) {
                   filter = ref7[o];
                   filterFn = fixtableFilterTypes[filter.type].filterFn;
-                  if (!filterFn(scope.data[i][filter.property], filter.values)) {
+                  testValue = filter.property ? scope.data[i][filter.property] : scope.data[i];
+                  if (!filterFn(testValue, filter.values)) {
                     scope.data.splice(i, 1);
                     break;
                   }

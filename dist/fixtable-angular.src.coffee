@@ -264,7 +264,8 @@ angular.module 'fixtable'
 					for i in [0..scope.data.length-1].reverse()
 						for filter in scope.columnFilters
 							filterFn = fixtableFilterTypes[filter.type].filterFn
-							unless filterFn scope.data[i][filter.property], filter.values
+							testValue = if filter.property then scope.data[i][filter.property] else scope.data[i]
+							unless filterFn testValue, filter.values
 								scope.data.splice i, 1
 								break
 
