@@ -238,7 +238,7 @@
             ref4 = scope.data;
             for (l = 0, len2 = ref4.length; l < len2; l++) {
               row = ref4[l];
-              if (!scope.rowSelected(row)) {
+              if (!(scope.rowSelected(row) || scope.options.rowSelectionDisabled(row))) {
                 return false;
               }
             }
@@ -267,6 +267,9 @@
               ref2 = scope.data;
               for (l = 0, len2 = ref2.length; l < len2; l++) {
                 row = ref2[l];
+                if (scope.options.rowSelectionDisabled(row)) {
+                  continue;
+                }
                 if (scope.rowSelected(row)) {
                   scope.selectedItems.splice(getSelectedItemIndex(row), 1);
                 }
@@ -276,6 +279,9 @@
               ref3 = scope.data;
               for (m = 0, len3 = ref3.length; m < len3; m++) {
                 row = ref3[m];
+                if (scope.options.rowSelectionDisabled(row)) {
+                  continue;
+                }
                 if (!scope.rowSelected(row)) {
                   scope.selectedItems.push(row);
                 }
@@ -403,6 +409,9 @@
       sortIndicatorTemplate: 'fixtable/templates/sortIndicator.html',
       rowSelection: false,
       rowSelectionColumnWidth: 40,
+      rowSelectionDisabled: function(row) {
+        return false;
+      },
       rowSelectionWithCheckboxOnly: false,
       selectedRowClass: 'active'
     };
