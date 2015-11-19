@@ -162,7 +162,7 @@ angular.module 'fixtable'
 			scope.pageSelected = ->
 				unless scope.selectedItems?.length and scope.data?.length then return false
 				for row in scope.data
-					unless scope.rowSelected(row) then return false
+					unless scope.rowSelected(row) or scope.options.rowSelectionDisabled(row) then return false
 				return true
 
 			scope.pagePartiallySelected = ->
@@ -175,11 +175,13 @@ angular.module 'fixtable'
 			scope.togglePageSelection = ->
 				if scope.pageSelected()
 					for row in scope.data
+						continue if scope.options.rowSelectionDisabled row
 						if scope.rowSelected(row)
 							scope.selectedItems.splice getSelectedItemIndex(row), 1
 					scope.$emit 'fixtableUnselectAllRows'
 				else
 					for row in scope.data
+						continue if scope.options.rowSelectionDisabled row
 						unless scope.rowSelected(row)
 							scope.selectedItems.push row
 					scope.$emit 'fixtableSelectAllRows'

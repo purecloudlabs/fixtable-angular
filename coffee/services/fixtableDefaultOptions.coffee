@@ -15,6 +15,7 @@ angular.module 'fixtable'
 		sortIndicatorTemplate: 'fixtable/templates/sortIndicator.html'
 		rowSelection: false
 		rowSelectionColumnWidth: 40
+		rowSelectionDisabled: (row) -> return false
 		rowSelectionWithCheckboxOnly: false
 		selectedRowClass: 'active'
 
