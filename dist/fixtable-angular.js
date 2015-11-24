@@ -51,7 +51,7 @@
     '$timeout', 'fixtableDefaultOptions', 'fixtableFilterTypes', function($timeout, fixtableDefaultOptions, fixtableFilterTypes) {
       return {
         link: function(scope, element, attrs) {
-          var base, col, column, defaultValues, filterAndSortData, fixtable, getCurrentFilterValues, getPageData, getSelectedItemIndex, i, index, j, k, key, len, len1, ref, ref1, updateData, value, valuesObj;
+          var base, col, column, defaultFilterFn, defaultValues, filterAndSortData, fixtable, getCurrentFilterValues, getPageData, getSelectedItemIndex, i, index, j, k, key, len, len1, ref, ref1, updateData, value, valuesObj;
           for (key in fixtableDefaultOptions) {
             value = fixtableDefaultOptions[key];
             if (!Object.prototype.hasOwnProperty.call(scope.options, key)) {
@@ -135,13 +135,15 @@
             column = ref1[index];
             if (column.filter) {
               defaultValues = fixtableFilterTypes[column.filter.type].defaultValues;
+              defaultFilterFn = fixtableFilterTypes[column.filter.type].filterFn;
               if ((base = column.filter).values == null) {
                 base.values = angular.copy(defaultValues) || {};
               }
               scope.columnFilters.push({
                 type: column.filter.type,
                 property: column.property,
-                values: column.filter.values
+                values: column.filter.values,
+                filterFn: column.filter.filterFn || defaultFilterFn
               });
               valuesObj = 'options.columns[' + index + '].filter.values';
               scope.$watch(valuesObj, function(newVal, oldVal) {
@@ -297,7 +299,7 @@
             }
           };
           return filterAndSortData = function() {
-            var compareFn, customCompareFn, filter, filterFn, l, len2, len3, len4, m, n, o, ref2, ref3, ref4, ref5, ref6, ref7, results, testValue;
+            var compareFn, customCompareFn, filter, l, len2, len3, len4, m, n, o, ref2, ref3, ref4, ref5, ref6, ref7, results, testValue;
             scope.data = ((ref2 = scope.$parent[scope.options.data]) != null ? ref2.slice(0) : void 0) || [];
             if ((ref3 = scope.options.sort) != null ? ref3.property : void 0) {
               ref4 = scope.options.columns;
@@ -344,9 +346,8 @@
                 ref7 = scope.columnFilters;
                 for (o = 0, len4 = ref7.length; o < len4; o++) {
                   filter = ref7[o];
-                  filterFn = fixtableFilterTypes[filter.type].filterFn;
                   testValue = filter.property ? scope.data[i][filter.property] : scope.data[i];
-                  if (!filterFn(testValue, filter.values)) {
+                  if (!filter.filterFn(testValue, filter.values)) {
                     scope.data.splice(i, 1);
                     break;
                   }

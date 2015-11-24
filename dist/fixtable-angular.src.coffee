@@ -125,6 +125,7 @@ angular.module 'fixtable'
 
 					# ensure values property exists
 					defaultValues = fixtableFilterTypes[column.filter.type].defaultValues
+					defaultFilterFn = fixtableFilterTypes[column.filter.type].filterFn
 					column.filter.values ?= angular.copy(defaultValues) or {}
 
 					# track this filter object
@@ -132,6 +133,7 @@ angular.module 'fixtable'
 						type: column.filter.type
 						property: column.property
 						values: column.filter.values
+						filterFn: column.filter.filterFn or defaultFilterFn
 
 					# watch for changes to the values object
 					valuesObj = 'options.columns[' + index + '].filter.values'
@@ -265,9 +267,8 @@ angular.module 'fixtable'
 				if scope.data.length
 					for i in [0..scope.data.length-1].reverse()
 						for filter in scope.columnFilters
-							filterFn = fixtableFilterTypes[filter.type].filterFn
 							testValue = if filter.property then scope.data[i][filter.property] else scope.data[i]
-							unless filterFn testValue, filter.values
+							unless filter.filterFn testValue, filter.values
 								scope.data.splice i, 1
 								break
 
