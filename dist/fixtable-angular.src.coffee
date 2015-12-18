@@ -311,6 +311,7 @@ angular.module 'fixtable'
 		checkboxHeaderTemplate: 'fixtable/templates/checkboxHeaderCell.html'
 		debugMode: false
 		editTemplate: 'fixtable/templates/editCell.html'
+		emptyTemplate: 'fixtable/templates/emptyMessage.html'
 		footerTemplate: 'fixtable/templates/footer.html'
 		headerTemplate: 'fixtable/templates/headerCell.html'
 		loadingTemplate: 'fixtable/templates/loading.html'
