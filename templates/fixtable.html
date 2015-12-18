@@ -56,9 +56,9 @@
                 </tr>
             </tbody>
         </table>
-        <div
-        ng-if="loading"
-        ng-include="options.loadingTemplate">
+        <div class="fixtable-centered">
+            <div ng-if="loading" ng-include="options.loadingTemplate"></div>
+            <div ng-if="!data.length && !loading" ng-include="options.emptyTemplate"></div>
         </div>
     </div>
     <div
