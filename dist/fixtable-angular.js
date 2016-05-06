@@ -354,6 +354,7 @@
                 }
               }
             }
+            scope.$emit('fixtableDataLength', scope.data.length);
             return $timeout(function() {
               return fixtable.setDimensions();
             });

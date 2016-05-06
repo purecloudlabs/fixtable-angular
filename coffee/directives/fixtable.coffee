@@ -231,6 +231,9 @@ angular.module 'fixtable'
 								scope.data.splice i, 1
 								break
 
+				# emit data length
+				scope.$emit 'fixtableDataLength', scope.data.length
+
 				# re-calculate dimensions since column widths may have changed
 				$timeout -> fixtable.setDimensions()
 
