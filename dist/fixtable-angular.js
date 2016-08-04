@@ -76,9 +76,12 @@
             }
           }
           fixtable.setDimensions();
+          scope.options._paging = typeof scope.options.paging === 'function' ? scope.options.paging : function() {
+            return scope.options.paging;
+          };
           scope.$parent.$watchCollection(scope.options.data, function(newData) {
             scope.data = newData;
-            if (!scope.options.paging) {
+            if (!scope.options._paging()) {
               filterAndSortData();
             }
             return $timeout(function() {
@@ -95,6 +98,12 @@
               }
             });
           }
+          scope.$watch('options._paging()', function(newVal, oldVal) {
+            if (newVal == null) {
+              return;
+            }
+            return getPageData();
+          });
           scope.$watch('options.pagingOptions', function(newVal, oldVal) {
             var pageChanged, pageSizeChanged;
             if (!newVal) {
@@ -292,7 +301,7 @@
             }
           };
           updateData = function() {
-            if (scope.options.paging) {
+            if (scope.options._paging()) {
               return getPageData();
             } else {
               return filterAndSortData();
