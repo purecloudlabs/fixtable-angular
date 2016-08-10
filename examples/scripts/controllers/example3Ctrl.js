@@ -48,7 +48,7 @@ angular.module('examples')
 			],
 			tableClass: 'table',
 			loading: 'loadingData',
-			paging: true,
+			paging: function(){return true},
 			pagingOptions: {
 				callback: 'getPageData',
 				currentPage: 1,

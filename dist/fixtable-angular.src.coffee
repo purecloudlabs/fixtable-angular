@@ -67,10 +67,13 @@ angular.module 'fixtable'
 				if col.width then fixtable.setColumnWidth i+1, col.width
 			fixtable.setDimensions()
 
+			# setup paging value
+			scope.options._paging = if typeof scope.options.paging is 'function' then scope.options.paging else -> scope.options.paging
+
 			# update table data & calculated styles when source data changes
 			scope.$parent.$watchCollection scope.options.data, (newData) ->
 				scope.data = newData
-				unless scope.options.paging then filterAndSortData()
+				if !scope.options._paging() then filterAndSortData()
 				$timeout ->
 					fixtable.setDimensions()
 					fixtable.scrollTop()
@@ -79,6 +82,10 @@ angular.module 'fixtable'
 			if scope.options.reflow
 				scope.$parent.$watch scope.options.reflow, (newValue) ->
 					if newValue then $timeout -> fixtable.setDimensions()
+
+			scope.$watch 'options._paging()', (newVal, oldVal) -> 
+				return unless newVal?
+				getPageData()
 
 			# refresh when paging options change
 			scope.$watch 'options.pagingOptions', (newVal, oldVal) ->
@@ -230,15 +237,13 @@ angular.module 'fixtable'
 					scope.$emit 'fixtableSelectAllRows'
 
 			updateData = ->
-
 				# run callback method to get sorted/filtered data
-				if scope.options.paging then getPageData()
+				if scope.options._paging() then getPageData()
 
 				# or do it all here if we have the full dataset
 				else filterAndSortData()
 
 			filterAndSortData = ->
-
 				# start with a fresh copy of data from parent
 				scope.data = scope.$parent[scope.options.data]?.slice(0) or []
 

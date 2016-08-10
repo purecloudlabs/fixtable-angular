@@ -93,7 +93,7 @@
             A common requirement is to populate your table with dynamic data. For instance, loading records from an API with paginated output.
           </p>
           <p>
-            In the example below, we've turned on <code>paging</code> on and configured <code>pagingOptions</code>. The <code>callback</code> parameter specifies the name of a method in the parent controller that handles populating the <code>data</code> array. In this example, our callback method makes requests to a mock API.
+            In the example below, we've turned <code>paging</code> on and configured <code>pagingOptions</code>. Note that the paging property can take either a boolean or a function which returns a boolean. The <code>callback</code> parameter specifies the name of a method in the parent controller that handles populating the <code>data</code> array. In this example, our callback method makes requests to a mock API.
           </p>
           <p>
             Also, the <code>loading</code> option specifies the name of a scope variable that will be set <code>true</code> while new data is loading. The loading indicator will be toggled on or off as this value changes.
