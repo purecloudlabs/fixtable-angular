@@ -85,8 +85,11 @@
               filterAndSortData();
             }
             return $timeout(function() {
+              var ref1;
               fixtable.setDimensions();
-              return fixtable.scrollTop();
+              if (!((ref1 = scope.options.draggingOptions) != null ? ref1.noScroll : void 0)) {
+                return fixtable.scrollTop();
+              }
             });
           });
           if (scope.options.reflow) {
@@ -300,6 +303,50 @@
               return scope.$emit('fixtableSelectAllRows');
             }
           };
+          scope.$on('fixtable-drag-start', function(eventData, eventScope) {
+            scope.currentDragScope = eventScope;
+            return scope.$broadcast('fixtable-drag-started', eventScope);
+          });
+          scope.$on('fixtable-drag-end', function() {
+            return scope.$broadcast('fixtable-drag-ended');
+          });
+          scope.$on('fixtable-drag-drop', function(eventData) {
+            var cb, dragIndex, dragRow, dropIndex, dropRow, ref2;
+            scope.currentDropScope = eventData.targetScope;
+            if (scope.currentDropScope && scope.currentDragScope) {
+              dragIndex = ((function() {
+                var l, len2, ref2, results;
+                ref2 = scope.data;
+                results = [];
+                for (index = l = 0, len2 = ref2.length; l < len2; index = ++l) {
+                  dragRow = ref2[index];
+                  if (dragRow === scope.currentDragScope.row) {
+                    results.push(index);
+                  }
+                }
+                return results;
+              })()).shift();
+              dropIndex = ((function() {
+                var l, len2, ref2, results;
+                ref2 = scope.data;
+                results = [];
+                for (index = l = 0, len2 = ref2.length; l < len2; index = ++l) {
+                  dropRow = ref2[index];
+                  if (dropRow === scope.currentDropScope.row) {
+                    results.push(index);
+                  }
+                }
+                return results;
+              })()).shift();
+              cb = scope.$parent[(ref2 = scope.options.draggingOptions) != null ? ref2.callback : void 0];
+              if (cb) {
+                cb(dragIndex, dropIndex);
+              }
+              scope.currentDropScope = null;
+              scope.currentDragScope = null;
+              return scope.$apply();
+            }
+          });
           updateData = function() {
             if (scope.options._paging()) {
               return getPageData();
@@ -379,6 +426,168 @@
     }
   ]);
 
+  angular.module('fixtable').directive('fixtableDraggable', [
+    '$document', function($document) {
+      return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+          var canDrag, dragElement, draggableElement;
+          canDrag = false;
+          draggableElement = angular.element(element);
+          dragElement = null;
+          scope.cleanup = function() {
+            var el;
+            el = angular.element(element);
+            el.off('dragstart');
+            return el.off('dragend');
+          };
+          attrs.$observe('fixtableDraggable', function(newVal) {
+            canDrag = newVal === 'true' ? true : false;
+            draggableElement.attr("draggable", canDrag);
+            if (canDrag) {
+              draggableElement.on('dragstart', function(e) {
+                var child, dataTransfer, dragChildren, index, j, len, offsetWidth, offsetX, offsetY, ref, ref1, rowData, sourceChildren;
+                offsetX = e.offsetX || ((ref = e.originalEvent) != null ? ref.offsetX : void 0);
+                offsetY = e.offsetY || ((ref1 = e.originalEvent) != null ? ref1.offsetY : void 0);
+                dragElement = draggableElement.clone();
+                dragElement.addClass('fixtable-drag-element-live');
+                dragElement.css({
+                  position: 'absolute',
+                  top: '-1000px'
+                });
+                sourceChildren = draggableElement.children();
+                dragChildren = dragElement.children();
+                for (index = j = 0, len = sourceChildren.length; j < len; index = ++j) {
+                  child = sourceChildren[index];
+                  offsetWidth = sourceChildren[index].offsetWidth;
+                  angular.element(dragChildren[index]).css("width", offsetWidth + "px");
+                }
+                $document.find('body').append(dragElement);
+                dataTransfer = e.dataTransfer || e.originalEvent.dataTransfer;
+                dataTransfer.setDragImage(dragElement[0], offsetX, offsetY);
+                rowData = {
+                  row: scope.row,
+                  rowIndex: scope.rowIndex
+                };
+                dataTransfer.setData('text/plain', JSON.stringify(rowData));
+                dataTransfer.effectAllowed = 'move';
+                draggableElement.addClass('fixtable-drag-element');
+                scope.$emit('fixtable-drag-start', scope);
+                return true;
+              });
+              return draggableElement.on('dragend', function() {
+                scope.$emit('fixtable-drag-end');
+                draggableElement.removeClass('fixtable-drag-element');
+                dragElement.remove();
+                return true;
+              });
+            } else {
+              return scope.cleanup();
+            }
+          });
+          return scope.$on('$destroy', function() {
+            return scope.cleanup();
+          });
+        }
+      };
+    }
+  ]);
+
+  angular.module('fixtable').directive('fixtableDroppable', [
+    function() {
+      return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+          var canDrop;
+          canDrop = false;
+          scope.cleanup = function() {
+            var el;
+            el = angular.element(element);
+            el.off('dragenter');
+            el.off('dragover');
+            el.off('dragleave');
+            return el.off('drop');
+          };
+          attrs.$observe('fixtableDroppable', function(newVal) {
+            canDrop = newVal === 'true' ? true : false;
+            if (canDrop) {
+              angular.element(element).on('dragenter', function(e) {
+                var dataTransfer;
+                if (e.preventDefault) {
+                  e.preventDefault();
+                }
+                dataTransfer = e.dataTransfer || e.originalEvent.dataTransfer;
+                dataTransfer.dropEffect = 'move';
+                return false;
+              });
+              angular.element(element).on('dragover', function(e) {
+                var dataTransfer, dragData, draggedIndex, dropIndex;
+                if (e.preventDefault) {
+                  e.preventDefault();
+                }
+                dataTransfer = e.dataTransfer || e.originalEvent.dataTransfer;
+                dropIndex = scope.rowIndex;
+                try {
+                  dragData = JSON.parse(dataTransfer.getData('text/plain'));
+                  draggedIndex = dragData != null ? dragData.rowIndex : void 0;
+                } catch (_error) {
+                  if (scope.currentDragScope) {
+                    draggedIndex = scope.currentDragScope.rowIndex;
+                  }
+                  dropIndex = angular.element(element).scope().rowIndex;
+                }
+                if (draggedIndex !== dropIndex) {
+                  if (draggedIndex > dropIndex) {
+                    angular.element(element).addClass('fixtable-drop-above');
+                  } else {
+                    angular.element(element).addClass('fixtable-drop-below');
+                  }
+                }
+                angular.element(element).addClass('fixtable-drag-over');
+                return false;
+              });
+              angular.element(element).on('dragleave', function() {
+                angular.element(element).removeClass('fixtable-drag-over');
+                angular.element(element).removeClass('fixtable-drop-above');
+                return angular.element(element).removeClass('fixtable-drop-below');
+              });
+              return angular.element(element).on('drop', function(e) {
+                if (e.preventDefault) {
+                  e.preventDefault();
+                }
+                if (e.stopPropagation) {
+                  e.stopPropagation();
+                }
+                return scope.$emit('fixtable-drag-drop');
+              });
+            } else {
+              return scope.cleanup();
+            }
+          });
+          scope.$on('fixtable-drag-started', function(e, draggedScope) {
+            if (scope.$parent.currentDragScope.$id !== scope.$id) {
+              angular.element(element).addClass('fixtable-drop-target');
+            }
+            return scope.currentDragScope = draggedScope;
+          });
+          scope.$on('fixtable-drag-ended', function() {
+            var el;
+            scope.currentDragScope = null;
+            el = angular.element(element);
+            el.removeClass('fixtable-drop-target');
+            el.removeClass('fixtable-drag-over');
+            el.removeClass('fixtable-drop-above');
+            el.removeClass('fixtable-drop-below');
+            return el.triggerHandler('mouseleave');
+          });
+          return scope.$on('$destroy', function() {
+            return scope.cleanup();
+          });
+        }
+      };
+    }
+  ]);
+
   angular.module('fixtable').directive('fixtableIndeterminateCheckbox', [
     function() {
       return {
@@ -425,7 +634,13 @@
         return false;
       },
       rowSelectionWithCheckboxOnly: false,
-      selectedRowClass: 'active'
+      selectedRowClass: 'active',
+      dragging: false,
+      draggingOptions: {
+        noScroll: true,
+        dragHandle: false,
+        dragHandleWidth: 20
+      }
     };
     this.$get = function() {
       return this.defaultOptions;

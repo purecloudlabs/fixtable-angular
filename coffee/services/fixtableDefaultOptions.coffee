@@ -19,6 +19,11 @@ angular.module 'fixtable'
 		rowSelectionDisabled: (row) -> return false
 		rowSelectionWithCheckboxOnly: false
 		selectedRowClass: 'active'
+		dragging: false
+		draggingOptions:
+			noScroll: true
+			dragHandle: false
+			dragHandleWidth: 20
 
 	@$get = -> @defaultOptions
 

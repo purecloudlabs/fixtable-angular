@@ -35,7 +35,9 @@ angular.module 'fixtable'
 				if !scope.options._paging() then filterAndSortData()
 				$timeout ->
 					fixtable.setDimensions()
-					fixtable.scrollTop()
+
+					unless scope.options.draggingOptions?.noScroll
+						fixtable.scrollTop()
 
 			# update calculated styles when reflow property changes
 			if scope.options.reflow
@@ -194,6 +196,28 @@ angular.module 'fixtable'
 						unless scope.rowSelected(row)
 							scope.selectedItems.push row
 					scope.$emit 'fixtableSelectAllRows'
+
+			scope.$on 'fixtable-drag-start', (eventData, eventScope) ->
+				scope.currentDragScope = eventScope
+				scope.$broadcast 'fixtable-drag-started', eventScope
+
+			scope.$on 'fixtable-drag-end', ->
+				scope.$broadcast 'fixtable-drag-ended'
+
+			scope.$on 'fixtable-drag-drop', (eventData) ->
+				scope.currentDropScope = eventData.targetScope
+
+				if scope.currentDropScope and scope.currentDragScope
+					dragIndex = (index for dragRow, index in scope.data when dragRow is scope.currentDragScope.row).shift()
+					dropIndex = (index for dropRow, index in scope.data when dropRow is scope.currentDropScope.row).shift()
+
+					cb = scope.$parent[scope.options.draggingOptions?.callback]
+					if cb
+						cb dragIndex, dropIndex
+
+					scope.currentDropScope = null
+					scope.currentDragScope = null
+					scope.$apply()
 
 			updateData = ->
 				# run callback method to get sorted/filtered data

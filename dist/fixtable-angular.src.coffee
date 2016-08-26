@@ -76,7 +76,9 @@ angular.module 'fixtable'
 				if !scope.options._paging() then filterAndSortData()
 				$timeout ->
 					fixtable.setDimensions()
-					fixtable.scrollTop()
+
+					unless scope.options.draggingOptions?.noScroll
+						fixtable.scrollTop()
 
 			# update calculated styles when reflow property changes
 			if scope.options.reflow
@@ -236,6 +238,28 @@ angular.module 'fixtable'
 							scope.selectedItems.push row
 					scope.$emit 'fixtableSelectAllRows'
 
+			scope.$on 'fixtable-drag-start', (eventData, eventScope) ->
+				scope.currentDragScope = eventScope
+				scope.$broadcast 'fixtable-drag-started', eventScope
+
+			scope.$on 'fixtable-drag-end', ->
+				scope.$broadcast 'fixtable-drag-ended'
+
+			scope.$on 'fixtable-drag-drop', (eventData) ->
+				scope.currentDropScope = eventData.targetScope
+
+				if scope.currentDropScope and scope.currentDragScope
+					dragIndex = (index for dragRow, index in scope.data when dragRow is scope.currentDragScope.row).shift()
+					dropIndex = (index for dropRow, index in scope.data when dropRow is scope.currentDropScope.row).shift()
+
+					cb = scope.$parent[scope.options.draggingOptions?.callback]
+					if cb
+						cb dragIndex, dropIndex
+
+					scope.currentDropScope = null
+					scope.currentDragScope = null
+					scope.$apply()
+
 			updateData = ->
 				# run callback method to get sorted/filtered data
 				if scope.options._paging() then getPageData()
@@ -290,6 +314,153 @@ angular.module 'fixtable'
 		templateUrl: 'fixtable/templates/fixtable.html'
 ]
 
+angular.module('fixtable').directive 'fixtableDraggable', [
+  '$document'
+  ($document) ->
+    restrict: 'A'
+    link: (scope, element, attrs) ->
+      canDrag = false
+      draggableElement = angular.element(element)
+      dragElement = null
+
+      scope.cleanup = ->
+        el = angular.element(element)
+        el.off 'dragstart'
+        el.off 'dragend'
+
+      attrs.$observe 'fixtableDraggable', (newVal) ->
+        canDrag = if newVal is 'true' then true else false
+        draggableElement.attr "draggable", canDrag
+
+        if canDrag
+          draggableElement.on 'dragstart', (e) ->
+            offsetX = e.offsetX || e.originalEvent?.offsetX
+            offsetY = e.offsetY || e.originalEvent?.offsetY
+
+            dragElement = draggableElement.clone()
+            dragElement.addClass 'fixtable-drag-element-live'
+            dragElement.css
+              position: 'absolute'
+              top: '-1000px'
+
+            sourceChildren = draggableElement.children()
+            dragChildren = dragElement.children()
+
+            for child, index in sourceChildren
+              offsetWidth = sourceChildren[index].offsetWidth
+              angular.element(dragChildren[index]).css "width", "#{offsetWidth}px"
+
+            $document.find('body').append dragElement
+
+
+            dataTransfer = e.dataTransfer || e.originalEvent.dataTransfer
+            dataTransfer.setDragImage(dragElement[0], offsetX, offsetY)
+
+            rowData =
+              row: scope.row
+              rowIndex: scope.rowIndex
+
+            dataTransfer.setData 'text/plain', JSON.stringify rowData
+            dataTransfer.effectAllowed = 'move'
+
+            draggableElement.addClass 'fixtable-drag-element'
+            scope.$emit 'fixtable-drag-start', scope
+            return true
+
+          draggableElement.on 'dragend', ->
+            scope.$emit 'fixtable-drag-end'
+            draggableElement.removeClass 'fixtable-drag-element'
+            dragElement.remove()
+            return true
+        else
+          scope.cleanup()
+
+      scope.$on '$destroy', ->
+        scope.cleanup()
+  ]
+
+angular.module('fixtable').directive 'fixtableDroppable', [
+  ->
+    restrict: 'A'
+    link: (scope, element, attrs) ->
+      canDrop = false
+
+      scope.cleanup = ->
+        el = angular.element(element)
+        el.off 'dragenter'
+        el.off 'dragover'
+        el.off 'dragleave'
+        el.off 'drop'
+
+      attrs.$observe 'fixtableDroppable', (newVal) ->
+        canDrop = if newVal is 'true' then true else false
+
+        if canDrop
+          angular.element(element).on 'dragenter', (e) ->
+            if e.preventDefault
+              e.preventDefault()
+
+            dataTransfer = e.dataTransfer || e.originalEvent.dataTransfer
+            dataTransfer.dropEffect = 'move'
+            return false
+
+          angular.element(element).on 'dragover', (e) ->
+            if e.preventDefault
+              e.preventDefault()
+
+            dataTransfer = e.dataTransfer || e.originalEvent.dataTransfer
+            dropIndex = scope.rowIndex
+            try
+              dragData = JSON.parse(dataTransfer.getData('text/plain'))
+              draggedIndex = dragData?.rowIndex
+            catch
+              if scope.currentDragScope
+                draggedIndex = scope.currentDragScope.rowIndex
+              dropIndex = angular.element(element).scope().rowIndex
+
+            unless draggedIndex is dropIndex
+              if draggedIndex > dropIndex
+                angular.element(element).addClass 'fixtable-drop-above'
+              else
+                angular.element(element).addClass 'fixtable-drop-below'
+
+            angular.element(element).addClass 'fixtable-drag-over'
+            return false
+
+          angular.element(element).on 'dragleave', ->
+            angular.element(element).removeClass 'fixtable-drag-over'
+            angular.element(element).removeClass 'fixtable-drop-above'
+            angular.element(element).removeClass 'fixtable-drop-below'
+
+          angular.element(element).on 'drop', (e) ->
+            if e.preventDefault
+              e.preventDefault()
+            if e.stopPropagation
+              e.stopPropagation()
+
+            scope.$emit 'fixtable-drag-drop'
+        else
+          scope.cleanup()
+
+      scope.$on 'fixtable-drag-started', (e,draggedScope)->
+        unless scope.$parent.currentDragScope.$id is scope.$id
+          angular.element(element).addClass 'fixtable-drop-target'
+
+        scope.currentDragScope = draggedScope;
+
+      scope.$on 'fixtable-drag-ended', ->
+        scope.currentDragScope = null
+        el = angular.element(element)
+        el.removeClass 'fixtable-drop-target'
+        el.removeClass 'fixtable-drag-over'
+        el.removeClass 'fixtable-drop-above'
+        el.removeClass 'fixtable-drop-below'
+        el.triggerHandler 'mouseleave'
+
+      scope.$on '$destroy', ->
+        scope.cleanup()
+  ]
+
 angular.module 'fixtable'
 .directive 'fixtableIndeterminateCheckbox', [
 	->
@@ -330,6 +501,11 @@ angular.module 'fixtable'
 		rowSelectionDisabled: (row) -> return false
 		rowSelectionWithCheckboxOnly: false
 		selectedRowClass: 'active'
+		dragging: false
+		draggingOptions:
+			noScroll: true
+			dragHandle: false
+			dragHandleWidth: 20
 
 	@$get = -> @defaultOptions
 
