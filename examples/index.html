@@ -220,6 +220,32 @@
 
       <hr>
 
+      <!-- example 1 -->
+      <div class="row" ng-controller="example8Ctrl">
+        <div class="col-xs-12">
+          <h3>Example 8 &ndash; Simple Table with drag reordering</h3>
+          <p>
+            Simple table that lets you rearrange the order of the items in the table.  You handle what happens in the drop but you get an update for which row was dragged to which other.
+          </p>
+        </div>
+        <div class="col-xs-12 col-md-5">
+          <h4>Configuration</h4>
+          <pre class="pre-scrollable" ng-bind="localOptions | json"></pre>
+        </div>
+        <div class="col-xs-12 col-md-7">
+          <button style="margin-left: 20px;" class="btn btn-small btn-primary pull-right" ng-click="options.dragging = !options.dragging">{{options.dragging? 'Disable Drag' : 'Enable Drag' }}</button>
+          <label class="pull-right" >Show Drag Handle <input ng-disabled="!options.dragging" type="checkbox" ng-click="options.draggingOptions.dragHandle = !options.draggingOptions.dragHandle" checked/></label>
+          <h4>Result</h4>
+          <div class="panel panel-default">
+            <fixtable options="options" style="height: 30.5em;"></fixtable>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+
+
       <div class="row">
         <div class="col-xs-12">
           <div class="alert alert-info">
@@ -249,7 +275,7 @@
     <script src="scripts/controllers/example5Ctrl.js"></script>
     <script src="scripts/controllers/example6Ctrl.js"></script>
     <script src="scripts/controllers/example7Ctrl.js"></script>
-
+    <script src="scripts/controllers/example8Ctrl.js"></script>
   </body>
 
 </html>
