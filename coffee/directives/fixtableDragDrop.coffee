@@ -11,6 +11,7 @@ angular.module('fixtable').directive 'fixtableDraggable', [
         el = angular.element(element)
         el.off 'dragstart'
         el.off 'dragend'
+        el.off 'drag'
 
       attrs.$observe 'fixtableDraggable', (newVal) ->
         canDrag = if newVal is 'true' then true else false
@@ -34,18 +35,29 @@ angular.module('fixtable').directive 'fixtableDraggable', [
               offsetWidth = sourceChildren[index].offsetWidth
               angular.element(dragChildren[index]).css "width", "#{offsetWidth}px"
 
-            $document.find('body').append dragElement
-
-
-            dataTransfer = e.dataTransfer || e.originalEvent.dataTransfer
-            dataTransfer.setDragImage(dragElement[0], offsetX, offsetY)
+            $document.find('body').prepend dragElement
 
             rowData =
               row: scope.row
               rowIndex: scope.rowIndex
 
-            dataTransfer.setData 'text/plain', JSON.stringify rowData
+            dataTransfer = e.dataTransfer || e.originalEvent.dataTransfer
             dataTransfer.effectAllowed = 'move'
+
+            try
+              dataTransfer.setData 'text/plain', JSON.stringify rowData
+              dataTransfer.setDragImage(dragElement[0], offsetX, offsetY)
+            catch e
+              dragElement.css
+                position: 'fixed'
+                'z-index': 1000
+                cursor: 'none'
+                opacity: '0.5'
+              scope.dragOffset =
+                offsetX:offsetX
+                offsetY:offsetY
+                rect: dragElement[0].getBoundingClientRect()
+              dataTransfer.setData 'Text', JSON.stringify rowData
 
             draggableElement.addClass 'fixtable-drag-element'
             scope.$emit 'fixtable-drag-start', scope
@@ -55,7 +67,18 @@ angular.module('fixtable').directive 'fixtableDraggable', [
             scope.$emit 'fixtable-drag-end'
             draggableElement.removeClass 'fixtable-drag-element'
             dragElement.remove()
+            scope.dragOffset = null
+
             return true
+
+          draggableElement.on 'drag', (e) ->
+            if scope.dragOffset and dragElement
+              x = (e.pageX || e.originalEvent?.pageX) - scope.dragOffset.offsetX;
+              y = (e.pageY || e.originalEvent?.pageY) - scope.dragOffset.rect.height
+
+              dragElement.css
+                left: x
+                top: y
         else
           scope.cleanup()
 
@@ -92,16 +115,8 @@ angular.module('fixtable').directive 'fixtableDroppable', [
             if e.preventDefault
               e.preventDefault()
 
-            dataTransfer = e.dataTransfer || e.originalEvent.dataTransfer
             dropIndex = scope.rowIndex
-            try
-              dragData = JSON.parse(dataTransfer.getData('text/plain'))
-              draggedIndex = dragData?.rowIndex
-            catch
-              #needed for safari - it does not correctly get the dragData
-              if scope.currentDragScope
-                draggedIndex = scope.currentDragScope.rowIndex
-              dropIndex = angular.element(element).scope().rowIndex
+            draggedIndex = scope.currentDragScope?.rowIndex
 
             unless draggedIndex is dropIndex
               if draggedIndex > dropIndex

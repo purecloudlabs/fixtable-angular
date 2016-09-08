@@ -439,7 +439,8 @@
             var el;
             el = angular.element(element);
             el.off('dragstart');
-            return el.off('dragend');
+            el.off('dragend');
+            return el.off('drag');
           };
           attrs.$observe('fixtableDraggable', function(newVal) {
             canDrag = newVal === 'true' ? true : false;
@@ -462,24 +463,52 @@
                   offsetWidth = sourceChildren[index].offsetWidth;
                   angular.element(dragChildren[index]).css("width", offsetWidth + "px");
                 }
-                $document.find('body').append(dragElement);
-                dataTransfer = e.dataTransfer || e.originalEvent.dataTransfer;
-                dataTransfer.setDragImage(dragElement[0], offsetX, offsetY);
+                $document.find('body').prepend(dragElement);
                 rowData = {
                   row: scope.row,
                   rowIndex: scope.rowIndex
                 };
-                dataTransfer.setData('text/plain', JSON.stringify(rowData));
+                dataTransfer = e.dataTransfer || e.originalEvent.dataTransfer;
                 dataTransfer.effectAllowed = 'move';
+                try {
+                  dataTransfer.setData('text/plain', JSON.stringify(rowData));
+                  dataTransfer.setDragImage(dragElement[0], offsetX, offsetY);
+                } catch (_error) {
+                  e = _error;
+                  dragElement.css({
+                    position: 'fixed',
+                    'z-index': 1000,
+                    cursor: 'none',
+                    opacity: '0.5'
+                  });
+                  scope.dragOffset = {
+                    offsetX: offsetX,
+                    offsetY: offsetY,
+                    rect: dragElement[0].getBoundingClientRect()
+                  };
+                  dataTransfer.setData('Text', JSON.stringify(rowData));
+                }
                 draggableElement.addClass('fixtable-drag-element');
                 scope.$emit('fixtable-drag-start', scope);
                 return true;
               });
-              return draggableElement.on('dragend', function() {
+              draggableElement.on('dragend', function() {
                 scope.$emit('fixtable-drag-end');
                 draggableElement.removeClass('fixtable-drag-element');
                 dragElement.remove();
+                scope.dragOffset = null;
                 return true;
+              });
+              return draggableElement.on('drag', function(e) {
+                var ref, ref1, x, y;
+                if (scope.dragOffset && dragElement) {
+                  x = (e.pageX || ((ref = e.originalEvent) != null ? ref.pageX : void 0)) - scope.dragOffset.offsetX;
+                  y = (e.pageY || ((ref1 = e.originalEvent) != null ? ref1.pageY : void 0)) - scope.dragOffset.rect.height;
+                  return dragElement.css({
+                    left: x,
+                    top: y
+                  });
+                }
               });
             } else {
               return scope.cleanup();
@@ -521,21 +550,12 @@
                 return false;
               });
               angular.element(element).on('dragover', function(e) {
-                var dataTransfer, dragData, draggedIndex, dropIndex;
+                var draggedIndex, dropIndex, ref;
                 if (e.preventDefault) {
                   e.preventDefault();
                 }
-                dataTransfer = e.dataTransfer || e.originalEvent.dataTransfer;
                 dropIndex = scope.rowIndex;
-                try {
-                  dragData = JSON.parse(dataTransfer.getData('text/plain'));
-                  draggedIndex = dragData != null ? dragData.rowIndex : void 0;
-                } catch (_error) {
-                  if (scope.currentDragScope) {
-                    draggedIndex = scope.currentDragScope.rowIndex;
-                  }
-                  dropIndex = angular.element(element).scope().rowIndex;
-                }
+                draggedIndex = (ref = scope.currentDragScope) != null ? ref.rowIndex : void 0;
                 if (draggedIndex !== dropIndex) {
                   if (draggedIndex > dropIndex) {
                     angular.element(element).addClass('fixtable-drop-above');
