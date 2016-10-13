@@ -14,7 +14,7 @@
                       <div ng-include="options.checkboxHeaderTemplate"></div>
                     </th>
                     <th
-                    ng-repeat="(colIndex, col) in options.columns"
+                    ng-repeat="(colIndex, col) in options.columns track by $index"
                     ng-if="!col.rowSelectionColumn"
                     ng-click="col.sortable && changeSort(col.property)"
                     ng-class="{'fixtable-sortable-column-header': col.sortable}"
@@ -24,7 +24,7 @@
                     </th>
                 </tr>
                 <tr class="fixtable-column-filters">
-                    <th ng-repeat="(colIndex, col) in options.columns">
+                    <th ng-repeat="(colIndex, col) in options.columns track by $index">
                         <div
                         ng-if="col.filter"
                         ng-include="getFilterTemplate(col.filter.type)"
@@ -35,7 +35,7 @@
             </thead>
             <tbody>
                 <tr
-                ng-repeat="(rowIndex, row) in data"
+                ng-repeat="(rowIndex, row) in data track by $index"
                 fixtable-draggable="{{options.dragging}}"
                 fixtable-droppable="{{options.dragging}}"
                 class="{{ rowSelected(row) ? options.selectedRowClass: ''}} {{options.draggingOptions.dragHandle ? 'has-drag-handle' : ''}}"
@@ -48,7 +48,7 @@
                     </td>
                     <td
                     class="{{ col.cellClass }}"
-                    ng-repeat="(colIndex, col) in options.columns"
+                    ng-repeat="(colIndex, col) in options.columns track by $index"
                     ng-if="!col.rowSelectionColumn"
                     ng-include="getCellTemplate()"
                     ng-controller="cellCtrl"
