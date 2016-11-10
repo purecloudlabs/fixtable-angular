@@ -58,7 +58,7 @@
               scope.options[key] = value;
             }
           }
-          if (scope.options.rowSelection) {
+          if (scope.options.rowSelection && !scope.options.columns[0].rowSelectionColumn) {
             scope.options.columns.unshift({
               rowSelectionColumn: true,
               width: scope.options.rowSelectionColumnWidth
