@@ -12,7 +12,7 @@ angular.module 'fixtable'
 					scope.options[key] = value
 
 			# set up things for row selection
-			if scope.options.rowSelection
+			if scope.options.rowSelection and not scope.options.columns[0].rowSelectionColumn
 				scope.options.columns.unshift
 					rowSelectionColumn: true
 					width: scope.options.rowSelectionColumnWidth
@@ -44,7 +44,7 @@ angular.module 'fixtable'
 				scope.$parent.$watch scope.options.reflow, (newValue) ->
 					if newValue then $timeout -> fixtable.setDimensions()
 
-			scope.$watch 'options._paging()', (newVal, oldVal) -> 
+			scope.$watch 'options._paging()', (newVal, oldVal) ->
 				return unless newVal?
 				getPageData()
 
