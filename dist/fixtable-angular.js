@@ -235,7 +235,15 @@
           scope.rowSelected = function(row) {
             return getSelectedItemIndex(row) !== -1;
           };
-          scope.toggleRowSelection = function(row) {
+          scope.toggleRowSelection = function(row, event) {
+            var ignore, ignoredElements;
+            if (ignore = scope.options.rowSelectionIgnore) {
+              ignoredElements = element[0].querySelectorAll(ignore.join(','));
+              Array.prototype.slice.call(ignoredElements);
+              if (Array.prototype.slice.call(ignoredElements).indexOf(event.target) >= 0) {
+                return;
+              }
+            }
             if (scope.rowSelected(row)) {
               scope.selectedItems.splice(getSelectedItemIndex(row), 1);
               return scope.$emit('fixtableUnselectRow', row);
