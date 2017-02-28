@@ -162,7 +162,14 @@ angular.module 'fixtable'
 			scope.rowSelected = (row) ->
 				return getSelectedItemIndex(row) isnt -1
 
-			scope.toggleRowSelection = (row) ->
+			scope.toggleRowSelection = (row, event) ->
+
+				# don't toggle row if clicked element is in the ignore list
+				if ignore = scope.options.rowSelectionIgnore
+					ignoredElements = element[0].querySelectorAll ignore.join ','
+					Array::slice.call ignoredElements
+					if Array::slice.call(ignoredElements).indexOf(event.target) >= 0 then return
+
 				if scope.rowSelected row
 					scope.selectedItems.splice getSelectedItemIndex(row), 1
 					scope.$emit 'fixtableUnselectRow', row
