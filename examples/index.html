@@ -202,6 +202,9 @@
             By default, the entire row is clickable. If you'd prefer to only allow toggling row selection with the checkboxes, set <code>rowSelectionWithCheckboxOnly</code> to <code>true</code>.
           </p>
           <p>
+            If you have interactive elements in your rows and don't want clicks on these elements to toggle row selection, you may supply a list of CSS selectors using the <code>rowSelectionIgnore</code> option. For example, <code>rowSelectionIgnore: ['button', 'div.button']</code>. Any clicks on matching elements will be ignored.
+          </p>
+          <p>
             If needed, your parent controller can pre-populate or adjust the selected items array at any time. To demonstrate this, we've added a button above the table that will remove all "R" rated films from your current selection.
           </p>
         </div>
