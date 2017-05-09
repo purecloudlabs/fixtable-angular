@@ -120,6 +120,10 @@
             }
             pageChanged = newVal.currentPage !== oldVal.currentPage;
             pageSizeChanged = newVal.pageSize !== oldVal.pageSize;
+            if (pageSizeChanged) {
+              scope.options.pagingOptions.currentPage = 1;
+              return;
+            }
             if (newVal === oldVal || pageChanged || pageSizeChanged) {
               return getPageData();
             }
