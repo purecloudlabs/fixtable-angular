@@ -64,7 +64,7 @@ angular.module 'fixtable'
 				pageSizeChanged = newVal.pageSize isnt oldVal.pageSize
 				if pageSizeChanged
 					scope.options.pagingOptions.currentPage = 1
-					return # will trigger a new run of this function due to the watch
+
 				if newVal is oldVal or pageChanged or pageSizeChanged
 					getPageData()
 
