@@ -1,3 +1,7 @@
 <div style="text-align: center">
-  <input type="checkbox" ng-checked="rowSelected(row)" ng-click="options.rowSelectionWithCheckboxOnly && toggleRowSelection(row)" ng-disabled="options.rowSelectionDisabled(row)">
+  <input type="checkbox" 
+  class="{{ options.checkboxHeaderClass }}"
+  ng-checked="rowSelected(row)" 
+  ng-click="options.rowSelectionWithCheckboxOnly && toggleRowSelection(row)" 
+  ng-disabled="options.rowSelectionDisabled(row)">
 </div>

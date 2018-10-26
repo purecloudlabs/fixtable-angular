@@ -1,3 +1,7 @@
 <div style="text-align: center">
-  <input type="checkbox" fixtable-indeterminate-checkbox="{{ pagePartiallySelected() }}" ng-checked="pageSelected()" ng-click="togglePageSelection()">
+  <input type="checkbox" 
+  class="{{ options.checkboxHeaderClass }}" 
+  fixtable-indeterminate-checkbox="{{ pagePartiallySelected() }}" 
+  ng-checked="pageSelected()" 
+  ng-click="togglePageSelection()">
 </div>
