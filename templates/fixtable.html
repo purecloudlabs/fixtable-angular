@@ -10,8 +10,9 @@
         <table ng-class="options.tableClass">
             <thead>
                 <tr class="fixtable-column-headers">
-                    <th ng-if="options.rowSelection">
-                      <div ng-include="options.checkboxHeaderTemplate"></div>
+                    <th ng-if="options.rowSelection"
+                    class="{{ options.checkboxHeaderClass }}">
+                        <div ng-include="options.checkboxHeaderTemplate"></div>
                     </th>
                     <th
                     ng-repeat="(colIndex, col) in options.columns track by $index"
@@ -44,6 +45,7 @@
                 ng-class="{{ options.rowClass }}">
                     <td
                     ng-if="options.rowSelection"
+                    class="{{ options.checkboxCellClass }}"
                     ng-include="options.checkboxCellTemplate">
                     </td>
                     <td
