@@ -21,5 +21,5 @@ module.exports =
 
   distJS: [
   	'buildJS'
-  	'uglify'
+  	'concat'
   ]
