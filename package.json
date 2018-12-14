@@ -1,8 +1,8 @@
 {
   "name": "fixtable-angular",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Angular wrapper for the Fixtable table library",
-  "main": "dist/fixtable-angular.min.js",
+  "main": "dist/fixtable-angular.js",
   "scripts": {
     "test": "grunt test"
   },
@@ -17,6 +17,7 @@
   ],
   "author": "Interactive Intelligence",
   "contributors": [
+    "Ryan Curtis <ryan.curtis@genesys.com>",
     "Brian Herold <brian.herold@inin.com>",
     "Michael McAuley <mike.mcauley@inin.com>",
     "Trezy <tre@trezy.com> (http://trezy.com)"
