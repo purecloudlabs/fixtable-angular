@@ -15,12 +15,13 @@
     "Table",
     "Angular"
   ],
-  "author": "Interactive Intelligence",
+  "author": "Genesys",
   "contributors": [
     "Ryan Curtis <ryan.curtis@genesys.com>",
-    "Brian Herold <brian.herold@inin.com>",
+    "Brian Herold <brian.herold@genesys.com>",
     "Michael McAuley <mike.mcauley@inin.com>",
-    "Trezy <tre@trezy.com> (http://trezy.com)"
+    "Trezy <tre@trezy.com> (http://trezy.com)",
+    "Lindsay Parker <lindsay.parker@genesys.com>"
   ],
   "license": "ISC",
   "bugs": {
