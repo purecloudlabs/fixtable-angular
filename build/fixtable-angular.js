@@ -51,7 +51,7 @@
     '$timeout', 'fixtableDefaultOptions', 'fixtableFilterTypes', function($timeout, fixtableDefaultOptions, fixtableFilterTypes) {
       return {
         link: function(scope, element, attrs) {
-          var base, col, column, defaultFilterFn, defaultValues, filterAndSortData, fixtable, getCurrentFilterValues, getPageData, getSelectedItemIndex, i, index, j, k, key, len, len1, ref, ref1, updateData, value, valuesObj;
+          var base, col, column, defaultFilterFn, defaultValues, filterAndSortData, fixtable, getCurrentFilterValues, getPageData, getSelectedItemIndex, i, index, j, k, key, len, len1, ref, ref1, ref2, setPagingActions, updateData, updatePagingOptions, value, valuesObj;
           for (key in fixtableDefaultOptions) {
             value = fixtableDefaultOptions[key];
             if (!Object.prototype.hasOwnProperty.call(scope.options, key)) {
@@ -107,11 +107,12 @@
             }
             return getPageData();
           });
-          scope.$watch('options.pagingOptions', function(newVal, oldVal) {
-            var pageChanged, pageSizeChanged;
+          updatePagingOptions = function(newVal, oldVal) {
+            var pageChanged, pageSizeChanged, pageTypeChanged;
             if (!newVal) {
               return;
             }
+            pageTypeChanged = newVal.type !== oldVal.type;
             newVal.currentPage = parseInt(newVal.currentPage);
             scope.totalPages = Math.ceil(newVal.totalItems / newVal.pageSize) || 1;
             scope.totalPagesOoM = (scope.totalPages + "").length;
@@ -123,9 +124,15 @@
             if (pageSizeChanged) {
               scope.options.pagingOptions.currentPage = 1;
             }
-            if (newVal === oldVal || pageChanged || pageSizeChanged) {
+            if (newVal === oldVal || pageChanged || pageSizeChanged || pageTypeChanged) {
               return getPageData();
             }
+          };
+          scope.$watch('options.pagingOptions', function(newVal, oldVal) {
+            if (newVal === oldVal) {
+              return;
+            }
+            return updatePagingOptions(newVal, oldVal);
           }, true);
           if (scope.options.loading) {
             scope.$parent.$watch(scope.options.loading, function(newValue) {
@@ -137,17 +144,36 @@
             cb = scope.$parent[scope.options.pagingOptions.callback];
             return cb(scope.options.pagingOptions, scope.options.sort, scope.appliedFilters);
           };
-          scope.nextPage = function() {
-            return scope.pagingOptions.currentPage += 1;
-          };
-          scope.prevPage = function() {
-            return scope.pagingOptions.currentPage -= 1;
-          };
+          console.log("scope.options.pagingOptions.type", (ref1 = scope.options.pagingOptions) != null ? ref1.type : void 0);
+          (setPagingActions = function() {
+            var ref2;
+            if (((ref2 = scope.options.pagingOptions) != null ? ref2.type : void 0) === 'prevNext') {
+              scope.nextPage = function() {
+                scope.options.pagingOptions.direction = 'NEXT';
+                scope.options.pagingOptions.currentPage += 1;
+                return updatePagingOptions(scope.options.pagingOptions, scope.options.pagingOptions);
+              };
+              scope.prevPage = function() {
+                scope.options.pagingOptions.direction = 'PREVIOUS';
+                scope.options.pagingOptions.currentPage -= 1;
+                return updatePagingOptions(scope.options.pagingOptions, scope.options.pagingOptions);
+              };
+            } else {
+              scope.nextPage = function() {
+                return scope.options.pagingOptions.currentPage += 1;
+              };
+              scope.prevPage = function() {
+                return scope.options.pagingOptions.currentPage -= 1;
+              };
+            }
+            console.log("nextPage", scope.nextPage);
+            return console.log("prevPage", scope.prevPage);
+          })();
           scope.parent = scope.$parent;
           scope.columnFilters = [];
-          ref1 = scope.options.columns;
-          for (index = k = 0, len1 = ref1.length; k < len1; index = ++k) {
-            column = ref1[index];
+          ref2 = scope.options.columns;
+          for (index = k = 0, len1 = ref2.length; k < len1; index = ++k) {
+            column = ref2[index];
             if (column.filter) {
               defaultValues = fixtableFilterTypes[column.filter.type].defaultValues;
               defaultFilterFn = fixtableFilterTypes[column.filter.type].filterFn;
@@ -191,11 +217,11 @@
             return updateData();
           };
           getCurrentFilterValues = function() {
-            var filter, l, len2, obj, ref2;
+            var filter, l, len2, obj, ref3;
             obj = {};
-            ref2 = scope.columnFilters;
-            for (l = 0, len2 = ref2.length; l < len2; l++) {
-              filter = ref2[l];
+            ref3 = scope.columnFilters;
+            for (l = 0, len2 = ref3.length; l < len2; l++) {
+              filter = ref3[l];
               obj[filter.property] = {
                 type: filter.type,
                 values: angular.copy(filter.values)
@@ -222,13 +248,13 @@
             return updateData();
           };
           getSelectedItemIndex = function(item) {
-            var l, len2, ref2, ref3, selectedItem;
-            if (!((ref2 = scope.selectedItems) != null ? ref2.length : void 0)) {
+            var l, len2, ref3, ref4, selectedItem;
+            if (!((ref3 = scope.selectedItems) != null ? ref3.length : void 0)) {
               return -1;
             }
-            ref3 = scope.selectedItems;
-            for (index = l = 0, len2 = ref3.length; l < len2; index = ++l) {
-              selectedItem = ref3[index];
+            ref4 = scope.selectedItems;
+            for (index = l = 0, len2 = ref4.length; l < len2; index = ++l) {
+              selectedItem = ref4[index];
               if (angular.equals(item, selectedItem)) {
                 return index;
               }
@@ -256,13 +282,13 @@
             }
           };
           scope.pageSelected = function() {
-            var l, len2, ref2, ref3, ref4, row;
-            if (!(((ref2 = scope.selectedItems) != null ? ref2.length : void 0) && ((ref3 = scope.data) != null ? ref3.length : void 0))) {
+            var l, len2, ref3, ref4, ref5, row;
+            if (!(((ref3 = scope.selectedItems) != null ? ref3.length : void 0) && ((ref4 = scope.data) != null ? ref4.length : void 0))) {
               return false;
             }
-            ref4 = scope.data;
-            for (l = 0, len2 = ref4.length; l < len2; l++) {
-              row = ref4[l];
+            ref5 = scope.data;
+            for (l = 0, len2 = ref5.length; l < len2; l++) {
+              row = ref5[l];
               if (!(scope.rowSelected(row) || scope.options.rowSelectionDisabled(row))) {
                 return false;
               }
@@ -270,16 +296,16 @@
             return true;
           };
           scope.pagePartiallySelected = function() {
-            var l, len2, ref2, ref3, ref4, row;
-            if (!(((ref2 = scope.selectedItems) != null ? ref2.length : void 0) && ((ref3 = scope.data) != null ? ref3.length : void 0))) {
+            var l, len2, ref3, ref4, ref5, row;
+            if (!(((ref3 = scope.selectedItems) != null ? ref3.length : void 0) && ((ref4 = scope.data) != null ? ref4.length : void 0))) {
               return false;
             }
             if (scope.pageSelected()) {
               return false;
             }
-            ref4 = scope.data;
-            for (l = 0, len2 = ref4.length; l < len2; l++) {
-              row = ref4[l];
+            ref5 = scope.data;
+            for (l = 0, len2 = ref5.length; l < len2; l++) {
+              row = ref5[l];
               if (scope.rowSelected(row)) {
                 return true;
               }
@@ -287,11 +313,11 @@
             return false;
           };
           scope.togglePageSelection = function() {
-            var l, len2, len3, m, ref2, ref3, row;
+            var l, len2, len3, m, ref3, ref4, row;
             if (scope.pageSelected()) {
-              ref2 = scope.data;
-              for (l = 0, len2 = ref2.length; l < len2; l++) {
-                row = ref2[l];
+              ref3 = scope.data;
+              for (l = 0, len2 = ref3.length; l < len2; l++) {
+                row = ref3[l];
                 if (scope.options.rowSelectionDisabled(row)) {
                   continue;
                 }
@@ -301,9 +327,9 @@
               }
               return scope.$emit('fixtableUnselectAllRows');
             } else {
-              ref3 = scope.data;
-              for (m = 0, len3 = ref3.length; m < len3; m++) {
-                row = ref3[m];
+              ref4 = scope.data;
+              for (m = 0, len3 = ref4.length; m < len3; m++) {
+                row = ref4[m];
                 if (scope.options.rowSelectionDisabled(row)) {
                   continue;
                 }
@@ -322,15 +348,15 @@
             return scope.$broadcast('fixtable-drag-ended');
           });
           scope.$on('fixtable-drag-drop', function(eventData) {
-            var cb, dragIndex, dragRow, dropIndex, dropRow, ref2;
+            var cb, dragIndex, dragRow, dropIndex, dropRow, ref3;
             scope.currentDropScope = eventData.targetScope;
             if (scope.currentDropScope && scope.currentDragScope) {
               dragIndex = ((function() {
-                var l, len2, ref2, results;
-                ref2 = scope.data;
+                var l, len2, ref3, results;
+                ref3 = scope.data;
                 results = [];
-                for (index = l = 0, len2 = ref2.length; l < len2; index = ++l) {
-                  dragRow = ref2[index];
+                for (index = l = 0, len2 = ref3.length; l < len2; index = ++l) {
+                  dragRow = ref3[index];
                   if (dragRow === scope.currentDragScope.row) {
                     results.push(index);
                   }
@@ -338,18 +364,18 @@
                 return results;
               })()).shift();
               dropIndex = ((function() {
-                var l, len2, ref2, results;
-                ref2 = scope.data;
+                var l, len2, ref3, results;
+                ref3 = scope.data;
                 results = [];
-                for (index = l = 0, len2 = ref2.length; l < len2; index = ++l) {
-                  dropRow = ref2[index];
+                for (index = l = 0, len2 = ref3.length; l < len2; index = ++l) {
+                  dropRow = ref3[index];
                   if (dropRow === scope.currentDropScope.row) {
                     results.push(index);
                   }
                 }
                 return results;
               })()).shift();
-              cb = scope.$parent[(ref2 = scope.options.draggingOptions) != null ? ref2.callback : void 0];
+              cb = scope.$parent[(ref3 = scope.options.draggingOptions) != null ? ref3.callback : void 0];
               if (cb) {
                 cb(dragIndex, dropIndex);
               }
@@ -360,18 +386,21 @@
           });
           updateData = function() {
             if (scope.options._paging()) {
-              return getPageData();
+              getPageData();
+              return $timeout(function() {
+                return fixtable.setDimensions();
+              });
             } else {
               return filterAndSortData();
             }
           };
           return filterAndSortData = function() {
-            var compareFn, customCompareFn, filter, l, len2, len3, len4, m, n, o, ref2, ref3, ref4, ref5, ref6, ref7, results, testValue;
-            scope.data = ((ref2 = scope.$parent[scope.options.data]) != null ? ref2.slice(0) : void 0) || [];
-            if ((ref3 = scope.options.sort) != null ? ref3.property : void 0) {
-              ref4 = scope.options.columns;
-              for (l = 0, len2 = ref4.length; l < len2; l++) {
-                col = ref4[l];
+            var compareFn, customCompareFn, filter, l, len2, len3, len4, m, n, o, ref3, ref4, ref5, ref6, ref7, ref8, results, testValue;
+            scope.data = ((ref3 = scope.$parent[scope.options.data]) != null ? ref3.slice(0) : void 0) || [];
+            if ((ref4 = scope.options.sort) != null ? ref4.property : void 0) {
+              ref5 = scope.options.columns;
+              for (l = 0, len2 = ref5.length; l < len2; l++) {
+                col = ref5[l];
                 if (col.property === scope.options.sort.property) {
                   if (col.sortCompareFunction) {
                     customCompareFn = col.sortCompareFunction;
@@ -403,16 +432,16 @@
               });
             }
             if (scope.data.length) {
-              ref6 = (function() {
+              ref7 = (function() {
                 results = [];
-                for (var n = 0, ref5 = scope.data.length - 1; 0 <= ref5 ? n <= ref5 : n >= ref5; 0 <= ref5 ? n++ : n--){ results.push(n); }
+                for (var n = 0, ref6 = scope.data.length - 1; 0 <= ref6 ? n <= ref6 : n >= ref6; 0 <= ref6 ? n++ : n--){ results.push(n); }
                 return results;
               }).apply(this).reverse();
-              for (m = 0, len3 = ref6.length; m < len3; m++) {
-                i = ref6[m];
-                ref7 = scope.columnFilters;
-                for (o = 0, len4 = ref7.length; o < len4; o++) {
-                  filter = ref7[o];
+              for (m = 0, len3 = ref7.length; m < len3; m++) {
+                i = ref7[m];
+                ref8 = scope.columnFilters;
+                for (o = 0, len4 = ref8.length; o < len4; o++) {
+                  filter = ref8[o];
                   testValue = filter.property ? scope.data[i][filter.property] : scope.data[i];
                   if (!filter.filterFn(testValue, filter.values)) {
                     scope.data.splice(i, 1);
@@ -654,7 +683,7 @@
       debugMode: false,
       editTemplate: 'fixtable/templates/editCell.html',
       emptyTemplate: 'fixtable/templates/emptyMessage.html',
-      footerTemplate: 'fixtable/templates/footer.html',
+      footerTemplate: 'fixtable/templates/footer-prev-next.html',
       headerTemplate: 'fixtable/templates/headerCell.html',
       loadingTemplate: 'fixtable/templates/loading.html',
       realtimeFiltering: true,

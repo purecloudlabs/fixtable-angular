@@ -48,12 +48,14 @@ angular.module 'fixtable'
 				return unless newVal?
 				getPageData()
 
-			# refresh when paging options change
-			scope.$watch 'options.pagingOptions', (newVal, oldVal) ->
-				return unless newVal
+			updatePagingOptions = (newVal, oldVal) ->
+				unless newVal then return 
+				pageTypeChanged = newVal.type isnt oldVal.type
+				
 				newVal.currentPage = parseInt newVal.currentPage
-				scope.totalPages = Math.ceil(newVal.totalItems / newVal.pageSize) or 1
-				scope.totalPagesOoM = (scope.totalPages+"").length
+				unless newVal.type is 'prevNext'
+					scope.totalPages = Math.ceil(newVal.totalItems / newVal.pageSize) or 1
+					scope.totalPagesOoM = (scope.totalPages+"").length
 
 				# don't allow currentPage to be set too high
 				if newVal.currentPage > scope.totalPages
@@ -61,13 +63,18 @@ angular.module 'fixtable'
 
 				# run callback (on pagingOptions init or currentPage/pageSize change)
 				pageChanged = newVal.currentPage isnt oldVal.currentPage
+				
 				pageSizeChanged = newVal.pageSize isnt oldVal.pageSize
 				if pageSizeChanged
 					scope.options.pagingOptions.currentPage = 1
 
-				if newVal is oldVal or pageChanged or pageSizeChanged
+				if newVal is oldVal or pageChanged or pageSizeChanged or pageTypeChanged
 					getPageData()
 
+			# refresh when paging options change
+			scope.$watch 'options.pagingOptions', (newVal, oldVal) ->
+				if newVal is oldVal then return
+				updatePagingOptions(newVal, oldVal)
 			, true
 
 			# watch loading status
@@ -80,14 +87,27 @@ angular.module 'fixtable'
 				cb = scope.$parent[scope.options.pagingOptions.callback]
 				cb scope.options.pagingOptions, scope.options.sort, scope.appliedFilters
 
+			console.log "scope.options.pagingOptions.type", scope.options.pagingOptions?.type
 			# provide methods to page forward/back in footer template
-			if scope.options.pagingOptions.pagingType is 'prevNext'
-				# does not use page numbers
-			else
-				scope.nextPage = ->
-					scope.pagingOptions.currentPage += 1
-				scope.prevPage = ->
-					scope.pagingOptions.currentPage -= 1
+			do setPagingActions = ->
+				if scope.options.pagingOptions?.type is 'prevNext'
+					# does not use page numbers
+					scope.nextPage = ->
+						scope.options.pagingOptions.direction = 'NEXT'
+						scope.options.pagingOptions.currentPage += 1
+						updatePagingOptions(scope.options.pagingOptions, scope.options.pagingOptions)
+					scope.prevPage = ->
+						scope.options.pagingOptions.direction = 'PREVIOUS'
+						scope.options.pagingOptions.currentPage -= 1
+						updatePagingOptions(scope.options.pagingOptions, scope.options.pagingOptions)
+				else
+					scope.nextPage = ->
+						scope.options.pagingOptions.currentPage += 1
+					scope.prevPage = ->
+						scope.options.pagingOptions.currentPage -= 1
+						
+				console.log "nextPage", scope.nextPage
+				console.log "prevPage", scope.prevPage
 
 			# provide a hook to parent scope
 			scope.parent = scope.$parent
@@ -234,7 +254,10 @@ angular.module 'fixtable'
 
 			updateData = ->
 				# run callback method to get sorted/filtered data
-				if scope.options._paging() then getPageData()
+				if scope.options._paging()
+					getPageData()
+					# re-calculate dimensions since column widths may have changed
+					$timeout -> fixtable.setDimensions()
 
 				# or do it all here if we have the full dataset
 				else filterAndSortData()
