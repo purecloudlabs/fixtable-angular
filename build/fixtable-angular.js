@@ -114,8 +114,10 @@
             }
             pageTypeChanged = newVal.type !== oldVal.type;
             newVal.currentPage = parseInt(newVal.currentPage);
-            scope.totalPages = Math.ceil(newVal.totalItems / newVal.pageSize) || 1;
-            scope.totalPagesOoM = (scope.totalPages + "").length;
+            if (newVal.type !== 'prevNext') {
+              scope.totalPages = Math.ceil(newVal.totalItems / newVal.pageSize) || 1;
+              scope.totalPagesOoM = (scope.totalPages + "").length;
+            }
             if (newVal.currentPage > scope.totalPages) {
               newVal.currentPage = scope.totalPages;
             }

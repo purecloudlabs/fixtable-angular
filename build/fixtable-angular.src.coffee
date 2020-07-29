@@ -92,12 +92,11 @@ angular.module 'fixtable'
 			updatePagingOptions = (newVal, oldVal) ->
 				unless newVal then return 
 				pageTypeChanged = newVal.type isnt oldVal.type
-				# if newVal.type is 'prevNext'
-				# 	pageChanged = newVal.pageUrl isnt oldVal.pageUrl
-				# else
+				
 				newVal.currentPage = parseInt newVal.currentPage
-				scope.totalPages = Math.ceil(newVal.totalItems / newVal.pageSize) or 1
-				scope.totalPagesOoM = (scope.totalPages+"").length
+				unless newVal.type is 'prevNext'
+					scope.totalPages = Math.ceil(newVal.totalItems / newVal.pageSize) or 1
+					scope.totalPagesOoM = (scope.totalPages+"").length
 
 				# don't allow currentPage to be set too high
 				if newVal.currentPage > scope.totalPages

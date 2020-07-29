@@ -5,7 +5,7 @@ angular.module 'fixtable'
 	'fixtableFilterTypes'
 	($timeout, fixtableDefaultOptions, fixtableFilterTypes) ->
 		link: (scope, element, attrs) ->
-
+			console.log('POTATO TABLE')
 			# use default options to fill in missing values
 			for key, value of fixtableDefaultOptions
 				unless Object::hasOwnProperty.call scope.options, key
@@ -88,6 +88,7 @@ angular.module 'fixtable'
 				cb scope.options.pagingOptions, scope.options.sort, scope.appliedFilters
 
 			console.log "scope.options.pagingOptions.type", scope.options.pagingOptions?.type
+			console.log "PLEASE LINK"
 			# provide methods to page forward/back in footer template
 			do setPagingActions = ->
 				if scope.options.pagingOptions?.type is 'prevNext'
