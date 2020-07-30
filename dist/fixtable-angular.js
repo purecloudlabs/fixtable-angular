@@ -257,7 +257,7 @@
             ref4 = scope.selectedItems;
             for (index = l = 0, len2 = ref4.length; l < len2; index = ++l) {
               selectedItem = ref4[index];
-              if (angular.equals(item, selectedItem)) {
+              if (item.id === selectedItem.id) {
                 return index;
               }
             }
@@ -685,7 +685,6 @@
       debugMode: false,
       editTemplate: 'fixtable/templates/editCell.html',
       emptyTemplate: 'fixtable/templates/emptyMessage.html',
-      footerTemplate: 'fixtable/templates/footer-prev-next.html',
       headerTemplate: 'fixtable/templates/headerCell.html',
       loadingTemplate: 'fixtable/templates/loading.html',
       realtimeFiltering: true,

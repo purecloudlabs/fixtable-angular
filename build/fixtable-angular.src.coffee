@@ -46,7 +46,6 @@ angular.module 'fixtable'
 	'fixtableFilterTypes'
 	($timeout, fixtableDefaultOptions, fixtableFilterTypes) ->
 		link: (scope, element, attrs) ->
-
 			# use default options to fill in missing values
 			for key, value of fixtableDefaultOptions
 				unless Object::hasOwnProperty.call scope.options, key
@@ -222,7 +221,9 @@ angular.module 'fixtable'
 			getSelectedItemIndex = (item) ->
 				unless scope.selectedItems?.length then return -1
 				for selectedItem, index in scope.selectedItems
-					if angular.equals item, selectedItem
+					# if angular.equals item, selectedItem
+					# 	return index
+					if item.id is selectedItem.id
 						return index
 				return -1
 
@@ -543,7 +544,6 @@ angular.module 'fixtable'
 		debugMode: false
 		editTemplate: 'fixtable/templates/editCell.html'
 		emptyTemplate: 'fixtable/templates/emptyMessage.html'
-		footerTemplate: 'fixtable/templates/footer-prev-next.html'
 		headerTemplate: 'fixtable/templates/headerCell.html'
 		loadingTemplate: 'fixtable/templates/loading.html'
 		realtimeFiltering: true
