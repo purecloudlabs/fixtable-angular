@@ -48,7 +48,7 @@
   ]);
 
   angular.module('fixtable').directive('fixtable', [
-    '$timeout', 'fixtableDefaultOptions', 'fixtableFilterTypes', function($timeout, fixtableDefaultOptions, fixtableFilterTypes) {
+    '$rootScope', '$timeout', 'fixtableDefaultOptions', 'fixtableFilterTypes', function($rootScope, $timeout, fixtableDefaultOptions, fixtableFilterTypes) {
       return {
         link: function(scope, element, attrs) {
           var base, col, column, defaultFilterFn, defaultValues, filterAndSortData, fixtable, getCurrentFilterValues, getPageData, getSelectedItemIndex, i, index, j, k, key, len, len1, ref, ref1, ref2, setPagingActions, updateData, updatePagingOptions, value, valuesObj;
@@ -141,10 +141,13 @@
               return scope.loading = newValue;
             });
           }
-          getPageData = function() {
+          getPageData = function(reload) {
             var cb;
+            if (reload == null) {
+              reload = false;
+            }
             cb = scope.$parent[scope.options.pagingOptions.callback];
-            return cb(scope.options.pagingOptions, scope.options.sort, scope.appliedFilters);
+            return cb(scope.options.pagingOptions, scope.options.sort, scope.appliedFilters, reload);
           };
           console.log("scope.options.pagingOptions.type", (ref1 = scope.options.pagingOptions) != null ? ref1.type : void 0);
           (setPagingActions = function() {
@@ -386,6 +389,11 @@
               return scope.$apply();
             }
           });
+          if (scope.options.pagingOptions) {
+            scope.$on(scope.options.pagingOptions.reloadEvent, function() {
+              return getPageData(true);
+            });
+          }
           updateData = function() {
             if (scope.options._paging()) {
               getPageData();

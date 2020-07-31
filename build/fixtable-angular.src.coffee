@@ -41,10 +41,11 @@ angular.module 'fixtable'
 ]
 angular.module 'fixtable'
 .directive 'fixtable', [
+	'$rootScope'
 	'$timeout'
 	'fixtableDefaultOptions'
 	'fixtableFilterTypes'
-	($timeout, fixtableDefaultOptions, fixtableFilterTypes) ->
+	($rootScope, $timeout, fixtableDefaultOptions, fixtableFilterTypes) ->
 		link: (scope, element, attrs) ->
 			# use default options to fill in missing values
 			for key, value of fixtableDefaultOptions
@@ -123,9 +124,9 @@ angular.module 'fixtable'
 					scope.loading = newValue
 
 			# get new page data
-			getPageData = ->
+			getPageData = (reload = false) ->
 				cb = scope.$parent[scope.options.pagingOptions.callback]
-				cb scope.options.pagingOptions, scope.options.sort, scope.appliedFilters
+				cb scope.options.pagingOptions, scope.options.sort, scope.appliedFilters, reload
 
 			console.log "scope.options.pagingOptions.type", scope.options.pagingOptions?.type
 			# provide methods to page forward/back in footer template
@@ -221,8 +222,6 @@ angular.module 'fixtable'
 			getSelectedItemIndex = (item) ->
 				unless scope.selectedItems?.length then return -1
 				for selectedItem, index in scope.selectedItems
-					# if angular.equals item, selectedItem
-					# 	return index
 					if item.id is selectedItem.id
 						return index
 				return -1
@@ -293,6 +292,10 @@ angular.module 'fixtable'
 					scope.currentDropScope = null
 					scope.currentDragScope = null
 					scope.$apply()
+
+			if scope.options.pagingOptions
+				scope.$on scope.options.pagingOptions.reloadEvent, ->
+					getPageData(true)
 
 			updateData = ->
 				# run callback method to get sorted/filtered data
