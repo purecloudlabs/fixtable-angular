@@ -260,7 +260,9 @@
             ref4 = scope.selectedItems;
             for (index = l = 0, len2 = ref4.length; l < len2; index = ++l) {
               selectedItem = ref4[index];
-              if (item.id === selectedItem.id) {
+              if (scope.options.rowSelectionProperty && (item[scope.options.rowSelectionProperty] === selectedItem[scope.options.rowSelectionProperty])) {
+                return index;
+              } else if (angular.equals(item, selectedItem)) {
                 return index;
               }
             }

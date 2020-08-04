@@ -181,7 +181,9 @@ angular.module 'fixtable'
 			getSelectedItemIndex = (item) ->
 				unless scope.selectedItems?.length then return -1
 				for selectedItem, index in scope.selectedItems
-					if item.id is selectedItem.id
+					if scope.options.rowSelectionProperty and (item[scope.options.rowSelectionProperty] is selectedItem[scope.options.rowSelectionProperty])
+						return index
+					else if angular.equals item, selectedItem
 						return index
 				return -1
 
