@@ -92,10 +92,12 @@ angular.module 'fixtable'
 				if scope.options.pagingOptions?.type is 'prevNext'
 					# does not use page numbers
 					scope.nextPage = ->
+						scope.options.pagingOptions.processingPage = true
 						scope.options.pagingOptions.direction = 'NEXT'
 						scope.options.pagingOptions.currentPage += 1
 						updatePagingOptions(scope.options.pagingOptions, scope.options.pagingOptions)
 					scope.prevPage = ->
+						scope.options.pagingOptions.processingPage = true
 						scope.options.pagingOptions.direction = 'PREVIOUS'
 						scope.options.pagingOptions.currentPage -= 1
 						updatePagingOptions(scope.options.pagingOptions, scope.options.pagingOptions)

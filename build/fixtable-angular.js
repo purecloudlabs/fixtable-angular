@@ -153,11 +153,13 @@
             var ref1;
             if (((ref1 = scope.options.pagingOptions) != null ? ref1.type : void 0) === 'prevNext') {
               scope.nextPage = function() {
+                scope.options.pagingOptions.processingPage = true;
                 scope.options.pagingOptions.direction = 'NEXT';
                 scope.options.pagingOptions.currentPage += 1;
                 return updatePagingOptions(scope.options.pagingOptions, scope.options.pagingOptions);
               };
               return scope.prevPage = function() {
+                scope.options.pagingOptions.processingPage = true;
                 scope.options.pagingOptions.direction = 'PREVIOUS';
                 scope.options.pagingOptions.currentPage -= 1;
                 return updatePagingOptions(scope.options.pagingOptions, scope.options.pagingOptions);
