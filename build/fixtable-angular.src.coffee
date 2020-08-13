@@ -128,7 +128,6 @@ angular.module 'fixtable'
 				cb = scope.$parent[scope.options.pagingOptions.callback]
 				cb scope.options.pagingOptions, scope.options.sort, scope.appliedFilters, reload
 
-			console.log "scope.options.pagingOptions.type", scope.options.pagingOptions?.type
 			# provide methods to page forward/back in footer template
 			do setPagingActions = ->
 				if scope.options.pagingOptions?.type is 'prevNext'
@@ -146,9 +145,6 @@ angular.module 'fixtable'
 						scope.options.pagingOptions.currentPage += 1
 					scope.prevPage = ->
 						scope.options.pagingOptions.currentPage -= 1
-						
-				console.log "nextPage", scope.nextPage
-				console.log "prevPage", scope.prevPage
 
 			# provide a hook to parent scope
 			scope.parent = scope.$parent
