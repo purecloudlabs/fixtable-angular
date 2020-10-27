@@ -114,9 +114,8 @@ angular.module 'fixtable'
 
 			# refresh when paging options change
 			scope.$watch 'options.pagingOptions', (newVal, oldVal) ->
-				if newVal.currentPage isnt oldVal.currentPage
-					return
 				if newVal is oldVal then return
+				if newVal.currentPage isnt oldVal.currentPage then return
 				updatePagingOptions(newVal, oldVal)
 			, true
 

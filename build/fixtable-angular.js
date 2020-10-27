@@ -131,10 +131,10 @@
             }
           };
           scope.$watch('options.pagingOptions', function(newVal, oldVal) {
-            if (newVal.currentPage !== oldVal.currentPage) {
+            if (newVal === oldVal) {
               return;
             }
-            if (newVal === oldVal) {
+            if (newVal.currentPage !== oldVal.currentPage) {
               return;
             }
             return updatePagingOptions(newVal, oldVal);
