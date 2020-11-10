@@ -150,6 +150,8 @@ angular.module 'fixtable'
 			scope.applyFilters = ->
 				scope.appliedFilters = getCurrentFilterValues()
 				scope.filtersDirty = false
+				if scope.options.pagingOptions.resetOnFilterChange
+					scope.options.pagingOptions.currentPage = 1
 				updateData()
 
 			getCurrentFilterValues = ->

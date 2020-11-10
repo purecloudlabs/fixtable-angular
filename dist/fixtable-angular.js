@@ -221,6 +221,9 @@
           scope.applyFilters = function() {
             scope.appliedFilters = getCurrentFilterValues();
             scope.filtersDirty = false;
+            if (scope.options.pagingOptions.resetOnFilterChange) {
+              scope.options.pagingOptions.currentPage = 1;
+            }
             return updateData();
           };
           getCurrentFilterValues = function() {
