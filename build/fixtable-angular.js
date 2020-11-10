@@ -134,7 +134,7 @@
             if (newVal === oldVal) {
               return;
             }
-            if (newVal.currentPage !== oldVal.currentPage) {
+            if (scope.pagingOptions.type && newVal.currentPage !== oldVal.currentPage) {
               return;
             }
             return updatePagingOptions(newVal, oldVal);
