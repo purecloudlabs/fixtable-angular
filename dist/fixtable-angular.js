@@ -48,10 +48,10 @@
   ]);
 
   angular.module('fixtable').directive('fixtable', [
-    '$timeout', 'fixtableDefaultOptions', 'fixtableFilterTypes', function($timeout, fixtableDefaultOptions, fixtableFilterTypes) {
+    '$timeout', 'fixtableDefaultOptions', 'fixtableFilterTypes', 'fixtableConstants', function($timeout, fixtableDefaultOptions, fixtableFilterTypes, fixtableConstants) {
       return {
         link: function(scope, element, attrs) {
-          var base, col, column, defaultFilterFn, defaultValues, filterAndSortData, fixtable, getCurrentFilterValues, getPageData, getSelectedItemIndex, i, index, j, k, key, len, len1, ref, ref1, updateData, value, valuesObj;
+          var base, col, column, defaultFilterFn, defaultValues, filterAndSortData, fixtable, getCurrentFilterValues, getPageData, getSelectedItemIndex, i, index, j, k, key, len, len1, ref, ref1, setPagingActions, updateData, updatePagingOptions, value, valuesObj;
           for (key in fixtableDefaultOptions) {
             value = fixtableDefaultOptions[key];
             if (!Object.prototype.hasOwnProperty.call(scope.options, key)) {
@@ -107,14 +107,17 @@
             }
             return getPageData();
           });
-          scope.$watch('options.pagingOptions', function(newVal, oldVal) {
-            var pageChanged, pageSizeChanged;
+          updatePagingOptions = function(newVal, oldVal) {
+            var pageChanged, pageSizeChanged, pageTypeChanged;
             if (!newVal) {
               return;
             }
+            pageTypeChanged = newVal.type !== oldVal.type;
             newVal.currentPage = parseInt(newVal.currentPage);
-            scope.totalPages = Math.ceil(newVal.totalItems / newVal.pageSize) || 1;
-            scope.totalPagesOoM = (scope.totalPages + "").length;
+            if (newVal.type !== fixtableConstants.PREVNEXT) {
+              scope.totalPages = Math.ceil(newVal.totalItems / newVal.pageSize) || 1;
+              scope.totalPagesOoM = (scope.totalPages + "").length;
+            }
             if (newVal.currentPage > scope.totalPages) {
               newVal.currentPage = scope.totalPages;
             }
@@ -123,26 +126,56 @@
             if (pageSizeChanged) {
               scope.options.pagingOptions.currentPage = 1;
             }
-            if (newVal === oldVal || pageChanged || pageSizeChanged) {
+            if (newVal === oldVal || pageChanged || pageSizeChanged || pageTypeChanged) {
               return getPageData();
             }
+          };
+          scope.$watch('options.pagingOptions', function(newVal, oldVal) {
+            if (newVal === oldVal) {
+              return;
+            }
+            if (scope.pagingOptions.type && newVal.currentPage !== oldVal.currentPage) {
+              return;
+            }
+            return updatePagingOptions(newVal, oldVal);
           }, true);
           if (scope.options.loading) {
             scope.$parent.$watch(scope.options.loading, function(newValue) {
               return scope.loading = newValue;
             });
           }
-          getPageData = function() {
+          getPageData = function(reload) {
             var cb;
+            if (reload == null) {
+              reload = false;
+            }
             cb = scope.$parent[scope.options.pagingOptions.callback];
-            return cb(scope.options.pagingOptions, scope.options.sort, scope.appliedFilters);
+            return cb(scope.options.pagingOptions, scope.options.sort, scope.appliedFilters, reload);
           };
-          scope.nextPage = function() {
-            return scope.pagingOptions.currentPage += 1;
-          };
-          scope.prevPage = function() {
-            return scope.pagingOptions.currentPage -= 1;
-          };
+          (setPagingActions = function() {
+            var ref1;
+            if (((ref1 = scope.options.pagingOptions) != null ? ref1.type : void 0) === fixtableConstants.PREVNEXT) {
+              scope.nextPage = function() {
+                scope.options.pagingOptions.processingPage = true;
+                scope.options.pagingOptions.direction = fixtableConstants.NEXT;
+                scope.options.pagingOptions.currentPage += 1;
+                return updatePagingOptions(scope.options.pagingOptions, scope.options.pagingOptions);
+              };
+              return scope.prevPage = function() {
+                scope.options.pagingOptions.processingPage = true;
+                scope.options.pagingOptions.direction = fixtableConstants.PREVIOUS;
+                scope.options.pagingOptions.currentPage -= 1;
+                return updatePagingOptions(scope.options.pagingOptions, scope.options.pagingOptions);
+              };
+            } else {
+              scope.nextPage = function() {
+                return scope.options.pagingOptions.currentPage += 1;
+              };
+              return scope.prevPage = function() {
+                return scope.options.pagingOptions.currentPage -= 1;
+              };
+            }
+          })();
           scope.parent = scope.$parent;
           scope.columnFilters = [];
           ref1 = scope.options.columns;
@@ -186,8 +219,12 @@
             });
           }
           scope.applyFilters = function() {
+            var ref2;
             scope.appliedFilters = getCurrentFilterValues();
             scope.filtersDirty = false;
+            if ((ref2 = scope.options.pagingOptions) != null ? ref2.resetOnFilterChange : void 0) {
+              scope.options.pagingOptions.currentPage = 1;
+            }
             return updateData();
           };
           getCurrentFilterValues = function() {
@@ -229,7 +266,9 @@
             ref3 = scope.selectedItems;
             for (index = l = 0, len2 = ref3.length; l < len2; index = ++l) {
               selectedItem = ref3[index];
-              if (angular.equals(item, selectedItem)) {
+              if (scope.options.rowSelectionProperty && (item[scope.options.rowSelectionProperty] === selectedItem[scope.options.rowSelectionProperty])) {
+                return index;
+              } else if (angular.equals(item, selectedItem)) {
                 return index;
               }
             }
@@ -358,9 +397,17 @@
               return scope.$apply();
             }
           });
+          if (scope.options.pagingOptions) {
+            scope.$on(scope.options.pagingOptions.reloadEvent, function() {
+              return getPageData(true);
+            });
+          }
           updateData = function() {
             if (scope.options._paging()) {
-              return getPageData();
+              getPageData();
+              return $timeout(function() {
+                return fixtable.setDimensions();
+              });
             } else {
               return filterAndSortData();
             }
@@ -645,6 +692,12 @@
     }
   ]);
 
+  angular.module('fixtable').constant('fixtableConstants', {
+    PREVNEXT: "prevNext",
+    NEXT: "NEXT",
+    PREVIOUS: "PREVIOUS"
+  });
+
   angular.module('fixtable').provider('fixtableDefaultOptions', function() {
     this.defaultOptions = {
       applyFiltersTemplate: 'fixtable/templates/applyFilters.html',
@@ -671,6 +724,18 @@
         noScroll: true,
         dragHandle: false,
         dragHandleWidth: 20
+      },
+      pagingOptions: {
+        type: null,
+        direction: null,
+        callback: null,
+        currentPage: null,
+        hasNextPage: null,
+        pageSize: null,
+        pageSizeOptions: null,
+        processingPage: null,
+        reloadEvent: null,
+        resetOnFilterChange: true
       }
     };
     this.$get = function() {

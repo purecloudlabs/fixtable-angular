@@ -44,9 +44,9 @@ angular.module 'fixtable'
 	'$timeout'
 	'fixtableDefaultOptions'
 	'fixtableFilterTypes'
-	($timeout, fixtableDefaultOptions, fixtableFilterTypes) ->
+	'fixtableConstants'
+	($timeout, fixtableDefaultOptions, fixtableFilterTypes, fixtableConstants) ->
 		link: (scope, element, attrs) ->
-
 			# use default options to fill in missing values
 			for key, value of fixtableDefaultOptions
 				unless Object::hasOwnProperty.call scope.options, key
@@ -89,12 +89,14 @@ angular.module 'fixtable'
 				return unless newVal?
 				getPageData()
 
-			# refresh when paging options change
-			scope.$watch 'options.pagingOptions', (newVal, oldVal) ->
-				return unless newVal
+			updatePagingOptions = (newVal, oldVal) ->
+				unless newVal then return 
+				pageTypeChanged = newVal.type isnt oldVal.type
+				
 				newVal.currentPage = parseInt newVal.currentPage
-				scope.totalPages = Math.ceil(newVal.totalItems / newVal.pageSize) or 1
-				scope.totalPagesOoM = (scope.totalPages+"").length
+				unless newVal.type is fixtableConstants.PREVNEXT
+					scope.totalPages = Math.ceil(newVal.totalItems / newVal.pageSize) or 1
+					scope.totalPagesOoM = (scope.totalPages+"").length
 
 				# don't allow currentPage to be set too high
 				if newVal.currentPage > scope.totalPages
@@ -102,13 +104,19 @@ angular.module 'fixtable'
 
 				# run callback (on pagingOptions init or currentPage/pageSize change)
 				pageChanged = newVal.currentPage isnt oldVal.currentPage
+				
 				pageSizeChanged = newVal.pageSize isnt oldVal.pageSize
 				if pageSizeChanged
 					scope.options.pagingOptions.currentPage = 1
 
-				if newVal is oldVal or pageChanged or pageSizeChanged
+				if newVal is oldVal or pageChanged or pageSizeChanged or pageTypeChanged
 					getPageData()
 
+			# refresh when paging options change
+			scope.$watch 'options.pagingOptions', (newVal, oldVal) ->
+				if newVal is oldVal then return
+				if scope.pagingOptions.type and newVal.currentPage isnt oldVal.currentPage then return
+				updatePagingOptions(newVal, oldVal)
 			, true
 
 			# watch loading status
@@ -117,15 +125,29 @@ angular.module 'fixtable'
 					scope.loading = newValue
 
 			# get new page data
-			getPageData = ->
+			getPageData = (reload = false) ->
 				cb = scope.$parent[scope.options.pagingOptions.callback]
-				cb scope.options.pagingOptions, scope.options.sort, scope.appliedFilters
+				cb scope.options.pagingOptions, scope.options.sort, scope.appliedFilters, reload
 
 			# provide methods to page forward/back in footer template
-			scope.nextPage = ->
-				scope.pagingOptions.currentPage += 1
-			scope.prevPage = ->
-				scope.pagingOptions.currentPage -= 1
+			do setPagingActions = ->
+				if scope.options.pagingOptions?.type is fixtableConstants.PREVNEXT
+					# does not use page numbers
+					scope.nextPage = ->
+						scope.options.pagingOptions.processingPage = true
+						scope.options.pagingOptions.direction = fixtableConstants.NEXT
+						scope.options.pagingOptions.currentPage += 1
+						updatePagingOptions(scope.options.pagingOptions, scope.options.pagingOptions)
+					scope.prevPage = ->
+						scope.options.pagingOptions.processingPage = true
+						scope.options.pagingOptions.direction = fixtableConstants.PREVIOUS
+						scope.options.pagingOptions.currentPage -= 1
+						updatePagingOptions(scope.options.pagingOptions, scope.options.pagingOptions)
+				else
+					scope.nextPage = ->
+						scope.options.pagingOptions.currentPage += 1
+					scope.prevPage = ->
+						scope.options.pagingOptions.currentPage -= 1
 
 			# provide a hook to parent scope
 			scope.parent = scope.$parent
@@ -169,6 +191,8 @@ angular.module 'fixtable'
 			scope.applyFilters = ->
 				scope.appliedFilters = getCurrentFilterValues()
 				scope.filtersDirty = false
+				if scope.options.pagingOptions?.resetOnFilterChange
+					scope.options.pagingOptions.currentPage = 1
 				updateData()
 
 			getCurrentFilterValues = ->
@@ -199,7 +223,11 @@ angular.module 'fixtable'
 			getSelectedItemIndex = (item) ->
 				unless scope.selectedItems?.length then return -1
 				for selectedItem, index in scope.selectedItems
-					if angular.equals item, selectedItem
+					# For when you want to compare a specific property when obtaining the selected item index
+					# rowSelectionProperty: [String] Key name on row model for comparing
+					if scope.options.rowSelectionProperty and (item[scope.options.rowSelectionProperty] is selectedItem[scope.options.rowSelectionProperty])
+						return index
+					else if angular.equals item, selectedItem
 						return index
 				return -1
 
@@ -270,9 +298,16 @@ angular.module 'fixtable'
 					scope.currentDragScope = null
 					scope.$apply()
 
+			if scope.options.pagingOptions
+				scope.$on scope.options.pagingOptions.reloadEvent, ->
+					getPageData(true)
+
 			updateData = ->
 				# run callback method to get sorted/filtered data
-				if scope.options._paging() then getPageData()
+				if scope.options._paging()
+					getPageData()
+					# re-calculate dimensions since column widths may have changed
+					$timeout -> fixtable.setDimensions()
 
 				# or do it all here if we have the full dataset
 				else filterAndSortData()
@@ -507,39 +542,56 @@ angular.module 'fixtable'
 			element[0].focus()
 ]
 angular.module 'fixtable'
+.constant 'fixtableConstants', {
+    PREVNEXT: "prevNext"
+    NEXT: "NEXT"
+    PREVIOUS: "PREVIOUS"
+  }
+angular.module 'fixtable'
 .provider 'fixtableDefaultOptions', ->
 
-	@defaultOptions =
-		applyFiltersTemplate: 'fixtable/templates/applyFilters.html'
-		cellTemplate: 'fixtable/templates/bodyCell.html'
-		checkboxCellTemplate: 'fixtable/templates/checkboxCell.html'
-		checkboxHeaderTemplate: 'fixtable/templates/checkboxHeaderCell.html'
-		debugMode: false
-		editTemplate: 'fixtable/templates/editCell.html'
-		emptyTemplate: 'fixtable/templates/emptyMessage.html'
-		footerTemplate: 'fixtable/templates/footer.html'
-		headerTemplate: 'fixtable/templates/headerCell.html'
-		loadingTemplate: 'fixtable/templates/loading.html'
-		realtimeFiltering: true
-		sortIndicatorTemplate: 'fixtable/templates/sortIndicator.html'
-		rowSelection: false
-		rowSelectionColumnWidth: 40
-		rowSelectionDisabled: (row) -> return false
-		rowSelectionWithCheckboxOnly: false
-		selectedRowClass: 'active'
-		dragging: false
-		draggingOptions:
-			noScroll: true
-			dragHandle: false
-			dragHandleWidth: 20
+  @defaultOptions =
+    applyFiltersTemplate: 'fixtable/templates/applyFilters.html'
+    cellTemplate: 'fixtable/templates/bodyCell.html'
+    checkboxCellTemplate: 'fixtable/templates/checkboxCell.html'
+    checkboxHeaderTemplate: 'fixtable/templates/checkboxHeaderCell.html'
+    debugMode: false
+    editTemplate: 'fixtable/templates/editCell.html'
+    emptyTemplate: 'fixtable/templates/emptyMessage.html'
+    footerTemplate: 'fixtable/templates/footer.html'
+    headerTemplate: 'fixtable/templates/headerCell.html'
+    loadingTemplate: 'fixtable/templates/loading.html'
+    realtimeFiltering: true
+    sortIndicatorTemplate: 'fixtable/templates/sortIndicator.html'
+    rowSelection: false
+    rowSelectionColumnWidth: 40
+    rowSelectionDisabled: (row) -> return false
+    rowSelectionWithCheckboxOnly: false
+    selectedRowClass: 'active'
+    dragging: false
+    draggingOptions:
+      noScroll: true
+      dragHandle: false
+      dragHandleWidth: 20
+    pagingOptions:
+      type: null # [String] Value for the type of paging ()
+      direction: null # [String] Value for the initial direction of paging (NEXT or PREVIOUS)
+      callback: null # [String] Name of the callback function to use when retrieving page date (getNumberData)
+      currentPage: null # [Number] The initial page and to count the page (1)
+      hasNextPage: null # [Boolean] Set by the callback function to determine if a next page exists
+      pageSize: null # [Number] Page size to send to the callback function (25)
+      pageSizeOptions: null # [Array[Number]] Page size options for the UI
+      processingPage: null # [Boolean] Used to communicate between fixtable and app to determine page processing
+      reloadEvent: null # [String] Name of event to be broadcast when an application needs to reload the current page (reloadNumbers)
+      resetOnFilterChange: true # [Boolean] Reset current page when the filters change
 
-	@$get = -> @defaultOptions
+  @$get = -> @defaultOptions
 
-	@setDefaultOptions = (options) ->
-		for option, value of options
-			@defaultOptions[option] = value
+  @setDefaultOptions = (options) ->
+    for option, value of options
+      @defaultOptions[option] = value
 
-	null
+  null
 
 angular.module 'fixtable'
 .provider 'fixtableFilterTypes', ->
