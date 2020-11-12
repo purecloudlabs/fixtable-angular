@@ -48,7 +48,7 @@
   ]);
 
   angular.module('fixtable').directive('fixtable', [
-    '$rootScope', '$timeout', 'fixtableDefaultOptions', 'fixtableFilterTypes', function($rootScope, $timeout, fixtableDefaultOptions, fixtableFilterTypes) {
+    '$timeout', 'fixtableDefaultOptions', 'fixtableFilterTypes', 'fixtableConstants', function($timeout, fixtableDefaultOptions, fixtableFilterTypes, fixtableConstants) {
       return {
         link: function(scope, element, attrs) {
           var base, col, column, defaultFilterFn, defaultValues, filterAndSortData, fixtable, getCurrentFilterValues, getPageData, getSelectedItemIndex, i, index, j, k, key, len, len1, ref, ref1, setPagingActions, updateData, updatePagingOptions, value, valuesObj;
@@ -114,7 +114,7 @@
             }
             pageTypeChanged = newVal.type !== oldVal.type;
             newVal.currentPage = parseInt(newVal.currentPage);
-            if (newVal.type !== 'prevNext') {
+            if (newVal.type !== fixtableConstants.PREVNEXT) {
               scope.totalPages = Math.ceil(newVal.totalItems / newVal.pageSize) || 1;
               scope.totalPagesOoM = (scope.totalPages + "").length;
             }
@@ -154,16 +154,16 @@
           };
           (setPagingActions = function() {
             var ref1;
-            if (((ref1 = scope.options.pagingOptions) != null ? ref1.type : void 0) === 'prevNext') {
+            if (((ref1 = scope.options.pagingOptions) != null ? ref1.type : void 0) === fixtableConstants.PREVNEXT) {
               scope.nextPage = function() {
                 scope.options.pagingOptions.processingPage = true;
-                scope.options.pagingOptions.direction = 'NEXT';
+                scope.options.pagingOptions.direction = fixtableConstants.NEXT;
                 scope.options.pagingOptions.currentPage += 1;
                 return updatePagingOptions(scope.options.pagingOptions, scope.options.pagingOptions);
               };
               return scope.prevPage = function() {
                 scope.options.pagingOptions.processingPage = true;
-                scope.options.pagingOptions.direction = 'PREVIOUS';
+                scope.options.pagingOptions.direction = fixtableConstants.PREVIOUS;
                 scope.options.pagingOptions.currentPage -= 1;
                 return updatePagingOptions(scope.options.pagingOptions, scope.options.pagingOptions);
               };
@@ -219,9 +219,10 @@
             });
           }
           scope.applyFilters = function() {
+            var ref2;
             scope.appliedFilters = getCurrentFilterValues();
             scope.filtersDirty = false;
-            if (scope.options.pagingOptions.resetOnFilterChange) {
+            if ((ref2 = scope.options.pagingOptions) != null ? ref2.resetOnFilterChange : void 0) {
               scope.options.pagingOptions.currentPage = 1;
             }
             return updateData();
@@ -691,6 +692,12 @@
     }
   ]);
 
+  angular.module('fixtable').constant('fixtableConstants', {
+    PREVNEXT: "prevNext",
+    NEXT: "NEXT",
+    PREVIOUS: "PREVIOUS"
+  });
+
   angular.module('fixtable').provider('fixtableDefaultOptions', function() {
     this.defaultOptions = {
       applyFiltersTemplate: 'fixtable/templates/applyFilters.html',
@@ -717,6 +724,18 @@
         noScroll: true,
         dragHandle: false,
         dragHandleWidth: 20
+      },
+      pagingOptions: {
+        type: null,
+        direction: null,
+        callback: null,
+        currentPage: null,
+        hasNextPage: null,
+        pageSize: null,
+        pageSizeOptions: null,
+        processingPage: null,
+        reloadEvent: null,
+        resetOnFilterChange: true
       }
     };
     this.$get = function() {

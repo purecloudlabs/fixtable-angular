@@ -1,10 +1,10 @@
 angular.module 'fixtable'
 .directive 'fixtable', [
-	'$rootScope'
 	'$timeout'
 	'fixtableDefaultOptions'
 	'fixtableFilterTypes'
-	($rootScope, $timeout, fixtableDefaultOptions, fixtableFilterTypes) ->
+	'fixtableConstants'
+	($timeout, fixtableDefaultOptions, fixtableFilterTypes, fixtableConstants) ->
 		link: (scope, element, attrs) ->
 			# use default options to fill in missing values
 			for key, value of fixtableDefaultOptions
@@ -53,7 +53,7 @@ angular.module 'fixtable'
 				pageTypeChanged = newVal.type isnt oldVal.type
 				
 				newVal.currentPage = parseInt newVal.currentPage
-				unless newVal.type is 'prevNext'
+				unless newVal.type is fixtableConstants.PREVNEXT
 					scope.totalPages = Math.ceil(newVal.totalItems / newVal.pageSize) or 1
 					scope.totalPagesOoM = (scope.totalPages+"").length
 
@@ -90,16 +90,16 @@ angular.module 'fixtable'
 
 			# provide methods to page forward/back in footer template
 			do setPagingActions = ->
-				if scope.options.pagingOptions?.type is 'prevNext'
+				if scope.options.pagingOptions?.type is fixtableConstants.PREVNEXT
 					# does not use page numbers
 					scope.nextPage = ->
 						scope.options.pagingOptions.processingPage = true
-						scope.options.pagingOptions.direction = 'NEXT'
+						scope.options.pagingOptions.direction = fixtableConstants.NEXT
 						scope.options.pagingOptions.currentPage += 1
 						updatePagingOptions(scope.options.pagingOptions, scope.options.pagingOptions)
 					scope.prevPage = ->
 						scope.options.pagingOptions.processingPage = true
-						scope.options.pagingOptions.direction = 'PREVIOUS'
+						scope.options.pagingOptions.direction = fixtableConstants.PREVIOUS
 						scope.options.pagingOptions.currentPage -= 1
 						updatePagingOptions(scope.options.pagingOptions, scope.options.pagingOptions)
 				else
@@ -150,7 +150,7 @@ angular.module 'fixtable'
 			scope.applyFilters = ->
 				scope.appliedFilters = getCurrentFilterValues()
 				scope.filtersDirty = false
-				if scope.options.pagingOptions.resetOnFilterChange
+				if scope.options.pagingOptions?.resetOnFilterChange
 					scope.options.pagingOptions.currentPage = 1
 				updateData()
 
@@ -182,6 +182,8 @@ angular.module 'fixtable'
 			getSelectedItemIndex = (item) ->
 				unless scope.selectedItems?.length then return -1
 				for selectedItem, index in scope.selectedItems
+					# For when you want to compare a specific property when obtaining the selected item index
+					# rowSelectionProperty: [String] Key name on row model for comparing
 					if scope.options.rowSelectionProperty and (item[scope.options.rowSelectionProperty] is selectedItem[scope.options.rowSelectionProperty])
 						return index
 					else if angular.equals item, selectedItem
