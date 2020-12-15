@@ -20,7 +20,7 @@
                     ng-click="col.sortable && changeSort(col.property)"
                     ng-class="{'fixtable-sortable-column-header': col.sortable}"
                     class="{{ col.headerClass }}">
-                        <div ng-include="options.headerTemplate">
+                        <div ng-include="col.headerTemplate || options.headerTemplate">
                         </div>
                     </th>
                 </tr>
